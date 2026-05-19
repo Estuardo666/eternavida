@@ -41,7 +41,8 @@ type CartAction =
   | { type: "OPEN" }
   | { type: "CLOSE" }
   | { type: "TOGGLE" }
-  | { type: "CLEAR_LAST_ADDED" };
+  | { type: "CLEAR_LAST_ADDED" }
+  | { type: "CLEAR" };
 
 function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
@@ -97,6 +98,9 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     case "CLEAR_LAST_ADDED":
       return { ...state, lastAddedId: null };
 
+    case "CLEAR":
+      return { ...state, items: [], isOpen: false, lastAddedId: null };
+
     default:
       return state;
   }
@@ -116,6 +120,7 @@ interface CartContextValue {
   openCart: () => void;
   closeCart: () => void;
   toggleCart: () => void;
+  clearCart: () => void;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -161,6 +166,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const openCart = useCallback(() => dispatch({ type: "OPEN" }), []);
   const closeCart = useCallback(() => dispatch({ type: "CLOSE" }), []);
   const toggleCart = useCallback(() => dispatch({ type: "TOGGLE" }), []);
+  const clearCart = useCallback(() => dispatch({ type: "CLEAR" }), []);
 
   const itemCount = state.items.reduce((sum, i) => sum + i.quantity, 0);
   const subtotal = state.items.reduce((sum, i) => {
@@ -182,6 +188,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         openCart,
         closeCart,
         toggleCart,
+        clearCart,
       }}
     >
       {children}

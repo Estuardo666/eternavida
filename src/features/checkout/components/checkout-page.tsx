@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Lock,
   ChevronRight,
@@ -36,6 +37,13 @@ import { CheckoutOrderSummary } from "./checkout-order-summary";
 // ─── Button state ────────────────────────────────────────────────────────────
 
 type ButtonState = "idle" | "submitting" | "done";
+
+type ConfirmationProduct = {
+  id: string;
+  name: string;
+  imageUrl: string | null;
+  quantity: number;
+};
 
 // ─── Ecuador provinces and major cities ─────────────────────────────────────
 
@@ -580,8 +588,10 @@ function CheckoutIdentityGate({ onUserReady }: { onUserReady: (data: UserReadyDa
 // ─── CheckoutPageClient ───────────────────────────────────────────────────────
 
 export function CheckoutPageClient() {
-  const { items, subtotal, itemCount } = useCart();
+  const { items, subtotal, itemCount, clearCart } = useCart();
   const reduceMotion = useReducedMotion() ?? false;
+  const router = useRouter();
+  const { user, isSignedIn } = useUser();
 
   const [mounted, setMounted] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
@@ -666,16 +676,47 @@ export function CheckoutPageClient() {
     );
   }
 
-  // ── Submit handler (no real submission) ───────────────────────────────────
+  // ── Submit handler (placeholder — real API to be wired in a future iteration) ─
 
   function handleSubmit() {
     if (buttonState !== "idle") return;
     setButtonState("submitting");
     setTimeout(() => {
       setButtonState("done");
-      setTimeout(() => {
-        setButtonState("idle");
-      }, 2200);
+
+      const orderNumber = `DRM-${Math.floor(10000 + Math.random() * 90000)}`;
+      const customerName = isSignedIn
+        ? ((user?.firstName ?? user?.fullName ?? firstName) || "Cliente")
+        : (firstName || "Cliente");
+      const customerEmail = isSignedIn
+        ? (user?.primaryEmailAddress?.emailAddress ?? email)
+        : email;
+      const products: ConfirmationProduct[] = items.map((item) => ({
+        id: item.id,
+        name: item.name,
+        imageUrl: item.imageUrl,
+        quantity: item.quantity,
+      }));
+
+      const confirmationData = {
+        orderNumber,
+        total: summaryDisplayTotal,
+        itemCount,
+        customerName,
+        email: customerEmail,
+        isGuest: !isSignedIn,
+        shippingMethod,
+        products,
+      };
+
+      try {
+        sessionStorage.setItem("dermatologika_last_order", JSON.stringify(confirmationData));
+      } catch {
+        // sessionStorage unavailable
+      }
+
+      clearCart();
+      router.push("/confirmation");
     }, 1800);
   }
 
