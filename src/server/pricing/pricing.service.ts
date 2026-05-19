@@ -114,7 +114,7 @@ export async function buildCheckoutPricingPreview(
   options: BuildCheckoutPricingPreviewOptions = {},
 ): Promise<CheckoutPricingPreview> {
   const now = new Date();
-  const shippingBase = resolveCheckoutShippingBaseCost(input.shippingMethod);
+  const shippingBase = await resolveShippingCostFromDb(input.shippingMethod);
   const cartItems = normalizeCheckoutItems(input.items);
   const products = await loadProductsForPricing(cartItems);
   const lines = buildLineStates(cartItems, products);
@@ -322,6 +322,17 @@ function buildLineStates(
       hasExclusivePromotion: false,
     };
   });
+}
+
+async function resolveShippingCostFromDb(shippingMethodType: string): Promise<number> {
+  const method = await prisma.shippingMethod.findFirst({
+    where: { type: shippingMethodType, isActive: true },
+    select: { price: true },
+  });
+  if (method) {
+    return (method.price as DecimalLike).toNumber();
+  }
+  return resolveCheckoutShippingBaseCost(shippingMethodType);
 }
 
 function createShippingState(base: number): ShippingState {

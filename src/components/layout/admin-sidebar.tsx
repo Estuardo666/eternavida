@@ -69,6 +69,19 @@ const catalogNavigation: ReadonlyArray<NavigationItem> = [
   },
 ] as const;
 
+const storeNavigation: ReadonlyArray<NavigationItem> = [
+  {
+    href: "/admin/shipping",
+    label: "Envío",
+    icon: ShippingIcon,
+  },
+  {
+    href: "/admin/payment-methods",
+    label: "Métodos de pago",
+    icon: PaymentIcon,
+  },
+] as const;
+
 const navigationSections: ReadonlyArray<{
   id: string;
   label: string;
@@ -83,6 +96,11 @@ const navigationSections: ReadonlyArray<{
     id: "catalog",
     label: "Catálogo",
     items: catalogNavigation,
+  },
+  {
+    id: "store",
+    label: "Tienda",
+    items: storeNavigation,
   },
 ] as const;
 
@@ -289,6 +307,7 @@ export function AdminSidebar({ userEmail, userRole, userImageUrl }: AdminSidebar
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     general: true,
     catalog: true,
+    store: true,
   });
 
   const navigationItems = useMemo(
@@ -750,6 +769,46 @@ function MediaLibraryIcon(props: { className?: string }) {
       <rect x="13" y="3" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="1.8" />
       <rect x="3" y="13" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="1.8" />
       <rect x="13" y="13" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="1.8" />
+    </svg>
+  );
+}
+
+function ShippingIcon(props: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={props.className}
+      aria-hidden="true"
+    >
+      <path d="M1 3h15v13H1z" />
+      <path d="M16 8h4l3 4v5h-7V8z" />
+      <circle cx="5.5" cy="18.5" r="2.5" />
+      <circle cx="18.5" cy="18.5" r="2.5" />
+    </svg>
+  );
+}
+
+function PaymentIcon(props: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={props.className}
+      aria-hidden="true"
+    >
+      <rect x="2" y="5" width="20" height="14" rx="3" />
+      <path d="M2 10h20" />
+      <path d="M6 15h4" />
+      <path d="M14 15h4" />
     </svg>
   );
 }

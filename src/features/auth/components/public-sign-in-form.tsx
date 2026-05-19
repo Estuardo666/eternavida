@@ -22,7 +22,22 @@ const pillButton =
 export function PublicSignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTarget = useMemo(() => searchParams.get("redirectTo") || "/", [searchParams]);
+  // Handle both our own ?redirectTo= and Clerk's ?redirect_url= added by auth.protect()
+  const redirectTarget = useMemo(() => {
+    const custom = searchParams.get("redirectTo");
+    if (custom) return custom;
+    const clerkRedirect = searchParams.get("redirect_url");
+    if (clerkRedirect) {
+      try {
+        // redirect_url is a full absolute URL — extract just the pathname + search
+        const url = new URL(clerkRedirect);
+        return url.pathname + url.search;
+      } catch {
+        return "/";
+      }
+    }
+    return "/";
+  }, [searchParams]);
   const { signIn, fetchStatus } = useSignIn();
   const { isLoaded, isSignedIn } = useUser();
   const isAuthReady = fetchStatus === "idle" && signIn !== null;

@@ -330,6 +330,53 @@ async function main() {
       position: index,
     })),
   });
+
+  // ── Shipping methods ────────────────────────────────────────────────────
+  const shippingMethodsData = [
+    {
+      name: "Envío a domicilio",
+      type: "standard",
+      price: 6.0,
+      estimatedDays: "1 a 2 días hábiles",
+      isActive: true,
+      sortOrder: 0,
+    },
+    {
+      name: "Retiro en Tienda Dermatológika",
+      type: "pickup",
+      price: 0.0,
+      estimatedDays: "Coordinamos por WhatsApp",
+      isActive: true,
+      sortOrder: 1,
+    },
+  ];
+
+  for (const sm of shippingMethodsData) {
+    await prisma.shippingMethod.upsert({
+      where: { type: sm.type },
+      update: { name: sm.name, price: sm.price, estimatedDays: sm.estimatedDays, isActive: sm.isActive, sortOrder: sm.sortOrder },
+      create: sm,
+    });
+  }
+
+  // ── Payment methods ─────────────────────────────────────────────────────
+  await prisma.paymentMethod.upsert({
+    where: { type: "bank_transfer" },
+    update: {
+      name: "Transferencia bancaria",
+      isActive: true,
+      sortOrder: 0,
+    },
+    create: {
+      name: "Transferencia bancaria",
+      type: "bank_transfer",
+      description: "Paga mediante transferencia y enviá tu comprobante por WhatsApp.",
+      instructions:
+        "Banco: Tu Banco\nCuenta corriente: 0000000000\nBeneficiario: Dermatologika\n\nEnvía tu comprobante de pago por WhatsApp al +593 99 999 9999 junto con tu número de pedido.",
+      isActive: true,
+      sortOrder: 0,
+    },
+  });
 }
 
 main()

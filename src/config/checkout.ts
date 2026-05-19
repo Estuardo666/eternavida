@@ -1,8 +1,9 @@
-export type CheckoutShippingMethod = "standard" | "pickup";
+export type CheckoutShippingMethod = string;
 
 export const CHECKOUT_CURRENCY = "USD";
 
-export const CHECKOUT_SHIPPING_BASE_COSTS: Record<CheckoutShippingMethod, number> = {
+// Fallback costs used only when the DB method cannot be resolved (e.g. legacy promotions preview).
+export const CHECKOUT_SHIPPING_BASE_COSTS: Record<string, number> = {
   standard: 6,
   pickup: 0,
 };

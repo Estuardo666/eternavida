@@ -325,3 +325,35 @@ model HomePageContent {
   @@index([heroTertiaryMediaId])
   @@index([createdAt])
 }
+
+model ShippingMethod {
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  type          String   @unique
+  price         Decimal  @default(0) @db.Decimal(10, 2)
+  estimatedDays String?
+  isActive      Boolean  @default(true)
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([sortOrder])
+  @@index([type])
+}
+
+model PaymentMethod {
+  id           String   @id @default(cuid())
+  name         String
+  description  String?
+  type         String   @unique
+  instructions String?  @db.Text
+  isActive     Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([sortOrder])
+}

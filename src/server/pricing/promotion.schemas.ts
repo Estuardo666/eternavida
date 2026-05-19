@@ -203,7 +203,7 @@ export const checkoutPricePreviewRequestSchema = z.object({
     productId: z.string().trim().min(1, "productId is required"),
     quantity: strictlyPositiveIntegerSchema,
   })).min(1, "At least one checkout item is required."),
-  shippingMethod: z.enum(["standard", "pickup"]),
+  shippingMethod: z.string().trim().min(1, "shippingMethod is required"),
   couponCode: z.string().trim().max(64, "Coupon code must be 64 characters or less").nullable().optional(),
 });
 
@@ -212,7 +212,7 @@ export const adminPromotionPreviewRequestSchema = z.object({
     productId: z.string().trim().min(1, "productId is required"),
     quantity: strictlyPositiveIntegerSchema,
   })).min(1, "At least one preview item is required."),
-  shippingMethod: z.enum(["standard", "pickup"]),
+  shippingMethod: z.string().trim().min(1, "shippingMethod is required"),
   couponCode: z.string().trim().max(64, "Coupon code must be 64 characters or less").nullable().optional(),
   editingPromotionId: z.string().trim().min(1, "editingPromotionId must be a valid id").nullable().optional(),
   promotion: adminPromotionFormSchema,

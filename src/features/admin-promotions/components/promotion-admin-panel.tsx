@@ -79,7 +79,7 @@ interface PromotionEditorFormState {
   volumeTiers: EditorTier[];
   freeShippingMinQuantity: string;
   freeShippingMinSubtotal: string;
-  freeShippingShippingMethods: Array<"standard" | "pickup">;
+  freeShippingShippingMethods: string[];
 }
 
 interface PromotionAdminPanelProps {
@@ -1469,7 +1469,7 @@ function serializePromotionConfig(formData: PromotionEditorFormState): AdminProm
       const config: {
         minQuantity?: number | undefined;
         minSubtotal?: number | undefined;
-        shippingMethods: Array<"standard" | "pickup">;
+        shippingMethods: string[];
       } = {
         shippingMethods: formData.freeShippingShippingMethods,
       };

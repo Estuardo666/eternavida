@@ -29,6 +29,7 @@ import { resolveCheckoutShippingBaseCost, type CheckoutShippingMethod } from "@/
 import { motionTokens } from "@/motion/tokens";
 import { useCart } from "@/features/cart/context/cart-context";
 import { useCheckoutPricingPreview } from "@/features/checkout/hooks/use-checkout-pricing-preview";
+import { useCheckoutMethods } from "@/features/checkout/hooks/use-checkout-methods";
 import { cx } from "@/lib/utils";
 import { CheckoutOrderSummary } from "./checkout-order-summary";
 
@@ -585,7 +586,18 @@ export function CheckoutPageClient() {
   const [mounted, setMounted] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [buttonState, setButtonState] = useState<ButtonState>("idle");
+  const { shippingMethods, paymentMethods } = useCheckoutMethods();
   const [shippingMethod, setShippingMethod] = useState<CheckoutShippingMethod>("standard");
+  const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState<string | null>(null);
+  const selectedPaymentMethod = paymentMethods.find((m) => m.id === selectedPaymentMethodId) ?? paymentMethods[0] ?? null;
+  // Auto-select first shipping method when DB methods load
+  useEffect(() => {
+    const first = shippingMethods[0];
+    if (first) {
+      setShippingMethod(first.type);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shippingMethods.length]);
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -965,88 +977,162 @@ export function CheckoutPageClient() {
           {/* ── Método de envío ──────────────────────────────────────────── */}
           <FormSection title="Método de envío">
             <div className="overflow-hidden rounded-xl border border-border-soft divide-y divide-border-soft">
-              {/* Standard shipping */}
-              <button
-                type="button"
-                onClick={() => setShippingMethod("standard")}
-                className={cx(
-                  "flex w-full items-center gap-3 px-4 py-4 text-left transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-primary",
-                  shippingMethod === "standard" ? "bg-brand-soft/40" : "bg-white hover:bg-surface-subtle",
-                )}
-                aria-pressed={shippingMethod === "standard"}
-              >
-                <div
-                  className={cx(
-                    "flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 bg-white transition-colors duration-fast",
-                    shippingMethod === "standard" ? "border-brand-primary" : "border-border-strong",
-                  )}
-                >
-                  {shippingMethod === "standard" && (
-                    <div className="h-2 w-2 rounded-full bg-brand-primary" />
-                  )}
-                </div>
-                <div className="flex flex-1 items-center gap-2">
-                  <Truck className="h-4 w-4 shrink-0 text-text-muted" aria-hidden="true" />
-                  <div>
-                    <p className="text-body-sm font-medium text-text-primary">Envío a domicilio</p>
-                    <p className="text-caption text-text-muted">1 a 2 días hábiles</p>
-                  </div>
-                </div>
-                <span className="text-body-sm font-medium text-text-primary">$6.00</span>
-              </button>
-
-              {/* Pickup in store */}
-              <button
-                type="button"
-                onClick={() => setShippingMethod("pickup")}
-                className={cx(
-                  "flex w-full items-center gap-3 px-4 py-4 text-left transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-primary",
-                  shippingMethod === "pickup" ? "bg-brand-soft/40" : "bg-white hover:bg-surface-subtle",
-                )}
-                aria-pressed={shippingMethod === "pickup"}
-              >
-                <div
-                  className={cx(
-                    "flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 bg-white transition-colors duration-fast",
-                    shippingMethod === "pickup" ? "border-brand-primary" : "border-border-strong",
-                  )}
-                >
-                  {shippingMethod === "pickup" && (
-                    <div className="h-2 w-2 rounded-full bg-brand-primary" />
-                  )}
-                </div>
-                <div className="flex flex-1 items-center gap-2">
-                  <Store className="h-4 w-4 shrink-0 text-text-muted" aria-hidden="true" />
-                  <div>
-                    <p className="text-body-sm font-medium text-text-primary">
-                      Retiro en Tienda Dermatológika
-                    </p>
-                    <p className="text-caption text-text-muted">Coordinamos por WhatsApp</p>
-                  </div>
-                </div>
-                <span className="text-body-sm font-medium text-status-success">Gratis</span>
-              </button>
+              {shippingMethods.length > 0 ? (
+                shippingMethods.map((method) => (
+                  <button
+                    key={method.id}
+                    type="button"
+                    onClick={() => setShippingMethod(method.type)}
+                    className={cx(
+                      "flex w-full items-center gap-3 px-4 py-4 text-left transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-primary",
+                      shippingMethod === method.type ? "bg-brand-soft/40" : "bg-white hover:bg-surface-subtle",
+                    )}
+                    aria-pressed={shippingMethod === method.type}
+                  >
+                    <div
+                      className={cx(
+                        "flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 bg-white transition-colors duration-fast",
+                        shippingMethod === method.type ? "border-brand-primary" : "border-border-strong",
+                      )}
+                    >
+                      {shippingMethod === method.type && (
+                        <div className="h-2 w-2 rounded-full bg-brand-primary" />
+                      )}
+                    </div>
+                    <div className="flex flex-1 items-center gap-2">
+                      <Truck className="h-4 w-4 shrink-0 text-text-muted" aria-hidden="true" />
+                      <div>
+                        <p className="text-body-sm font-medium text-text-primary">{method.name}</p>
+                        {method.estimatedDays && (
+                          <p className="text-caption text-text-muted">{method.estimatedDays}</p>
+                        )}
+                      </div>
+                    </div>
+                    <span
+                      className={cx(
+                        "text-body-sm font-medium",
+                        method.price === 0 ? "text-status-success" : "text-text-primary",
+                      )}
+                    >
+                      {method.price === 0 ? "Gratis" : `$${method.price.toFixed(2)}`}
+                    </span>
+                  </button>
+                ))
+              ) : (
+                // Fallback while loading or if no DB methods configured
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setShippingMethod("standard")}
+                    className={cx(
+                      "flex w-full items-center gap-3 px-4 py-4 text-left transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-primary",
+                      shippingMethod === "standard" ? "bg-brand-soft/40" : "bg-white hover:bg-surface-subtle",
+                    )}
+                    aria-pressed={shippingMethod === "standard"}
+                  >
+                    <div
+                      className={cx(
+                        "flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 bg-white transition-colors duration-fast",
+                        shippingMethod === "standard" ? "border-brand-primary" : "border-border-strong",
+                      )}
+                    >
+                      {shippingMethod === "standard" && (
+                        <div className="h-2 w-2 rounded-full bg-brand-primary" />
+                      )}
+                    </div>
+                    <div className="flex flex-1 items-center gap-2">
+                      <Truck className="h-4 w-4 shrink-0 text-text-muted" aria-hidden="true" />
+                      <div>
+                        <p className="text-body-sm font-medium text-text-primary">Envío a domicilio</p>
+                        <p className="text-caption text-text-muted">1 a 2 días hábiles</p>
+                      </div>
+                    </div>
+                    <span className="text-body-sm font-medium text-text-primary">$6.00</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShippingMethod("pickup")}
+                    className={cx(
+                      "flex w-full items-center gap-3 px-4 py-4 text-left transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-primary",
+                      shippingMethod === "pickup" ? "bg-brand-soft/40" : "bg-white hover:bg-surface-subtle",
+                    )}
+                    aria-pressed={shippingMethod === "pickup"}
+                  >
+                    <div
+                      className={cx(
+                        "flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 bg-white transition-colors duration-fast",
+                        shippingMethod === "pickup" ? "border-brand-primary" : "border-border-strong",
+                      )}
+                    >
+                      {shippingMethod === "pickup" && (
+                        <div className="h-2 w-2 rounded-full bg-brand-primary" />
+                      )}
+                    </div>
+                    <div className="flex flex-1 items-center gap-2">
+                      <Store className="h-4 w-4 shrink-0 text-text-muted" aria-hidden="true" />
+                      <div>
+                        <p className="text-body-sm font-medium text-text-primary">Retiro en Tienda Dermatológika</p>
+                        <p className="text-caption text-text-muted">Coordinamos por WhatsApp</p>
+                      </div>
+                    </div>
+                    <span className="text-body-sm font-medium text-status-success">Gratis</span>
+                  </button>
+                </>
+              )}
             </div>
           </FormSection>
 
-          {/* ── Pago (placeholder) ───────────────────────────────────────── */}
+          {/* ── Pago ─────────────────────────────────────────────────────── */}
           <FormSection title="Pago">
             <div className="overflow-hidden rounded-xl border border-border-soft">
-              <div className="flex items-center gap-3 bg-surface-subtle px-4 py-4">
+              <div className="flex items-center gap-3 bg-surface-subtle px-4 py-3">
                 <Lock className="h-4 w-4 shrink-0 text-text-muted" aria-hidden="true" />
-                <p className="text-body-sm text-text-muted">
-                  Todos los pagos están cifrados y son seguros.
-                  El método de pago se seleccionará al siguiente paso.
-                </p>
+                <p className="text-body-sm text-text-muted">Todos los pagos están cifrados y son seguros.</p>
               </div>
-              {/* Placeholder card fields */}
-              <div className="space-y-3 bg-surface-soft/60 px-4 py-4 opacity-50 pointer-events-none select-none" aria-hidden="true">
-                <div className="h-10 rounded-md border border-border bg-white" />
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="h-10 rounded-md border border-border bg-white" />
-                  <div className="h-10 rounded-md border border-border bg-white" />
+              {paymentMethods.length > 0 ? (
+                <div className="divide-y divide-border-soft">
+                  {paymentMethods.map((method) => (
+                    <button
+                      key={method.id}
+                      type="button"
+                      onClick={() => setSelectedPaymentMethodId(method.id)}
+                      className={cx(
+                        "flex w-full items-start gap-3 px-4 py-4 text-left transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-primary",
+                        (selectedPaymentMethod?.id === method.id) ? "bg-brand-soft/40" : "bg-white hover:bg-surface-subtle",
+                      )}
+                      aria-pressed={selectedPaymentMethod?.id === method.id}
+                    >
+                      <div
+                        className={cx(
+                          "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 bg-white transition-colors duration-fast",
+                          (selectedPaymentMethod?.id === method.id) ? "border-brand-primary" : "border-border-strong",
+                        )}
+                      >
+                        {selectedPaymentMethod?.id === method.id && (
+                          <div className="h-2 w-2 rounded-full bg-brand-primary" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-body-sm font-medium text-text-primary">{method.name}</p>
+                        {method.description && (
+                          <p className="mt-0.5 text-caption text-text-muted">{method.description}</p>
+                        )}
+                        {selectedPaymentMethod?.id === method.id && method.instructions && (
+                          <pre className="mt-3 whitespace-pre-wrap rounded-lg bg-surface-soft px-3 py-2.5 text-caption text-text-secondary">
+                            {method.instructions}
+                          </pre>
+                        )}
+                      </div>
+                    </button>
+                  ))}
                 </div>
-              </div>
+              ) : (
+                <div className="px-4 py-4">
+                  <p className="text-body-sm text-text-muted">
+                    El método de pago se coordina al confirmar el pedido.
+                  </p>
+                </div>
+              )}
             </div>
           </FormSection>
 
