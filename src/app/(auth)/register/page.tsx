@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { PublicUnifiedAuth } from "@/features/auth/components/public-unified-auth";
-import { getClerkPublicConfig } from "@/server/auth/clerk-config";
 
 export const metadata: Metadata = {
   title: "Crear cuenta",
@@ -13,9 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default function RegisterPage() {
-  const clerkConfig = getClerkPublicConfig();
-
-  return (
-    <PublicUnifiedAuth initialMode="sign-up" isConfigured={clerkConfig.isConfigured} />
-  );
+  return <PublicUnifiedAuth initialMode="sign-up" />;
 }

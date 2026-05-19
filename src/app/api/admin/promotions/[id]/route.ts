@@ -30,7 +30,7 @@ export async function PUT(
   const timestamp = new Date().toISOString();
 
   try {
-    const authResult = requireAdminAuth(request);
+    const authResult = await requireAdminAuth();
     if (!authResult.success) {
       return authResult.response;
     }
@@ -89,7 +89,7 @@ export async function DELETE(
   const timestamp = new Date().toISOString();
 
   try {
-    const authResult = requireAdminAuth(request);
+    const authResult = await requireAdminAuth();
     if (!authResult.success) {
       return authResult.response;
     }

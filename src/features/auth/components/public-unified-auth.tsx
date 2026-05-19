@@ -13,26 +13,8 @@ import { cx } from "@/lib/utils";
 
 type AuthMode = "sign-in" | "sign-up";
 
-export function PublicAuthSetupNotice() {
-  return (
-    <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
-      <p className="text-label-md font-semibold text-amber-900">Autenticación no configurada</p>
-      <p className="mt-1.5 text-body-sm text-amber-700">
-        Configura{" "}
-        <code className="rounded bg-amber-100 px-1 font-mono text-amber-800">
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-        </code>{" "}
-        y{" "}
-        <code className="rounded bg-amber-100 px-1 font-mono text-amber-800">CLERK_SECRET_KEY</code>{" "}
-        para activar el acceso.
-      </p>
-    </div>
-  );
-}
-
 interface PublicUnifiedAuthProps {
   initialMode: AuthMode;
-  isConfigured: boolean;
 }
 
 const modeContent: Record<AuthMode, { heading: string; subtitle: string }> = {
@@ -46,7 +28,7 @@ const modeContent: Record<AuthMode, { heading: string; subtitle: string }> = {
   },
 };
 
-export function PublicUnifiedAuth({ initialMode, isConfigured }: PublicUnifiedAuthProps) {
+export function PublicUnifiedAuth({ initialMode }: PublicUnifiedAuthProps) {
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const reduceMotion = useReducedMotion() ?? false;
 
@@ -219,17 +201,7 @@ export function PublicUnifiedAuth({ initialMode, isConfigured }: PublicUnifiedAu
           >
             <Suspense fallback={<div className="h-16 animate-pulse rounded-full bg-surface-subtle" />}>
               <AnimatePresence mode="popLayout" initial={false}>
-                {!isConfigured ? (
-                  <motion.div
-                    key="setup-notice"
-                    initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: motionTokens.duration.fast, ease: motionTokens.ease.soft }}
-                  >
-                    <PublicAuthSetupNotice />
-                  </motion.div>
-                ) : mode === "sign-in" ? (
+                {mode === "sign-in" ? (
                   <motion.div
                     key="sign-in-form"
                     initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: -18 }}

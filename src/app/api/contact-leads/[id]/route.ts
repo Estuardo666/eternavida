@@ -62,7 +62,7 @@ export async function GET(
   const timestamp = new Date().toISOString();
 
   try {
-    const authResult = requireAdminAuth(request);
+    const authResult = await requireAdminAuth();
     if (!authResult.success) {
       return authResult.response;
     }
@@ -127,7 +127,7 @@ export async function PATCH(
   const timestamp = new Date().toISOString();
 
   try {
-    const authResult = requireAdminAuth(request);
+    const authResult = await requireAdminAuth();
     if (!authResult.success) {
       return authResult.response;
     }

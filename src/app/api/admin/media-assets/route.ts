@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { upsertMediaAssetSchema } from "@/features/admin-content/schemas/admin-home-content.schema";
-import { listMediaAssetRecords } from "@/server/content/admin-home-content.repository";
 import { requireAdminAuth } from "@/server/auth/require-admin-auth";
+import { listMediaAssets } from "@/server/media/admin-media-library.repository";
 import { upsertMediaAsset } from "@/services/admin-content/upsert-media-asset";
 
 function mapMediaAssetResponse(record: {
@@ -16,6 +16,7 @@ function mapMediaAssetResponse(record: {
   width: number | null;
   height: number | null;
   durationSeconds: number | null;
+  folderId: string | null;
   createdAt: Date;
   updatedAt: Date;
 }) {
@@ -30,6 +31,7 @@ function mapMediaAssetResponse(record: {
     width: record.width,
     height: record.height,
     durationSeconds: record.durationSeconds,
+    folderId: record.folderId,
     createdAt: record.createdAt.toISOString(),
     updatedAt: record.updatedAt.toISOString(),
   };
@@ -39,12 +41,21 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const timestamp = new Date().toISOString();
 
   try {
-    const authResult = requireAdminAuth(request);
+    const authResult = await requireAdminAuth();
     if (!authResult.success) {
       return authResult.response;
     }
 
-    const mediaAssets = await listMediaAssetRecords();
+    const { searchParams } = new URL(request.url);
+    const rawFolderId = searchParams.get("folderId");
+    const folderFilter: string | null | "all" =
+      rawFolderId === null || rawFolderId === "all"
+        ? "all"
+        : rawFolderId === "uncategorized"
+          ? null
+          : rawFolderId;
+
+    const mediaAssets = await listMediaAssets(folderFilter);
 
     return NextResponse.json(
       {
@@ -80,7 +91,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const timestamp = new Date().toISOString();
 
   try {
-    const authResult = requireAdminAuth(request);
+    const authResult = await requireAdminAuth();
     if (!authResult.success) {
       return authResult.response;
     }

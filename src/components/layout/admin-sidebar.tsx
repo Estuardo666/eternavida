@@ -14,6 +14,7 @@ import { motionTokens } from "@/motion/tokens";
 interface AdminSidebarProps {
   userEmail: string;
   userRole: string;
+  userImageUrl?: string | undefined;
 }
 
 type NavigationItem = {
@@ -32,6 +33,11 @@ const primaryNavigation: ReadonlyArray<NavigationItem> = [
     href: "/admin/content/home",
     label: "Home pública",
     icon: HomeIcon,
+  },
+  {
+    href: "/admin/media",
+    label: "Biblioteca de medios",
+    icon: MediaLibraryIcon,
   },
 ] as const;
 
@@ -275,7 +281,7 @@ function NavigationLink(props: NavigationItem & {
   );
 }
 
-export function AdminSidebar({ userEmail, userRole }: AdminSidebarProps) {
+export function AdminSidebar({ userEmail, userRole, userImageUrl }: AdminSidebarProps) {
   const pathname = usePathname();
   const reduceMotion = useReducedMotion() ?? false;
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -371,6 +377,7 @@ export function AdminSidebar({ userEmail, userRole }: AdminSidebarProps) {
                 onCollapseToggle={() => setIsMobileOpen(false)}
                 userEmail={userEmail}
                 userRole={userRole}
+                userImageUrl={userImageUrl}
                 reduceMotion={reduceMotion}
                 collapseLabel="Cerrar"
               />
@@ -446,9 +453,17 @@ export function AdminSidebar({ userEmail, userRole }: AdminSidebarProps) {
                   <PanelToggleIcon className={cx("h-5 w-5 transition-transform duration-[200ms] ease-soft", "rotate-180")} />
                 </button>
 
-                <div className="flex h-11 w-11 items-center justify-center rounded-full border border-border-soft bg-surface-subtle text-label-md text-text-primary">
-                  {userEmail.slice(0, 1).toUpperCase()}
-                </div>
+                <Link
+                  href="/admin/profile"
+                  aria-label="Mi perfil"
+                  className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl border border-border-soft bg-surface-subtle text-label-md text-text-primary transition-[background-color,border-color] duration-[200ms] ease-soft hover:border-border-brand hover:bg-surface-brandTint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
+                >
+                  {userImageUrl ? (
+                    <Image src={userImageUrl} alt={userEmail} width={44} height={44} className="h-full w-full object-cover" />
+                  ) : (
+                    userEmail.slice(0, 1).toUpperCase()
+                  )}
+                </Link>
               </div>
             </motion.div>
           ) : (
@@ -476,6 +491,7 @@ export function AdminSidebar({ userEmail, userRole }: AdminSidebarProps) {
                 onCollapseToggle={() => setIsCollapsed(true)}
                 userEmail={userEmail}
                 userRole={userRole}
+                userImageUrl={userImageUrl}
                 reduceMotion={reduceMotion}
                 collapseLabel="Ocultar"
               />
@@ -494,6 +510,7 @@ function SidebarPanel(props: {
   onCollapseToggle: () => void;
   userEmail: string;
   userRole: string;
+  userImageUrl?: string | undefined;
   reduceMotion: boolean;
   collapseLabel: string;
 }) {
@@ -586,15 +603,27 @@ function SidebarPanel(props: {
         })}
       </motion.nav>
 
-      <div className="mt-4 flex items-center gap-3 rounded-[22px] border border-border-soft bg-surface-subtle p-3 sm:mt-5 sm:rounded-[24px]">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border-soft bg-surface-canvas text-label-md text-text-primary">
-          {props.userEmail.slice(0, 1).toUpperCase()}
+      <Link
+        href="/admin/profile"
+        className="mt-4 flex items-center gap-3 rounded-[22px] border border-border-soft bg-surface-subtle p-3 transition-[background-color,border-color] duration-[200ms] ease-soft hover:border-border-brand hover:bg-surface-brandTint sm:mt-5 sm:rounded-[24px]"
+      >
+        <div className="flex h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-border-soft bg-surface-canvas text-label-md text-text-primary">
+          {props.userImageUrl ? (
+            <Image src={props.userImageUrl} alt={props.userEmail} width={44} height={44} className="h-full w-full object-cover" />
+          ) : (
+            <span className="flex h-full w-full items-center justify-center">
+              {props.userEmail.slice(0, 1).toUpperCase()}
+            </span>
+          )}
         </div>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="truncate text-label-sm text-text-primary">{props.userEmail}</p>
           <p className="truncate text-body-sm text-text-secondary">{props.userRole}</p>
         </div>
-      </div>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-4 w-4 shrink-0 text-text-muted">
+          <path d="M9 6L15 12L9 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </Link>
     </div>
   );
 }
@@ -710,6 +739,17 @@ function PromotionIcon(props: { className?: string }) {
       <path d="M7 12H17" />
       <path d="M7 17.5H13" />
       <path d="M4.5 4.5H19.5V19.5H4.5Z" />
+    </svg>
+  );
+}
+
+function MediaLibraryIcon(props: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={props.className}>
+      <rect x="3" y="3" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="1.8" />
+      <rect x="13" y="3" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="1.8" />
+      <rect x="3" y="13" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="1.8" />
+      <rect x="13" y="13" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="1.8" />
     </svg>
   );
 }

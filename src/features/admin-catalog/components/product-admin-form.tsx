@@ -19,6 +19,7 @@ import {
 } from "@/components/admin/surface-styles";
 import { AdminBreadcrumbs } from "@/components/layout/admin-breadcrumbs";
 import { MediaAssetFrame } from "@/components/media/media-asset-frame";
+import { MediaPickerModal } from "@/components/media/media-picker-modal";
 import { ProductBadge } from "@/components/ui/product-badge";
 import { SelectionCheckbox } from "@/features/admin-catalog/components/selection-checkbox";
 import { cx } from "@/lib/utils";
@@ -211,6 +212,8 @@ export function ProductAdminForm({ initialData, mode, product, syncCapabilities 
 	const [imageFile, setImageFile] = useState<File | null>(null);
 	const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 	const [fileInputKey, setFileInputKey] = useState(0);
+	const [pickerOpen, setPickerOpen] = useState(false);
+	const [pickedAsset, setPickedAsset] = useState<AdminCatalogEditorData["mediaAssets"][number] | null>(null);
 	const [categoryQuery, setCategoryQuery] = useState("");
 	const [submissionState, setSubmissionState] = useState<SubmissionState>("idle");
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -225,7 +228,7 @@ export function ProductAdminForm({ initialData, mode, product, syncCapabilities 
 		JSON.stringify(buildProductForm(product, initialData.categories, initialData.brands)),
 	);
 	const [savedAt, setSavedAt] = useState<string | null>(product?.updatedAt ?? null);
-	const selectedMedia = initialData.mediaAssets.find((asset) => asset.id === formData.mediaAssetId) ?? null;
+	const selectedMedia = pickedAsset ?? initialData.mediaAssets.find((asset) => asset.id === formData.mediaAssetId) ?? null;
 	const selectedBrand = initialData.brands.find((brand) => brand.id === formData.brandId) ?? null;
 	const syncManagedSource = persistedProduct?.externalSourceId ?? null;
 	const normalizedCategoryQuery = categoryQuery.trim().toLocaleLowerCase("es");
@@ -396,10 +399,18 @@ export function ProductAdminForm({ initialData, mode, product, syncCapabilities 
 	function clearImageSelection(removePersistedAsset = false) {
 		markAsDirty();
 		resetPendingImageSelection();
+		setPickedAsset(null);
 
 		if (removePersistedAsset) {
 			updateField("mediaAssetId", "");
 		}
+	}
+
+	function handlePickerSelect(asset: AdminCatalogEditorData["mediaAssets"][number]) {
+		markAsDirty();
+		resetPendingImageSelection();
+		setPickedAsset(asset);
+		updateField("mediaAssetId", asset.id);
 	}
 
 	function handleImageChange(file: File | null) {
@@ -821,11 +832,23 @@ export function ProductAdminForm({ initialData, mode, product, syncCapabilities 
 							<div className={`space-y-3 ${ADMIN_INSET_CARD_CLASS_NAME}`}>
 								<div className="space-y-2">
 									<span className="block text-label-md text-text-primary">Imagen de producto</span>
-									<input key={fileInputKey} type="file" accept="image/*" onChange={(event) => handleImageChange(event.target.files?.[0] ?? null)} className={adminFieldClassName} />
+									<button
+										type="button"
+										onClick={() => setPickerOpen(true)}
+										className={ADMIN_BUTTON_SECONDARY_CLASS_NAME}
+									>
+										<svg viewBox="0 0 24 24" fill="none" className="mr-2 h-4 w-4" aria-hidden="true">
+											<rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
+											<rect x="13" y="3" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
+											<rect x="3" y="13" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
+											<rect x="13" y="13" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
+										</svg>
+										{formData.mediaAssetId ? "Cambiar imagen" : "Elegir imagen"}
+									</button>
 								</div>
 
 								<p className="text-body-sm text-text-secondary">
-									{imageFile ? `Pendiente de subida: ${imageFile.name}` : `Imagen actual: ${selectedMedia?.storageKey ?? "Sin media asset"}`}
+									{imageFile ? `Pendiente de subida: ${imageFile.name}` : selectedMedia ? selectedMedia.storageKey.split("/").pop() : "Sin imagen seleccionada"}
 								</p>
 
 								{(imageFile || formData.mediaAssetId) ? (
@@ -833,6 +856,13 @@ export function ProductAdminForm({ initialData, mode, product, syncCapabilities 
 										Quitar imagen
 									</button>
 								) : null}
+
+								<MediaPickerModal
+									open={pickerOpen}
+									onClose={() => setPickerOpen(false)}
+									onSelect={handlePickerSelect}
+									uploadStorageKeyPrefix="Media/Products"
+								/>
 							</div>
 
 							<div className="space-y-2">

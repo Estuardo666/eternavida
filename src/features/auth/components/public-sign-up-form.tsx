@@ -309,7 +309,7 @@ export function PublicSignUpForm() {
               disabled={isSubmitting}
             />
             <span className="text-body-sm text-text-secondary">
-              Acepto los términos y condiciones para usar mi cuenta Dermatologika y recibir códigos de acceso por correo.
+              Acepto los términos y condiciones para usar mi cuenta Dermatologika.
             </span>
           </label>
 
@@ -326,6 +326,8 @@ export function PublicSignUpForm() {
               </motion.p>
             ) : null}
           </AnimatePresence>
+
+          <div id="clerk-captcha" />
 
           <motion.button
             type="submit"

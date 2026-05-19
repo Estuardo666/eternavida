@@ -1,6 +1,7 @@
 "use client";
 
 import { startTransition, useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
@@ -50,9 +51,19 @@ export function PublicAccountEntry() {
   return (
     <div className="flex items-center gap-2">
       <div className="inline-flex min-h-10 items-center gap-2 rounded-pill border border-border-soft bg-surface-canvas px-3 py-2 text-label-md text-text-primary shadow-sm">
-        <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-soft text-label-sm font-semibold text-brand-primary">
-          {accountInitial}
-        </span>
+        {user.imageUrl ? (
+          <Image
+            src={user.imageUrl}
+            alt={displayName}
+            width={28}
+            height={28}
+            className="h-7 w-7 shrink-0 rounded-lg object-cover"
+          />
+        ) : (
+          <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-brand-soft text-label-sm font-semibold text-brand-primary">
+            {accountInitial}
+          </span>
+        )}
         <span className="hidden max-w-[9rem] truncate sm:inline">{displayName}</span>
         <UserRound className="h-4 w-4 sm:hidden" aria-hidden="true" />
       </div>

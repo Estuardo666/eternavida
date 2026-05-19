@@ -1,28 +1,23 @@
 import "server-only";
-
-import { cookies } from "next/headers";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-
-import { getAuthSessionConfig } from "@/server/auth/auth-config";
-import { verifySessionToken } from "@/server/auth/session";
 import type { AuthenticatedUser } from "@/types/auth";
 
 export async function requireAdminPageUser(): Promise<AuthenticatedUser> {
-  const cookieStore = await cookies();
-  const { cookieName } = getAuthSessionConfig();
-  const sessionToken = cookieStore.get(cookieName)?.value;
+  const { userId } = await auth();
 
-  if (!sessionToken) {
-    redirect("/admin/login");
+  if (!userId) {
+    redirect("/login?redirectTo=/admin/leads");
   }
 
-  const payload = verifySessionToken(sessionToken);
-  if (!payload || payload.role !== "admin") {
-    redirect("/admin/login");
+  const user = await currentUser();
+  const role = user?.publicMetadata?.role as string | undefined;
+
+  if (role !== "admin" && role !== "staff") {
+    redirect("/");
   }
 
-  return {
-    email: payload.email,
-    role: payload.role,
-  };
+  const email = user?.emailAddresses[0]?.emailAddress ?? "";
+
+  return { email, role: role as "admin" | "staff" };
 }

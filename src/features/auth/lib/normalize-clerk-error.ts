@@ -1,28 +1,26 @@
-interface ClerkErrorShape {
-  errors?: Array<{
-    longMessage?: string;
-    message?: string;
-  }>;
-}
+"use client";
 
-function isClerkErrorShape(error: unknown): error is ClerkErrorShape {
-  return typeof error === "object" && error !== null && "errors" in error;
-}
+type ClerkError = {
+  errors?: Array<{ message?: string; longMessage?: string }>;
+  message?: string;
+};
 
 export function normalizeClerkErrorMessage(
   error: unknown,
-  fallbackMessage: string,
+  fallback: string,
 ): string {
-  if (isClerkErrorShape(error)) {
-    const message = error.errors?.[0]?.longMessage ?? error.errors?.[0]?.message;
-    if (message) {
-      return message;
-    }
+  if (!error || typeof error !== "object") return fallback;
+
+  const clerkError = error as ClerkError;
+
+  if (Array.isArray(clerkError.errors) && clerkError.errors.length > 0) {
+    const first = clerkError.errors[0];
+    return first?.longMessage ?? first?.message ?? fallback;
   }
 
-  if (error instanceof Error && error.message.trim()) {
-    return error.message;
+  if (typeof clerkError.message === "string" && clerkError.message.length > 0) {
+    return clerkError.message;
   }
 
-  return fallbackMessage;
+  return fallback;
 }

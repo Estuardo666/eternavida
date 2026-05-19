@@ -747,7 +747,7 @@ export function PromotionAdminPanel({
                   onClick={() => applyPreset(preset)}
                   aria-pressed={isSelected}
                   className={cx(
-                    `${ADMIN_INSET_CARD_CLASS_NAME} relative text-left transition-[border-color,background-color,box-shadow,transform] duration-[200ms] ease-soft hover:-translate-y-0.5 hover:border-border-brand hover:bg-surface-brandTint`,
+                    `${ADMIN_INSET_CARD_CLASS_NAME} relative text-left transition-[border-color,background-color,box-shadow] duration-[200ms] ease-soft hover:border-border-brand hover:bg-surface-brandTint`,
                     isSelected && "border-[color:var(--color-border-brand)] bg-surface-brandTint shadow-[0_16px_34px_-26px_rgba(32,92,76,0.34)]",
                   )}
                 >

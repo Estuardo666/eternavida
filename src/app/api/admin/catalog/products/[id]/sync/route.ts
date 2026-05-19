@@ -30,7 +30,7 @@ export async function POST(
   const timestamp = new Date().toISOString();
 
   try {
-    const authResult = requireAdminAuth(request);
+    const authResult = await requireAdminAuth();
     if (!authResult.success) {
       return authResult.response;
     }

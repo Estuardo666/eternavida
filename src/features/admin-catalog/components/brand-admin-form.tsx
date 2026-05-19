@@ -4,10 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
-import {
-  ADMIN_COMPACT_FIELD_CLASS_NAME,
-  ADMIN_COMPACT_PROMINENT_FIELD_CLASS_NAME,
-} from "@/components/admin/form-styles";
+import { ADMIN_COMPACT_PROMINENT_FIELD_CLASS_NAME } from "@/components/admin/form-styles";
 import {
   ADMIN_BUTTON_DANGER_CLASS_NAME,
   ADMIN_BUTTON_PRIMARY_CLASS_NAME,
@@ -18,11 +15,13 @@ import {
 } from "@/components/admin/surface-styles";
 import { AdminBreadcrumbs } from "@/components/layout/admin-breadcrumbs";
 import { MediaAssetFrame } from "@/components/media/media-asset-frame";
+import { MediaPickerModal } from "@/components/media/media-picker-modal";
 import { cx } from "@/lib/utils";
 import { buildCatalogMediaStorageKey, slugifyCatalogName } from "@/lib/catalog-slugs";
 import { createBrandClient, deleteBrandClient, updateBrandClient } from "@/services/admin-catalog/client";
 import { uploadMediaAsset } from "@/services/admin-content/client";
 import type { AdminBrandFormData, AdminBrandItem, AdminCatalogEditorData } from "@/types/admin-catalog";
+import type { AdminMediaAssetSummary } from "@/types/admin-home-content";
 import type { MediaAsset } from "@/types/media";
 
 type SubmissionState = "idle" | "saving" | "success" | "error";
@@ -128,6 +127,7 @@ export function BrandAdminForm({ initialData, mode, brand }: BrandAdminFormProps
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [savedSnapshot, setSavedSnapshot] = useState(() => JSON.stringify(buildBrandForm(brand)));
   const [savedAt, setSavedAt] = useState<string | null>(brand?.updatedAt ?? null);
+  const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
   const selectedMedia = initialData.mediaAssets.find((asset) => asset.id === formData.mediaAssetId) ?? null;
   const previewAsset =
     buildLocalPreviewAsset({ file: imageFile, previewUrl: imagePreviewUrl, name: formData.name }) ??
@@ -189,6 +189,13 @@ export function BrandAdminForm({ initialData, mode, brand }: BrandAdminFormProps
     if (removePersistedAsset) {
       updateField("mediaAssetId", "");
     }
+  }
+
+  function handlePickerSelect(asset: AdminMediaAssetSummary) {
+    markAsDirty();
+    resetPendingImageSelection();
+    updateField("mediaAssetId", asset.id);
+    setMediaPickerOpen(false);
   }
 
   function handleImageChange(file: File | null) {
@@ -319,11 +326,23 @@ export function BrandAdminForm({ initialData, mode, brand }: BrandAdminFormProps
               <div className={`space-y-3 ${ADMIN_INSET_CARD_CLASS_NAME}`}>
                 <div className="space-y-2">
                   <span className="block text-label-md text-text-primary">Imagen de marca</span>
-                  <input key={fileInputKey} type="file" accept="image/*" onChange={(event) => handleImageChange(event.target.files?.[0] ?? null)} className={ADMIN_COMPACT_FIELD_CLASS_NAME} />
+                  <button
+                    type="button"
+                    onClick={() => setMediaPickerOpen(true)}
+                    className={ADMIN_BUTTON_SECONDARY_CLASS_NAME}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" className="mr-2 h-4 w-4" aria-hidden="true">
+                      <rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
+                      <rect x="13" y="3" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
+                      <rect x="3" y="13" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
+                      <rect x="13" y="13" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
+                    </svg>
+                    {formData.mediaAssetId ? "Cambiar imagen" : "Elegir imagen"}
+                  </button>
                 </div>
 
                 <p className="text-body-sm text-text-secondary">
-                  {imageFile ? `Pendiente de subida: ${imageFile.name}` : `Imagen actual: ${selectedMedia?.storageKey ?? "Sin media asset"}`}
+                  {imageFile ? `Pendiente de subida: ${imageFile.name}` : selectedMedia ? selectedMedia.storageKey.split("/").pop() : "Sin imagen seleccionada"}
                 </p>
 
                 {(imageFile || formData.mediaAssetId) ? (
@@ -331,6 +350,13 @@ export function BrandAdminForm({ initialData, mode, brand }: BrandAdminFormProps
                     Quitar imagen
                   </button>
                 ) : null}
+
+                <MediaPickerModal
+                  open={mediaPickerOpen}
+                  onClose={() => setMediaPickerOpen(false)}
+                  onSelect={handlePickerSelect}
+                  uploadStorageKeyPrefix="Media/Brands"
+                />
               </div>
 
               <div className="space-y-2">

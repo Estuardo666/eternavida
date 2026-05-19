@@ -25,7 +25,7 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ id:
   const timestamp = new Date().toISOString();
 
   try {
-    const authResult = requireAdminAuth(request);
+    const authResult = await requireAdminAuth();
     if (!authResult.success) {
       return authResult.response;
     }
@@ -81,7 +81,7 @@ export async function DELETE(request: NextRequest, context: { params: Promise<{ 
   const timestamp = new Date().toISOString();
 
   try {
-    const authResult = requireAdminAuth(request);
+    const authResult = await requireAdminAuth();
     if (!authResult.success) {
       return authResult.response;
     }

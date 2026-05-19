@@ -1,6 +1,6 @@
 import "server-only";
 
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 import { env } from "@/config/env";
 
@@ -118,4 +118,16 @@ export async function uploadObjectToCloudflareR2(input: {
   return {
     publicUrl: buildR2PublicUrl(input.storageKey),
   };
+}
+
+export async function deleteObjectFromCloudflareR2(storageKey: string): Promise<void> {
+  const client = getR2Client();
+  const bucketName = resolveBucketName();
+
+  await client.send(
+    new DeleteObjectCommand({
+      Bucket: bucketName,
+      Key: storageKey,
+    }),
+  );
 }

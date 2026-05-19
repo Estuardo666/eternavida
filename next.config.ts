@@ -12,7 +12,12 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "pub-cc734373dc1544418e5ba00681e8514f.r2.dev",
-        pathname: "/Dermatologika/**",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "img.clerk.com",
+        pathname: "/**",
       },
     ],
   },
