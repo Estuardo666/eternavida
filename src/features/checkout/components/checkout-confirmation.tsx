@@ -383,7 +383,7 @@ export function CheckoutConfirmation() {
                     }}
                     className="mt-5 space-y-3"
                   >
-                    <SignUp routing="hash" afterSignUpUrl="/mi-cuenta" />
+                    <SignUp routing="hash" forceRedirectUrl="/mi-cuenta" />
                     <button
                       type="button"
                       onClick={() => setShowSignUp(false)}
