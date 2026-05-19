@@ -14,8 +14,16 @@ import {
   RotateCcw,
   ShoppingBag,
   Store,
+  UserCheck,
+  Eye,
+  EyeOff,
+  LoaderCircle,
+  ArrowLeft,
 } from "lucide-react";
+import { useUser, useSignIn, useSignUp, SignOutButton } from "@clerk/nextjs";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+
+import { normalizeClerkErrorMessage } from "@/features/auth/lib/normalize-clerk-error";
 
 import { resolveCheckoutShippingBaseCost, type CheckoutShippingMethod } from "@/config/checkout";
 import { motionTokens } from "@/motion/tokens";
@@ -191,6 +199,383 @@ function BreadcrumbStep({
   );
 }
 
+// ─── Shared inline field style ────────────────────────────────────────────────
+
+const inlineInput =
+  "h-10 w-full rounded-lg border border-border-soft bg-white px-3.5 text-body-sm text-text-primary placeholder:text-text-muted transition hover:border-brand-primary/40 focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 disabled:bg-surface-subtle disabled:text-text-muted";
+
+// ─── Inline sign-in ───────────────────────────────────────────────────────────
+
+function CheckoutInlineSignIn({ onBack }: { onBack: () => void }) {
+  const { signIn, fetchStatus } = useSignIn();
+  const isAuthReady = fetchStatus === "idle" && signIn !== null;
+  const [step, setStep] = useState<"email" | "password">("email");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPass, setShowPass] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleEmail(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError("Ingresa un correo electrónico válido.");
+      return;
+    }
+    setError(null);
+    setStep("password");
+  }
+
+  async function handleSignIn(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!password || !isAuthReady || !signIn) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const result = await signIn.password({ identifier: email.trim(), password });
+      if (result.error) throw result.error;
+      if (signIn.status !== "complete") throw new Error("Requiere pasos adicionales.");
+      await signIn.finalize();
+      // useUser will update; gate transitions automatically
+    } catch (err) {
+      setError(normalizeClerkErrorMessage(err, "No se pudo iniciar sesión. Verifica tus datos."));
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="space-y-3 px-4 pb-4 pt-1">
+      {step === "email" ? (
+        <form onSubmit={handleEmail} className="space-y-2.5" noValidate>
+          <input
+            type="email"
+            autoComplete="email"
+            placeholder="Correo electrónico"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={inlineInput}
+            autoFocus
+          />
+          {error && <p className="text-caption text-status-error">{error}</p>}
+          <button
+            type="submit"
+            className="h-10 w-full rounded-lg bg-brand-primary text-body-sm font-medium text-white transition hover:bg-brand-primaryHover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+          >
+            Continuar
+          </button>
+        </form>
+      ) : (
+        <form onSubmit={handleSignIn} className="space-y-2.5" noValidate>
+          <button
+            type="button"
+            onClick={() => { setStep("email"); setError(null); }}
+            className="flex items-center gap-1 text-caption text-text-muted hover:text-text-secondary"
+          >
+            <ArrowLeft className="h-3 w-3" /> {email}
+          </button>
+          <div className="relative">
+            <input
+              type={showPass ? "text" : "password"}
+              autoComplete="current-password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={inlineInput}
+              autoFocus
+            />
+            <button
+              type="button"
+              onClick={() => setShowPass((v) => !v)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary"
+              tabIndex={-1}
+            >
+              {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+          {error && <p className="text-caption text-status-error">{error}</p>}
+          <button
+            type="submit"
+            disabled={busy || !password}
+            className="flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand-primary text-body-sm font-medium text-white transition hover:bg-brand-primaryHover disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+          >
+            {busy ? <LoaderCircle className="h-4 w-4 animate-spin" /> : "Iniciar sesión"}
+          </button>
+        </form>
+      )}
+      <button
+        type="button"
+        onClick={onBack}
+        className="w-full text-center text-caption text-text-muted hover:text-text-secondary"
+      >
+        Volver
+      </button>
+    </div>
+  );
+}
+
+// ─── Inline sign-up ───────────────────────────────────────────────────────────
+
+function CheckoutInlineSignUp({ onBack }: { onBack: () => void }) {
+  const { signUp, fetchStatus } = useSignUp();
+  const isAuthReady = fetchStatus === "idle" && signUp !== null;
+  const [step, setStep] = useState<"details" | "verify">("details");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
+  const [showPass, setShowPass] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleCreate(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!firstName.trim() || !lastName.trim() || !email.trim() || password.length < 8) {
+      setError("Completa todos los campos. La contraseña debe tener al menos 8 caracteres.");
+      return;
+    }
+    if (!isAuthReady || !signUp) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const attempt = await signUp.password({ firstName: firstName.trim(), lastName: lastName.trim(), emailAddress: email.trim(), password });
+      if (attempt.error) throw attempt.error;
+      if (signUp.status === "complete") {
+        const fin = await signUp.finalize();
+        if (fin.error) throw fin.error;
+        return;
+      }
+      const sendResult = await signUp.verifications.sendEmailCode();
+      if (sendResult.error) throw sendResult.error;
+      setStep("verify");
+    } catch (err) {
+      setError(normalizeClerkErrorMessage(err, "No se pudo crear la cuenta."));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleVerify(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!isAuthReady || !signUp || !code.trim()) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const verifyResult = await signUp.verifications.verifyEmailCode({ code: code.trim() });
+      if (verifyResult.error) throw verifyResult.error;
+      if (signUp.status !== "complete") throw new Error("Verificación incompleta.");
+      const fin = await signUp.finalize();
+      if (fin.error) throw fin.error;
+      // useUser will update; gate transitions automatically
+    } catch (err) {
+      setError(normalizeClerkErrorMessage(err, "Código incorrecto. Intenta de nuevo."));
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="space-y-3 px-4 pb-4 pt-1">
+      {step === "details" ? (
+        <form onSubmit={handleCreate} className="space-y-2.5" noValidate>
+          <div className="grid grid-cols-2 gap-2">
+            <input placeholder="Nombre" value={firstName} onChange={(e) => setFirstName(e.target.value)} className={inlineInput} autoFocus />
+            <input placeholder="Apellido" value={lastName} onChange={(e) => setLastName(e.target.value)} className={inlineInput} />
+          </div>
+          <input type="email" autoComplete="email" placeholder="Correo electrónico" value={email} onChange={(e) => setEmail(e.target.value)} className={inlineInput} />
+          <div className="relative">
+            <input
+              type={showPass ? "text" : "password"}
+              autoComplete="new-password"
+              placeholder="Contraseña (mín. 8 caracteres)"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={inlineInput}
+            />
+            <button type="button" onClick={() => setShowPass((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary" tabIndex={-1}>
+              {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+          {error && <p className="text-caption text-status-error">{error}</p>}
+          <div id="clerk-captcha" />
+          <button
+            type="submit"
+            disabled={busy}
+            className="flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand-primary text-body-sm font-medium text-white transition hover:bg-brand-primaryHover disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+          >
+            {busy ? <LoaderCircle className="h-4 w-4 animate-spin" /> : "Crear cuenta"}
+          </button>
+        </form>
+      ) : (
+        <form onSubmit={handleVerify} className="space-y-2.5" noValidate>
+          <p className="text-body-sm text-text-secondary">
+            Ingresa el código que enviamos a <span className="font-medium text-text-primary">{email}</span>.
+          </p>
+          <input
+            type="text"
+            inputMode="numeric"
+            placeholder="Código de verificación"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            className={inlineInput}
+            autoFocus
+          />
+          {error && <p className="text-caption text-status-error">{error}</p>}
+          <button
+            type="submit"
+            disabled={busy || !code.trim()}
+            className="flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand-primary text-body-sm font-medium text-white transition hover:bg-brand-primaryHover disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+          >
+            {busy ? <LoaderCircle className="h-4 w-4 animate-spin" /> : "Verificar y continuar"}
+          </button>
+        </form>
+      )}
+      <button type="button" onClick={onBack} className="w-full text-center text-caption text-text-muted hover:text-text-secondary">
+        Volver
+      </button>
+    </div>
+  );
+}
+
+// ─── CheckoutIdentityGate ─────────────────────────────────────────────────────
+
+type GatePanel = "idle" | "sign-in" | "sign-up" | "guest";
+
+interface UserReadyData { email: string; firstName?: string | undefined; lastName?: string | undefined }
+
+function CheckoutIdentityGate({ onUserReady }: { onUserReady: (data: UserReadyData) => void }) {
+  const { isLoaded, isSignedIn, user } = useUser();
+  const [panel, setPanel] = useState<GatePanel>("idle");
+
+  useEffect(() => {
+    if (isSignedIn && user?.primaryEmailAddress?.emailAddress) {
+      onUserReady({
+        email: user.primaryEmailAddress.emailAddress,
+        firstName: user.firstName ?? undefined,
+        lastName: user.lastName ?? undefined,
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSignedIn, user]);
+
+  if (!isLoaded) return null;
+
+  // ── Signed in ─────────────────────────────────────────────────────────────
+  if (isSignedIn) {
+    return (
+      <div className="mb-6 flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
+        <UserCheck className="h-4 w-4 shrink-0 text-emerald-600" aria-hidden="true" />
+        <p className="text-body-sm text-emerald-800">
+          Sesión iniciada como{" "}
+          <span className="font-medium">{user?.primaryEmailAddress?.emailAddress}</span>
+        </p>
+        <SignOutButton>
+          <button
+            type="button"
+            className="ml-auto shrink-0 text-caption text-emerald-700 underline-offset-2 hover:underline focus-visible:outline-none"
+          >
+            ¿No eres tú?
+          </button>
+        </SignOutButton>
+      </div>
+    );
+  }
+
+  // ── Guest confirmed ────────────────────────────────────────────────────────
+  if (panel === "guest") {
+    return (
+      <div className="mb-6 flex items-center gap-3 rounded-xl border border-border-soft bg-surface-subtle px-4 py-3">
+        <UserCheck className="h-4 w-4 shrink-0 text-text-muted" aria-hidden="true" />
+        <p className="text-body-md text-text-secondary">
+          Comprando como <span className="font-medium text-text-primary">invitado</span>
+        </p>
+        <button
+          type="button"
+          onClick={() => setPanel("idle")}
+          className="ml-auto text-caption text-text-muted underline-offset-2 hover:text-text-secondary hover:underline"
+        >
+          Cambiar
+        </button>
+      </div>
+    );
+  }
+
+  // ── Unauthenticated ────────────────────────────────────────────────────────
+  return (
+    <div className="mb-6 overflow-hidden rounded-xl border border-border-soft bg-surface-subtle">
+      {/* Header — always visible */}
+      <div className="flex items-center justify-between gap-4 px-4 py-3.5">
+        <div>
+          <p className="text-body-md font-semibold text-text-primary">¿Tienes una cuenta?</p>
+          <p className="mt-0.5 text-body-sm text-text-secondary">
+            Inicia sesión para agilizar tu compra y ver tu historial.
+          </p>
+        </div>
+      </div>
+
+      {/* Animated bottom section */}
+      <AnimatePresence mode="wait" initial={false}>
+        {panel === "idle" && (
+          <motion.div
+            key="idle"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto", transition: { duration: 0.35, ease: [0.22, 0.61, 0.36, 1] } }}
+            exit={{ opacity: 0, transition: { duration: 0.15, ease: [0.55, 0, 1, 0.45] } }}
+            className="overflow-hidden border-t border-border-soft/60"
+          >
+            <div className="flex items-center gap-2 px-4 py-3">
+              <button
+                type="button"
+                onClick={() => setPanel("sign-in")}
+                className="inline-flex h-9 items-center rounded-lg border border-border bg-white px-4 text-body-sm font-medium text-text-primary transition hover:border-border-brand hover:bg-brand-soft/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+              >
+                Iniciar sesión
+              </button>
+              <button
+                type="button"
+                onClick={() => setPanel("sign-up")}
+                className="inline-flex h-9 items-center rounded-lg border border-border bg-white px-4 text-body-sm font-medium text-text-primary transition hover:border-border-brand hover:bg-brand-soft/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+              >
+                Crear cuenta
+              </button>
+              <button
+                type="button"
+                onClick={() => setPanel("guest")}
+                className="ml-auto text-body-sm text-text-muted transition hover:text-text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+              >
+                Continuar como invitado
+              </button>
+            </div>
+          </motion.div>
+        )}
+
+        {(panel === "sign-in" || panel === "sign-up") && (
+          <motion.div
+            key={panel}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto", transition: { duration: 0.38, ease: [0.22, 0.61, 0.36, 1] } }}
+            exit={{ opacity: 0, transition: { duration: 0.15, ease: [0.55, 0, 1, 0.45] } }}
+            className="overflow-hidden border-t border-border-soft/60"
+          >
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.22, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <p className="px-4 pt-3 text-body-sm font-medium text-text-primary">
+                {panel === "sign-in" ? "Iniciar sesión" : "Crear cuenta"}
+              </p>
+              {panel === "sign-in"
+                ? <CheckoutInlineSignIn onBack={() => setPanel("idle")} />
+                : <CheckoutInlineSignUp onBack={() => setPanel("idle")} />
+              }
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 // ─── CheckoutPageClient ───────────────────────────────────────────────────────
 
 export function CheckoutPageClient() {
@@ -209,6 +594,7 @@ export function CheckoutPageClient() {
   const [city, setCity] = useState("");
   const [province, setProvince] = useState("");
   const [phone, setPhone] = useState("");
+  const [idNumber, setIdNumber] = useState("");
   const {
     preview: pricingPreview,
     isLoading: isPricingLoading,
@@ -444,6 +830,13 @@ export function CheckoutPageClient() {
             </ol>
           </nav>
 
+          {/* ── Identity gate ────────────────────────────────────────────── */}
+          <CheckoutIdentityGate onUserReady={({ email, firstName: fn, lastName: ln }) => {
+            setEmail(email);
+            if (fn) setFirstName(fn);
+            if (ln) setLastName(ln);
+          }} />
+
           {/* ── Contacto ─────────────────────────────────────────────────── */}
           <FormSection title="Contacto">
             <Field
@@ -545,17 +938,28 @@ export function CheckoutPageClient() {
 
 
 
-            {/* Phone */}
-            <Field
-              label="Teléfono"
-              id="checkout-phone"
-              type="tel"
-              value={phone}
-              onChange={setPhone}
-              placeholder="+593 99 000 0000"
-              autoComplete="tel"
-              optional
-            />
+            {/* Phone + ID */}
+            <div className="grid grid-cols-2 gap-3">
+              <Field
+                label="Teléfono"
+                id="checkout-phone"
+                type="tel"
+                value={phone}
+                onChange={setPhone}
+                placeholder="+593 99 000 0000"
+                autoComplete="tel"
+                optional
+              />
+              <Field
+                label="Cédula o RUC"
+                id="checkout-id-number"
+                value={idNumber}
+                onChange={setIdNumber}
+                placeholder="0000000000"
+                autoComplete="off"
+                optional
+              />
+            </div>
           </FormSection>
 
           {/* ── Método de envío ──────────────────────────────────────────── */}
