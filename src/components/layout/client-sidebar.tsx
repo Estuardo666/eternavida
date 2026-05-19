@@ -8,7 +8,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-import { ADMIN_PANEL_SURFACE_CLASS_NAME } from "@/components/admin/surface-styles";
 import { cx } from "@/lib/utils";
 import { motionTokens } from "@/motion/tokens";
 
@@ -233,7 +232,7 @@ export function ClientSidebar({ userEmail, userName, userImageUrl }: ClientSideb
       {showDeleteDialog ? <DeleteConfirmDialog onClose={() => setShowDeleteDialog(false)} /> : null}
 
       <aside className="w-full shrink-0 lg:hidden">
-        <div className={`flex items-center justify-between gap-3 px-3 py-2.5 sm:px-4 sm:py-3 ${ADMIN_PANEL_SURFACE_CLASS_NAME}`}>
+        <div className="flex items-center justify-between gap-3 rounded-xl border border-border-soft bg-white/90 px-3 py-2.5 shadow-sm sm:px-4 sm:py-3">
           <div className="min-w-0">
             <p className="truncate text-label-md text-text-primary">{activeItem?.label ?? "Mi cuenta"}</p>
           </div>

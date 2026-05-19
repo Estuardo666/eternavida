@@ -2,17 +2,8 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 
-import {
-  ADMIN_COMPACT_FIELD_CLASS_NAME,
-  ADMIN_COMPACT_READONLY_FIELD_CLASS_NAME,
-} from "@/components/admin/form-styles";
-import {
-  ADMIN_BUTTON_PRIMARY_CLASS_NAME,
-  ADMIN_BUTTON_SECONDARY_CLASS_NAME,
-  ADMIN_HERO_SURFACE_CLASS_NAME,
-  ADMIN_PANEL_SURFACE_CLASS_NAME,
-} from "@/components/admin/surface-styles";
-import { AdminBreadcrumbs } from "@/components/layout/admin-breadcrumbs";
+import { motion } from "framer-motion";
+
 import { cx } from "@/lib/utils";
 
 const PREFS_COOKIE = "derma-privacy-prefs";
@@ -40,6 +31,15 @@ function writePrivacyPrefs(prefs: PrivacyPrefs) {
 }
 
 type SaveState = "idle" | "saving" | "success" | "error";
+
+const FIELD_CLASS =
+  "h-10 w-full rounded-lg border border-border-soft bg-white px-3.5 text-body-sm text-text-primary placeholder:text-text-muted transition hover:border-brand-primary/40 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 focus:outline-none disabled:bg-surface-subtle disabled:text-text-muted";
+
+const BTN_PRIMARY =
+  "inline-flex items-center justify-center gap-2 rounded-xl bg-brand-primary px-5 py-3 text-label-md font-semibold text-white transition-colors hover:bg-brand-primaryHover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 disabled:opacity-50";
+
+const BTN_SECONDARY =
+  "inline-flex items-center justify-center gap-2 rounded-xl border border-border-soft bg-surface-subtle px-5 py-3 text-label-md font-medium text-text-primary transition-colors hover:bg-surface-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 disabled:opacity-50";
 
 export default function CuentaPrivacidadPage() {
   const [prefs, setPrefs] = useState<PrivacyPrefs>({ analytics: true, marketing: true });
@@ -95,21 +95,23 @@ export default function CuentaPrivacidadPage() {
 
   return (
     <div className="space-y-6">
-      <section className={ADMIN_HERO_SURFACE_CLASS_NAME}>
-        <div className="space-y-2">
-          <AdminBreadcrumbs
-            items={[
-              { label: "Mi cuenta", href: "/cuenta/perfil" },
-              { label: "Privacidad" },
-            ]}
-          />
-          <p className="text-caption uppercase tracking-[0.14em] text-text-muted">Cuenta</p>
-          <h1 className="text-section-lg text-text-primary sm:text-headline-sm">Privacidad</h1>
-        </div>
-      </section>
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.48, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className="space-y-1"
+      >
+        <p className="text-caption uppercase tracking-[0.14em] text-text-muted">Cuenta</p>
+        <h1 className="text-headline-sm text-text-primary">Privacidad</h1>
+      </motion.div>
 
       {/* Cookie preferences */}
-      <section className={ADMIN_PANEL_SURFACE_CLASS_NAME}>
+      <motion.section
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.48, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.12 }}
+        className="rounded-xl border border-border-soft bg-surface-subtle p-5 sm:p-6"
+      >
         <div className="space-y-1">
           <h2 className="text-section-lg text-text-primary">Cookies y seguimiento</h2>
           <p className="text-body-sm text-text-secondary">
@@ -148,7 +150,7 @@ export default function CuentaPrivacidadPage() {
           <button
             type="button"
             onClick={handleSavePrefs}
-            className={ADMIN_BUTTON_PRIMARY_CLASS_NAME}
+            className={BTN_PRIMARY}
           >
             Guardar preferencias
           </button>
@@ -156,10 +158,15 @@ export default function CuentaPrivacidadPage() {
             <span className="text-body-sm text-emerald-700">Preferencias guardadas.</span>
           ) : null}
         </div>
-      </section>
+      </motion.section>
 
       {/* Password */}
-      <section className={ADMIN_PANEL_SURFACE_CLASS_NAME}>
+      <motion.section
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.48, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.22 }}
+        className="rounded-xl border border-border-soft bg-surface-subtle p-5 sm:p-6"
+      >
         <div className="space-y-1">
           <h2 className="text-section-lg text-text-primary">Cambiar contraseña</h2>
           <p className="text-body-sm text-text-secondary">
@@ -176,7 +183,7 @@ export default function CuentaPrivacidadPage() {
                   type={showNewPassword ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => { setNewPassword(e.target.value); setPasswordSaveState("idle"); }}
-                  className={cx(ADMIN_COMPACT_FIELD_CLASS_NAME, "pr-10")}
+                  className={cx(FIELD_CLASS, "pr-10")}
                   placeholder="Mínimo 8 caracteres"
                   autoComplete="new-password"
                 />
@@ -200,7 +207,7 @@ export default function CuentaPrivacidadPage() {
                   value={confirmPassword}
                   onChange={(e) => { setConfirmPassword(e.target.value); setPasswordSaveState("idle"); }}
                   className={cx(
-                    ADMIN_COMPACT_FIELD_CLASS_NAME,
+                    FIELD_CLASS,
                     "pr-10",
                     confirmPassword && newPassword !== confirmPassword ? "border-status-error" : "",
                   )}
@@ -232,13 +239,13 @@ export default function CuentaPrivacidadPage() {
             <button
               type="submit"
               disabled={passwordSaveState === "saving" || !newPassword}
-              className={ADMIN_BUTTON_SECONDARY_CLASS_NAME}
+              className={BTN_SECONDARY}
             >
               {passwordSaveState === "saving" ? "Actualizando..." : "Cambiar contraseña"}
             </button>
           </div>
         </form>
-      </section>
+      </motion.section>
     </div>
   );
 }
@@ -254,7 +261,7 @@ interface ToggleRowProps {
 
 function ToggleRow({ id, label, description, checked, disabled, onChange }: ToggleRowProps) {
   return (
-    <div className="flex items-start justify-between gap-4 rounded-2xl border border-border-soft bg-surface-subtle px-4 py-3.5">
+    <div className="flex items-start justify-between gap-4 rounded-xl border border-border-soft/80 bg-white/70 px-4 py-3.5">
       <div className="space-y-0.5">
         <p className="text-label-md text-text-primary">{label}</p>
         <p className="text-body-sm text-text-secondary">{description}</p>
@@ -267,8 +274,8 @@ function ToggleRow({ id, label, description, checked, disabled, onChange }: Togg
         onClick={onChange}
         disabled={disabled}
         className={cx(
-          "relative mt-0.5 h-6 w-11 shrink-0 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
-          checked ? "bg-brand" : "bg-border-soft",
+          "relative mt-0.5 h-6 w-11 shrink-0 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2",
+          checked ? "bg-brand-primary" : "bg-border-soft",
           disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer",
         )}
       >

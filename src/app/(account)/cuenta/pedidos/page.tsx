@@ -1,27 +1,27 @@
-import {
-  ADMIN_HERO_SURFACE_CLASS_NAME,
-  ADMIN_PANEL_SURFACE_CLASS_NAME,
-} from "@/components/admin/surface-styles";
-import { AdminBreadcrumbs } from "@/components/layout/admin-breadcrumbs";
+"use client";
+
+import { motion } from "framer-motion";
 
 export default function CuentaPedidosPage() {
   return (
     <div className="space-y-6">
-      <section className={ADMIN_HERO_SURFACE_CLASS_NAME}>
-        <div className="space-y-2">
-          <AdminBreadcrumbs
-            items={[
-              { label: "Mi cuenta", href: "/cuenta/perfil" },
-              { label: "Mis pedidos" },
-            ]}
-          />
-          <p className="text-caption uppercase tracking-[0.14em] text-text-muted">Cuenta</p>
-          <h1 className="text-section-lg text-text-primary sm:text-headline-sm">Mis pedidos</h1>
-        </div>
-      </section>
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.48, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className="space-y-1"
+      >
+        <p className="text-caption uppercase tracking-[0.14em] text-text-muted">Cuenta</p>
+        <h1 className="text-headline-sm text-text-primary">Mis pedidos</h1>
+      </motion.div>
 
-      <section className={ADMIN_PANEL_SURFACE_CLASS_NAME}>
-        <div className="flex flex-col items-center justify-center gap-5 py-16 text-center">
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.48, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.12 }}
+        className="rounded-xl border border-border-soft bg-surface-subtle p-5 sm:p-8"
+      >
+        <div className="flex flex-col items-center justify-center gap-5 py-14 text-center">
           <ShoppingBagEmptyIcon />
           <div className="space-y-1.5">
             <h2 className="text-section-lg text-text-primary">Aún no tienes pedidos</h2>
@@ -31,12 +31,12 @@ export default function CuentaPedidosPage() {
           </div>
           <a
             href="/"
-            className="inline-flex items-center gap-2 rounded-pill bg-brand px-5 py-2.5 text-label-md text-white transition hover:bg-brand-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+            className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-5 py-3 text-label-md font-semibold text-white transition-colors hover:bg-brand-primaryHover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
           >
             Explorar productos
           </a>
         </div>
-      </section>
+      </motion.div>
     </div>
   );
 }

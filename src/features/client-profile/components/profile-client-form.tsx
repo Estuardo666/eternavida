@@ -4,19 +4,25 @@ import Image from "next/image";
 import { useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
-import {
-  ADMIN_COMPACT_FIELD_CLASS_NAME,
-  ADMIN_COMPACT_READONLY_FIELD_CLASS_NAME,
-} from "@/components/admin/form-styles";
-import {
-  ADMIN_BUTTON_PRIMARY_CLASS_NAME,
-  ADMIN_BUTTON_SECONDARY_CLASS_NAME,
-  ADMIN_HERO_SURFACE_CLASS_NAME,
-  ADMIN_INSET_CARD_CLASS_NAME,
-  ADMIN_PANEL_SURFACE_CLASS_NAME,
-} from "@/components/admin/surface-styles";
-import { AdminBreadcrumbs } from "@/components/layout/admin-breadcrumbs";
+import { motion } from "framer-motion";
+
 import { cx } from "@/lib/utils";
+
+const FIELD_CLASS =
+  "h-10 w-full rounded-lg border border-border-soft bg-white px-3.5 text-body-sm text-text-primary placeholder:text-text-muted transition hover:border-brand-primary/40 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 focus:outline-none disabled:bg-surface-subtle disabled:text-text-muted";
+
+const FIELD_READONLY_CLASS =
+  "h-10 w-full rounded-lg border border-border-soft bg-surface-subtle px-3.5 text-body-sm text-text-muted cursor-default select-none";
+
+const BTN_PRIMARY =
+  "inline-flex items-center justify-center gap-2 rounded-xl bg-brand-primary px-5 py-3 text-label-md font-semibold text-white transition-colors hover:bg-brand-primaryHover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 disabled:opacity-50";
+
+const BTN_SECONDARY =
+  "inline-flex items-center justify-center gap-2 rounded-xl border border-border-soft bg-surface-subtle px-5 py-3 text-label-md font-medium text-text-primary transition-colors hover:bg-surface-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 disabled:opacity-50";
+
+const CARD_CLASS = "rounded-xl border border-border-soft bg-surface-subtle p-5 sm:p-6";
+
+const EASE = [0.25, 0.46, 0.45, 0.94] as const;
 
 export interface ClientProfileData {
   id: string;
@@ -150,23 +156,26 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
 
   return (
     <div className="space-y-6">
-      <section className={ADMIN_HERO_SURFACE_CLASS_NAME}>
-        <div className="space-y-2">
-          <AdminBreadcrumbs
-            items={[
-              { label: "Mi cuenta", href: "/cuenta/perfil" },
-              { label: "Mi perfil" },
-            ]}
-          />
-          <p className="text-caption uppercase tracking-[0.14em] text-text-muted">Cuenta</p>
-          <h1 className="text-section-lg text-text-primary sm:text-headline-sm">Mi perfil</h1>
-        </div>
-      </section>
+      {/* Heading */}
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.48, ease: EASE }}
+        className="space-y-1"
+      >
+        <p className="text-caption uppercase tracking-[0.14em] text-text-muted">Cuenta</p>
+        <h1 className="text-headline-sm text-text-primary">Mi perfil</h1>
+      </motion.div>
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
         <div className="space-y-6">
           {/* Avatar */}
-          <section className={ADMIN_PANEL_SURFACE_CLASS_NAME}>
+          <motion.section
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.48, ease: EASE, delay: 0.1 }}
+            className={CARD_CLASS}
+          >
             <h2 className="text-section-lg text-text-primary">Foto de perfil</h2>
 
             <div className="mt-5 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
@@ -193,7 +202,7 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
               </div>
 
               <div className="space-y-3">
-                <div className={ADMIN_INSET_CARD_CLASS_NAME}>
+                <div className="rounded-lg border border-border-soft/60 bg-white/70 px-3.5 py-2.5">
                   <p className="text-body-sm text-text-secondary">
                     {avatarFile ? `Listo para subir: ${avatarFile.name}` : "Formatos: JPG, PNG, WebP. Máximo 4 MB."}
                   </p>
@@ -203,9 +212,9 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
                   <button
                     type="button"
                     onClick={() => avatarInputRef.current?.click()}
-                    className={ADMIN_BUTTON_SECONDARY_CLASS_NAME}
+                    className={BTN_SECONDARY}
                   >
-                    <UploadIcon className="mr-2 h-4 w-4" />
+                    <UploadIcon className="h-4 w-4" />
                     {avatarFile ? "Cambiar imagen" : "Subir foto"}
                   </button>
 
@@ -214,7 +223,7 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
                       type="button"
                       onClick={handleAvatarUpload}
                       disabled={avatarSaveState === "saving"}
-                      className={ADMIN_BUTTON_PRIMARY_CLASS_NAME}
+                      className={BTN_PRIMARY}
                     >
                       {avatarSaveState === "saving" ? "Subiendo..." : "Guardar foto"}
                     </button>
@@ -235,10 +244,15 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
                 />
               </div>
             </div>
-          </section>
+          </motion.section>
 
-          {/* Info */}
-          <section className={ADMIN_PANEL_SURFACE_CLASS_NAME}>
+          {/* Personal info */}
+          <motion.section
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.48, ease: EASE, delay: 0.18 }}
+            className={CARD_CLASS}
+          >
             <h2 className="text-section-lg text-text-primary">Información personal</h2>
 
             <form id="profile-info-form" onSubmit={handleInfoSubmit} className="mt-5 space-y-4">
@@ -248,7 +262,7 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
                   <input
                     value={firstName}
                     onChange={(e) => { setFirstName(e.target.value); setInfoSaveState("idle"); }}
-                    className={ADMIN_COMPACT_FIELD_CLASS_NAME}
+                    className={FIELD_CLASS}
                     placeholder="Nombre"
                   />
                 </label>
@@ -258,7 +272,7 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
                   <input
                     value={lastName}
                     onChange={(e) => { setLastName(e.target.value); setInfoSaveState("idle"); }}
-                    className={ADMIN_COMPACT_FIELD_CLASS_NAME}
+                    className={FIELD_CLASS}
                     placeholder="Apellido"
                   />
                 </label>
@@ -269,14 +283,14 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
                 <input
                   value={username}
                   onChange={(e) => { setUsername(e.target.value); setInfoSaveState("idle"); }}
-                  className={ADMIN_COMPACT_FIELD_CLASS_NAME}
+                  className={FIELD_CLASS}
                   placeholder="nombre_usuario"
                 />
               </label>
 
               <label className="block space-y-1.5">
                 <span className="block text-label-md text-text-primary">Correo electrónico</span>
-                <input value={profile.email} readOnly className={ADMIN_COMPACT_READONLY_FIELD_CLASS_NAME} />
+                <input value={profile.email} readOnly className={FIELD_READONLY_CLASS} />
                 <p className="text-caption text-text-muted">
                   Para cambiar el correo, contacta a atención al cliente.
                 </p>
@@ -287,10 +301,15 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
                 <p className="text-body-sm text-emerald-700">Datos actualizados correctamente.</p>
               ) : null}
             </form>
-          </section>
+          </motion.section>
 
           {/* Password */}
-          <section className={ADMIN_PANEL_SURFACE_CLASS_NAME}>
+          <motion.section
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.48, ease: EASE, delay: 0.26 }}
+            className={CARD_CLASS}
+          >
             <h2 className="text-section-lg text-text-primary">Cambiar contraseña</h2>
 
             <form id="profile-password-form" onSubmit={handlePasswordSubmit} className="mt-5 space-y-4">
@@ -302,7 +321,7 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
                       type={showNewPassword ? "text" : "password"}
                       value={newPassword}
                       onChange={(e) => { setNewPassword(e.target.value); setPasswordSaveState("idle"); }}
-                      className={cx(ADMIN_COMPACT_FIELD_CLASS_NAME, "pr-10")}
+                      className={cx(FIELD_CLASS, "pr-10")}
                       placeholder="Mínimo 8 caracteres"
                       autoComplete="new-password"
                     />
@@ -326,7 +345,7 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
                       value={confirmPassword}
                       onChange={(e) => { setConfirmPassword(e.target.value); setPasswordSaveState("idle"); }}
                       className={cx(
-                        ADMIN_COMPACT_FIELD_CLASS_NAME,
+                        FIELD_CLASS,
                         "pr-10",
                         confirmPassword && newPassword !== confirmPassword ? "border-status-error" : "",
                       )}
@@ -354,12 +373,17 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
                 <p className="text-body-sm text-emerald-700">Contraseña actualizada correctamente.</p>
               ) : null}
             </form>
-          </section>
+          </motion.section>
         </div>
 
         {/* Sidebar summary */}
-        <aside className="space-y-4 xl:sticky xl:top-6 xl:self-start">
-          <section className={ADMIN_PANEL_SURFACE_CLASS_NAME}>
+        <motion.aside
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.48, ease: EASE, delay: 0.32 }}
+          className="space-y-4 xl:sticky xl:top-6 xl:self-start"
+        >
+          <section className={CARD_CLASS}>
             <h2 className="text-section-lg text-text-primary">Resumen</h2>
 
             <div className="mt-4 space-y-3 text-body-sm">
@@ -384,7 +408,7 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
                 type="submit"
                 form="profile-info-form"
                 disabled={infoSaveState === "saving" || !infoDirty}
-                className={cx("w-full", ADMIN_BUTTON_PRIMARY_CLASS_NAME)}
+                className={cx("w-full", BTN_PRIMARY)}
               >
                 {infoSaveState === "saving" ? "Guardando..." : "Guardar información"}
               </button>
@@ -393,13 +417,13 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
                 type="submit"
                 form="profile-password-form"
                 disabled={passwordSaveState === "saving" || !newPassword}
-                className={cx("w-full", ADMIN_BUTTON_SECONDARY_CLASS_NAME)}
+                className={cx("w-full", BTN_SECONDARY)}
               >
                 {passwordSaveState === "saving" ? "Actualizando..." : "Cambiar contraseña"}
               </button>
             </div>
           </section>
-        </aside>
+        </motion.aside>
       </div>
     </div>
   );
