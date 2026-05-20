@@ -11,5 +11,6 @@ export async function getActivePaymentMethods(): Promise<PublicPaymentMethod[]> 
     type: m.type,
     description: m.description,
     instructions: m.instructions,
+    initialOrderStatus: m.initialOrderStatus,
   }));
 }

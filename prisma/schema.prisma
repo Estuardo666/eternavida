@@ -326,6 +326,216 @@ model HomePageContent {
   @@index([createdAt])
 }
 
+enum OrderStatus {
+  pending
+  confirmed
+  processing
+  shipped
+  delivered
+  cancelled
+  refunded
+}
+
+enum PaymentStatus {
+  pending
+  paid
+  failed
+  refunded
+  partially_refunded
+}
+
+enum OrderSource {
+  web
+  api
+  manual
+}
+
+enum OrderNoteVisibility {
+  internal
+  customer
+}
+
+enum WebhookEventStatus {
+  pending
+  delivered
+  failed
+  retrying
+}
+
+enum EmailStatus {
+  queued
+  sent
+  delivered
+  bounced
+  failed
+  skipped
+}
+
+model Order {
+  id                String      @id @default(cuid())
+  orderNumber       String      @unique
+  clerkUserId       String?
+  guestEmail        String?
+  guestPhone        String?
+  status            OrderStatus @default(pending)
+  paymentStatus     PaymentStatus @default(pending)
+  trackingNumber    String?
+  trackingUrl       String?
+  source            OrderSource @default(web)
+  externalOrderId   String?     @unique
+  syncedAt          DateTime?
+  firstName         String
+  lastName          String
+  address           String
+  apartment         String?
+  province          String
+  city              String
+  phone             String
+  idNumber          String?
+  shippingMethodId  String?
+  shippingMethodName String
+  paymentMethodId   String?
+  paymentMethodName String
+  couponCode        String?
+  subtotal          Decimal     @db.Decimal(10, 2)
+  shippingCost      Decimal     @db.Decimal(10, 2)
+  discountAmount    Decimal     @default(0) @db.Decimal(10, 2)
+  taxAmount         Decimal     @default(0) @db.Decimal(10, 2)
+  total             Decimal     @db.Decimal(10, 2)
+  checkoutNotes     String?     @map("notes")
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  items             OrderItem[]
+  notes             OrderNote[]
+  timeline          OrderTimeline[]
+  webhookEvents     WebhookEvent[]
+
+  @@index([clerkUserId])
+  @@index([guestEmail])
+  @@index([status])
+  @@index([paymentStatus])
+  @@index([source])
+  @@index([syncedAt])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id            String   @id @default(cuid())
+  orderId       String
+  productId     String?
+  name          String
+  brand         String
+  price         Decimal  @db.Decimal(10, 2)
+  discountPrice Decimal? @db.Decimal(10, 2)
+  quantity      Int
+  imageUrl      String?
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model OrderNote {
+  id         String              @id @default(cuid())
+  orderId    String
+  order      Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  content    String
+  visibility OrderNoteVisibility @default(internal)
+  createdBy  String?
+  createdAt  DateTime            @default(now())
+
+  @@index([orderId])
+  @@index([createdAt])
+}
+
+model OrderTimeline {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  eventType   String
+  description String
+  metadata    Json?
+  createdBy   String?
+  createdAt   DateTime @default(now())
+
+  @@index([orderId])
+  @@index([eventType])
+  @@index([createdAt])
+}
+
+model ExternalApiConfig {
+  id            String   @id @default("default")
+  webhookUrl    String?
+  secretToken   String?
+  enabled       Boolean  @default(false)
+  retryAttempts Int      @default(3)
+  timeoutMs     Int      @default(10000)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model WebhookEvent {
+  id                 String             @id @default(cuid())
+  orderId            String
+  order              Order              @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  eventType          String
+  payload            Json
+  status             WebhookEventStatus @default(pending)
+  attemptCount       Int                @default(0)
+  lastAttemptAt      DateTime?
+  lastResponseStatus Int?
+  lastResponseBody   String?
+  lastError          String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([orderId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model EmailTemplate {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  subject     String
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([key])
+  @@index([isActive])
+}
+
+model EmailLog {
+  id           String      @id @default(cuid())
+  recipient    String
+  templateKey  String
+  subject      String
+  status       EmailStatus @default(queued)
+  resendId     String?
+  errorMessage String?
+  metadata     Json?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([recipient])
+  @@index([templateKey])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model EmailSettings {
+  id          String   @id @default("default")
+  adminEmails String[]
+  testMode    Boolean  @default(true)
+  testEmails  String[]
+  fromName    String   @default("Dermatologika")
+  fromEmail   String   @default("onboarding@resend.dev")
+  replyTo     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model ShippingMethod {
   id            String   @id @default(cuid())
   name          String
@@ -349,6 +559,7 @@ model PaymentMethod {
   description  String?
   type         String   @unique
   instructions String?  @db.Text
+  initialOrderStatus String?
   isActive     Boolean  @default(true)
   sortOrder    Int      @default(0)
   createdAt    DateTime @default(now())

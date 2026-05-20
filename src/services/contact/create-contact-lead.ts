@@ -15,6 +15,15 @@ export async function createContactLeadService(
   // Create the lead in database
   const lead = await contactLeadRepository.create(input);
 
+  try {
+    const { sendContactLeadNotification } = await import(
+      "@/services/email/send-contact-lead-notification"
+    );
+    await sendContactLeadNotification(lead);
+  } catch (error) {
+    console.error("[contact-lead] Failed to send notification email:", error);
+  }
+
   // Transform to response DTO
   return contactLeadToResponse(lead);
 }

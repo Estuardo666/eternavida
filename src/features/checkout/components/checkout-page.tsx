@@ -25,6 +25,7 @@ import { useUser, useSignIn, useSignUp, SignOutButton } from "@clerk/nextjs";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 import { normalizeClerkErrorMessage } from "@/features/auth/lib/normalize-clerk-error";
+import { InlineSignUpForm } from "@/features/auth/components/inline-sign-up-form";
 
 import { resolveCheckoutShippingBaseCost, type CheckoutShippingMethod } from "@/config/checkout";
 import { motionTokens } from "@/motion/tokens";
@@ -44,6 +45,10 @@ type ConfirmationProduct = {
   imageUrl: string | null;
   quantity: number;
 };
+
+function requiresPaymentConfirmation(initialOrderStatus?: string | null): boolean {
+  return initialOrderStatus !== "confirmed";
+}
 
 // ─── Ecuador provinces and major cities ─────────────────────────────────────
 
@@ -208,8 +213,6 @@ function BreadcrumbStep({
   );
 }
 
-// ─── Shared inline field style ────────────────────────────────────────────────
-
 const inlineInput =
   "h-10 w-full rounded-lg border border-border-soft bg-white px-3.5 text-body-sm text-text-primary placeholder:text-text-muted transition hover:border-brand-primary/40 focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 disabled:bg-surface-subtle disabled:text-text-muted";
 
@@ -316,129 +319,6 @@ function CheckoutInlineSignIn({ onBack }: { onBack: () => void }) {
         onClick={onBack}
         className="w-full text-center text-caption text-text-muted hover:text-text-secondary"
       >
-        Volver
-      </button>
-    </div>
-  );
-}
-
-// ─── Inline sign-up ───────────────────────────────────────────────────────────
-
-function CheckoutInlineSignUp({ onBack }: { onBack: () => void }) {
-  const { signUp, fetchStatus } = useSignUp();
-  const isAuthReady = fetchStatus === "idle" && signUp !== null;
-  const [step, setStep] = useState<"details" | "verify">("details");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [code, setCode] = useState("");
-  const [showPass, setShowPass] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleCreate(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!firstName.trim() || !lastName.trim() || !email.trim() || password.length < 8) {
-      setError("Completa todos los campos. La contraseña debe tener al menos 8 caracteres.");
-      return;
-    }
-    if (!isAuthReady || !signUp) return;
-    setBusy(true);
-    setError(null);
-    try {
-      const attempt = await signUp.password({ firstName: firstName.trim(), lastName: lastName.trim(), emailAddress: email.trim(), password });
-      if (attempt.error) throw attempt.error;
-      if (signUp.status === "complete") {
-        const fin = await signUp.finalize();
-        if (fin.error) throw fin.error;
-        return;
-      }
-      const sendResult = await signUp.verifications.sendEmailCode();
-      if (sendResult.error) throw sendResult.error;
-      setStep("verify");
-    } catch (err) {
-      setError(normalizeClerkErrorMessage(err, "No se pudo crear la cuenta."));
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function handleVerify(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!isAuthReady || !signUp || !code.trim()) return;
-    setBusy(true);
-    setError(null);
-    try {
-      const verifyResult = await signUp.verifications.verifyEmailCode({ code: code.trim() });
-      if (verifyResult.error) throw verifyResult.error;
-      if (signUp.status !== "complete") throw new Error("Verificación incompleta.");
-      const fin = await signUp.finalize();
-      if (fin.error) throw fin.error;
-      // useUser will update; gate transitions automatically
-    } catch (err) {
-      setError(normalizeClerkErrorMessage(err, "Código incorrecto. Intenta de nuevo."));
-      setBusy(false);
-    }
-  }
-
-  return (
-    <div className="space-y-3 px-4 pb-4 pt-1">
-      {step === "details" ? (
-        <form onSubmit={handleCreate} className="space-y-2.5" noValidate>
-          <div className="grid grid-cols-2 gap-2">
-            <input placeholder="Nombre" value={firstName} onChange={(e) => setFirstName(e.target.value)} className={inlineInput} autoFocus />
-            <input placeholder="Apellido" value={lastName} onChange={(e) => setLastName(e.target.value)} className={inlineInput} />
-          </div>
-          <input type="email" autoComplete="email" placeholder="Correo electrónico" value={email} onChange={(e) => setEmail(e.target.value)} className={inlineInput} />
-          <div className="relative">
-            <input
-              type={showPass ? "text" : "password"}
-              autoComplete="new-password"
-              placeholder="Contraseña (mín. 8 caracteres)"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={inlineInput}
-            />
-            <button type="button" onClick={() => setShowPass((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary" tabIndex={-1}>
-              {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            </button>
-          </div>
-          {error && <p className="text-caption text-status-error">{error}</p>}
-          <div id="clerk-captcha" />
-          <button
-            type="submit"
-            disabled={busy}
-            className="flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand-primary text-body-sm font-medium text-white transition hover:bg-brand-primaryHover disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
-          >
-            {busy ? <LoaderCircle className="h-4 w-4 animate-spin" /> : "Crear cuenta"}
-          </button>
-        </form>
-      ) : (
-        <form onSubmit={handleVerify} className="space-y-2.5" noValidate>
-          <p className="text-body-sm text-text-secondary">
-            Ingresa el código que enviamos a <span className="font-medium text-text-primary">{email}</span>.
-          </p>
-          <input
-            type="text"
-            inputMode="numeric"
-            placeholder="Código de verificación"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            className={inlineInput}
-            autoFocus
-          />
-          {error && <p className="text-caption text-status-error">{error}</p>}
-          <button
-            type="submit"
-            disabled={busy || !code.trim()}
-            className="flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand-primary text-body-sm font-medium text-white transition hover:bg-brand-primaryHover disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
-          >
-            {busy ? <LoaderCircle className="h-4 w-4 animate-spin" /> : "Verificar y continuar"}
-          </button>
-        </form>
-      )}
-      <button type="button" onClick={onBack} className="w-full text-center text-caption text-text-muted hover:text-text-secondary">
         Volver
       </button>
     </div>
@@ -575,7 +455,7 @@ function CheckoutIdentityGate({ onUserReady }: { onUserReady: (data: UserReadyDa
               </p>
               {panel === "sign-in"
                 ? <CheckoutInlineSignIn onBack={() => setPanel("idle")} />
-                : <CheckoutInlineSignUp onBack={() => setPanel("idle")} />
+                : <InlineSignUpForm onBack={() => setPanel("idle")} />
               }
             </motion.div>
           </motion.div>
@@ -599,7 +479,11 @@ export function CheckoutPageClient() {
   const { shippingMethods, paymentMethods } = useCheckoutMethods();
   const [shippingMethod, setShippingMethod] = useState<CheckoutShippingMethod>("standard");
   const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const selectedPaymentMethod = paymentMethods.find((m) => m.id === selectedPaymentMethodId) ?? paymentMethods[0] ?? null;
+  const selectedPaymentRequiresConfirmation = requiresPaymentConfirmation(
+    selectedPaymentMethod?.initialOrderStatus,
+  );
   // Auto-select first shipping method when DB methods load
   useEffect(() => {
     const first = shippingMethods[0];
@@ -643,7 +527,7 @@ export function CheckoutPageClient() {
 
   // ── Empty cart state ──────────────────────────────────────────────────────
 
-  if (items.length === 0) {
+  if (items.length === 0 && buttonState !== "done") {
     return (
       <div className="flex min-h-[70vh] flex-col items-center justify-center px-6 py-24 text-center">
         <motion.div
@@ -676,21 +560,90 @@ export function CheckoutPageClient() {
     );
   }
 
-  // ── Submit handler (placeholder — real API to be wired in a future iteration) ─
-
-  function handleSubmit() {
+  async function handleSubmit() {
     if (buttonState !== "idle") return;
+
+    if (isPricingLoading) {
+      setSubmitError("Estamos recalculando el total del pedido. Espera un momento e intenta de nuevo.");
+      return;
+    }
+
+    if (pricingError) {
+      setSubmitError(pricingError);
+      return;
+    }
+
+    const customerEmail = isSignedIn
+      ? (user?.primaryEmailAddress?.emailAddress ?? email)
+      : email;
+    const selectedShippingMethod = shippingMethods.find((method) => method.type === shippingMethod) ?? null;
+    const shippingMethodName = selectedShippingMethod?.name
+      ?? (shippingMethod === "pickup" ? "Retiro en tienda" : "Envío estándar");
+    const totals = pricingPreview?.totals;
+    const discountAmount = totals
+      ? totals.discountTotal + totals.shippingDiscount
+      : 0;
+
+    setSubmitError(null);
     setButtonState("submitting");
-    setTimeout(() => {
+
+    try {
+      const response = await fetch("/api/checkout/create-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          guestEmail: customerEmail,
+          guestPhone: phone,
+          firstName,
+          lastName,
+          address,
+          apartment,
+          province,
+          city,
+          phone,
+          idNumber,
+          shippingMethodId: selectedShippingMethod?.id,
+          shippingMethodName,
+          paymentMethodId: selectedPaymentMethod?.id,
+          paymentMethodName: selectedPaymentMethod?.name ?? "Pago por confirmar",
+          couponCode: appliedCouponCode || undefined,
+          items: items.map((item) => ({
+            productId: item.id,
+            name: item.name,
+            brand: item.brand,
+            price: item.price ?? item.discountPrice ?? 0,
+            discountPrice: item.discountPrice,
+            quantity: item.quantity,
+            imageUrl: item.imageUrl,
+          })),
+          subtotal: totals?.merchandiseSubtotal ?? subtotal,
+          shippingCost: totals?.shippingTotal ?? resolveCheckoutShippingBaseCost(shippingMethod),
+          discountAmount,
+          taxAmount: 0,
+          total: totals?.total ?? summaryDisplayTotal,
+        }),
+      });
+
+      const payload = (await response.json()) as {
+        success?: boolean;
+        error?: string;
+        data?: {
+          orderId?: string;
+          orderNumber?: string;
+        };
+      };
+
+      if (!response.ok || !payload.success || !payload.data?.orderNumber) {
+        throw new Error(payload.error ?? "No se pudo crear el pedido.");
+      }
+
       setButtonState("done");
 
-      const orderNumber = `DRM-${Math.floor(10000 + Math.random() * 90000)}`;
       const customerName = isSignedIn
         ? ((user?.firstName ?? user?.fullName ?? firstName) || "Cliente")
         : (firstName || "Cliente");
-      const customerEmail = isSignedIn
-        ? (user?.primaryEmailAddress?.emailAddress ?? email)
-        : email;
       const products: ConfirmationProduct[] = items.map((item) => ({
         id: item.id,
         name: item.name,
@@ -699,13 +652,15 @@ export function CheckoutPageClient() {
       }));
 
       const confirmationData = {
-        orderNumber,
-        total: summaryDisplayTotal,
+        orderNumber: payload.data.orderNumber,
+        total: totals?.total ?? summaryDisplayTotal,
         itemCount,
         customerName,
         email: customerEmail,
         isGuest: !isSignedIn,
         shippingMethod,
+        paymentMethodName: selectedPaymentMethod?.name ?? "Pago por confirmar",
+        requiresPaymentConfirmation: selectedPaymentRequiresConfirmation,
         products,
       };
 
@@ -715,9 +670,16 @@ export function CheckoutPageClient() {
         // sessionStorage unavailable
       }
 
+      router.push(`/confirmation?order=${payload.data.orderNumber}`);
       clearCart();
-      router.push("/confirmation");
-    }, 1800);
+    } catch (error) {
+      setButtonState("idle");
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "No pudimos procesar tu pedido. Intenta nuevamente.",
+      );
+    }
   }
 
   // ── Button motion config ──────────────────────────────────────────────────
@@ -1179,10 +1141,15 @@ export function CheckoutPageClient() {
 
           {/* ── Submit button ─────────────────────────────────────────────── */}
           <div className="border-t border-border-soft/40 pt-6 mt-2">
+            {submitError ? (
+              <p className="mb-4 rounded-lg border border-status-error/15 bg-status-error/5 px-4 py-3 text-body-sm text-status-error">
+                {submitError}
+              </p>
+            ) : null}
             <motion.button
               type="button"
               onClick={handleSubmit}
-              disabled={buttonState !== "idle"}
+              disabled={buttonState !== "idle" || isPricingLoading || Boolean(pricingError)}
               {...buttonMotionProps}
               className={cx(
                 "relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-pill px-8 py-3.5 text-label-md font-semibold text-white",
@@ -1190,14 +1157,18 @@ export function CheckoutPageClient() {
                 buttonState === "done"
                   ? "bg-status-success shadow-[0_2px_12px_rgba(46,139,87,0.28)]"
                   : "bg-brand-primary hover:bg-brand-primaryHover",
-                buttonState !== "idle" && "cursor-default opacity-95",
+                (buttonState !== "idle" || isPricingLoading || pricingError) && "cursor-default opacity-95",
               )}
               aria-live="polite"
               aria-label={
-                buttonState === "idle"
+                buttonState === "idle" && !isPricingLoading && !pricingError
                   ? "Finalizar compra"
                   : buttonState === "submitting"
                   ? "Procesando pedido…"
+                  : isPricingLoading
+                  ? "Recalculando pedido"
+                  : pricingError
+                  ? "Corrige el pedido antes de continuar"
                   : "Pedido recibido"
               }
             >

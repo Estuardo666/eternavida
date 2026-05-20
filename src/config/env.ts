@@ -25,6 +25,10 @@ const serverEnvSchema = z.object({
   EXTERNAL_PRODUCT_SYNC_BEARER_TOKEN: z.string().min(1).optional(),
   EXTERNAL_PRODUCT_SYNC_API_KEY: z.string().min(1).optional(),
   EXTERNAL_PRODUCT_SYNC_SOURCE_SYSTEM_ID: z.string().min(1).optional(),
+  RESEND_API_KEY: z.string().min(1).optional(),
+  EMAIL_FROM_NAME: z.string().min(1).optional(),
+  EMAIL_FROM_ADDRESS: z.string().email().optional(),
+  EMAIL_REPLY_TO: z.string().email().optional(),
 });
 
 const parsedServerEnv = serverEnvSchema.safeParse({
@@ -41,6 +45,10 @@ const parsedServerEnv = serverEnvSchema.safeParse({
   EXTERNAL_PRODUCT_SYNC_BEARER_TOKEN: process.env.EXTERNAL_PRODUCT_SYNC_BEARER_TOKEN,
   EXTERNAL_PRODUCT_SYNC_API_KEY: process.env.EXTERNAL_PRODUCT_SYNC_API_KEY,
   EXTERNAL_PRODUCT_SYNC_SOURCE_SYSTEM_ID: process.env.EXTERNAL_PRODUCT_SYNC_SOURCE_SYSTEM_ID,
+  RESEND_API_KEY: process.env.RESEND_API_KEY,
+  EMAIL_FROM_NAME: process.env.EMAIL_FROM_NAME,
+  EMAIL_FROM_ADDRESS: process.env.EMAIL_FROM_ADDRESS,
+  EMAIL_REPLY_TO: process.env.EMAIL_REPLY_TO,
 });
 
 if (!parsedServerEnv.success) {

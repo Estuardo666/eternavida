@@ -4,6 +4,7 @@ export interface PaymentMethodItem {
   description: string | null;
   type: string;
   instructions: string | null;
+  initialOrderStatus: string | null;
   isActive: boolean;
   sortOrder: number;
   createdAt: string;
@@ -15,6 +16,7 @@ export interface PaymentMethodFormData {
   description: string;
   type: string;
   instructions: string;
+  initialOrderStatus: string | null;
   isActive: boolean;
   sortOrder: number;
 }
@@ -39,6 +41,7 @@ export interface PublicPaymentMethod {
   type: string;
   description: string | null;
   instructions: string | null;
+  initialOrderStatus: string | null;
 }
 
 export interface PublicPaymentMethodListRouteResponse {

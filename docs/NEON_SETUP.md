@@ -71,7 +71,7 @@ Database schema is up to date!
 
 **File: `.env`**
 ```env
-DATABASE_URL=postgresql://neondb_owner:npg_xVm5cHkaIPJ6@ep-wild-pond-an3lung7-pooler.c-6.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+DATABASE_URL=postgresql://USER:PASSWORD@HOST/DATABASE?sslmode=require&channel_binding=require
 NODE_ENV=development
 ```
 

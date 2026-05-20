@@ -47,6 +47,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       await client.users.updateUserMetadata(userId, {
         publicMetadata: { role: "cliente" },
       });
+
+      try {
+        const user = await client.users.getUser(userId);
+        const emailAddress = user.primaryEmailAddress?.emailAddress;
+
+        if (emailAddress) {
+          const { sendWelcomeEmail } = await import("@/services/email/send-welcome-email");
+          await sendWelcomeEmail({
+            email: emailAddress,
+            firstName: user.firstName ?? user.username ?? "Cliente",
+          });
+        }
+      } catch (emailError) {
+        console.error("Failed to send welcome email:", emailError);
+      }
     } catch (error) {
       console.error("Failed to set user role:", error);
       return NextResponse.json({ error: "Failed to set user role" }, { status: 500 });

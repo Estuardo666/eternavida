@@ -92,6 +92,7 @@ powershell -ExecutionPolicy Bypass -File scripts/cleanup-env.ps1
 - **Neon Setup & Troubleshooting**: [docs/NEON_SETUP.md](docs/NEON_SETUP.md)
 - **Database Setup Guide**: [docs/DATABASE_SETUP.md](docs/DATABASE_SETUP.md)
 - **API Testing**: [docs/API_TESTING.md](docs/API_TESTING.md)
+- **Advanced Orders, PDFs, and Webhooks**: [docs/ADMIN_ORDERS_WEBHOOKS.md](docs/ADMIN_ORDERS_WEBHOOKS.md)
 - **ContactLead Vertical**: [docs/CONTACT_LEAD_VERTICAL.md](docs/CONTACT_LEAD_VERTICAL.md)
 - **Public Auth With Clerk**: [docs/PUBLIC_AUTH_CLERK.md](docs/PUBLIC_AUTH_CLERK.md)
 

@@ -45,7 +45,10 @@ export async function requireAdminAuth(): Promise<AdminAuthResult> {
 
     const email = user?.emailAddresses[0]?.emailAddress ?? "";
 
-    return { success: true, user: { email, role: role as "admin" | "staff" } };
+    return {
+      success: true,
+      user: { clerkUserId: userId, email, role: role as "admin" | "staff" },
+    };
   } catch {
     return {
       success: false,

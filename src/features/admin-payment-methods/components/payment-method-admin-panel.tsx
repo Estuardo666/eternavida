@@ -33,6 +33,7 @@ interface PaymentMethodEditorState {
   description: string;
   type: string;
   instructions: string;
+  initialOrderStatus: "pending" | "confirmed";
   isActive: boolean;
   sortOrder: string;
 }
@@ -42,6 +43,7 @@ const DEFAULT_STATE: PaymentMethodEditorState = {
   description: "",
   type: "",
   instructions: "",
+  initialOrderStatus: "pending",
   isActive: true,
   sortOrder: "0",
 };
@@ -52,6 +54,7 @@ function toEditorState(method: PaymentMethodItem): PaymentMethodEditorState {
     description: method.description ?? "",
     type: method.type,
     instructions: method.instructions ?? "",
+    initialOrderStatus: method.initialOrderStatus === "confirmed" ? "confirmed" : "pending",
     isActive: method.isActive,
     sortOrder: String(method.sortOrder),
   };
@@ -63,6 +66,7 @@ function toFormData(state: PaymentMethodEditorState): PaymentMethodFormData {
     description: state.description.trim(),
     type: state.type.trim(),
     instructions: state.instructions.trim(),
+    initialOrderStatus: state.initialOrderStatus,
     isActive: state.isActive,
     sortOrder: parseInt(state.sortOrder, 10) || 0,
   };
@@ -231,6 +235,7 @@ export function PaymentMethodAdminPanel({ initialMethods }: Props) {
                         <div className="mt-0.5 flex items-center gap-2 text-caption text-text-secondary">
                           <span className="font-mono">{method.type}</span>
                           {method.description && <span>· {method.description}</span>}
+                          <span>· Inicia: {method.initialOrderStatus ?? "pending"}</span>
                         </div>
                       </div>
                       <span className="shrink-0 text-caption text-text-secondary">#{method.sortOrder}</span>
@@ -295,6 +300,20 @@ export function PaymentMethodAdminPanel({ initialMethods }: Props) {
                   />
                   <p className="mt-1 text-caption text-text-secondary">Identificador único (minúsculas).</p>
                 </div>
+                <div>
+                  <label className="mb-1 block text-label-sm text-text-secondary">Estado inicial del pedido</label>
+                  <select
+                    value={form.initialOrderStatus}
+                    onChange={(e) => updateField("initialOrderStatus", e.target.value as PaymentMethodEditorState["initialOrderStatus"])}
+                    className={ADMIN_COMPACT_FIELD_CLASS_NAME}
+                  >
+                    <option value="pending">pending</option>
+                    <option value="confirmed">confirmed</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="mb-1 block text-label-sm text-text-secondary">Orden</label>
                   <input

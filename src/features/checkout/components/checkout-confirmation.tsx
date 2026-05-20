@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { useUser, SignUp } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
+import { InlineSignUpForm } from "@/features/auth/components/inline-sign-up-form";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, ChevronRight, ShoppingBag, User } from "lucide-react";
 
@@ -20,6 +21,8 @@ interface ConfirmationData {
   email: string;
   isGuest: boolean;
   shippingMethod: string;
+  paymentMethodName: string;
+  requiresPaymentConfirmation: boolean;
   products: Array<{
     id: string;
     name: string;
@@ -72,6 +75,8 @@ export function CheckoutConfirmation() {
         email: parsed.email ?? "",
         isGuest: parsed.isGuest ?? true,
         shippingMethod: parsed.shippingMethod ?? "standard",
+        paymentMethodName: parsed.paymentMethodName ?? "Pago por confirmar",
+        requiresPaymentConfirmation: parsed.requiresPaymentConfirmation ?? true,
         products: Array.isArray(parsed.products) ? parsed.products : [],
       };
       setOrder(data);
@@ -95,6 +100,16 @@ export function CheckoutConfirmation() {
 
   const shippingLabel =
     order.shippingMethod === "pickup" ? "Retiro en tienda" : "Envío estándar";
+  const heroTitle = order.requiresPaymentConfirmation
+    ? `¡Pedido recibido, ${order.customerName}!`
+    : `¡Pedido confirmado, ${order.customerName}!`;
+  const heroSubtitle = order.requiresPaymentConfirmation
+    ? `Tu pedido está pendiente de pago. Enviaremos un email de confirmación a ${order.email}.`
+    : `Recibirás un email de confirmación en ${order.email}`;
+  const totalLabel = order.requiresPaymentConfirmation ? "Total a pagar" : "Total pagado";
+  const fulfillmentMessage = order.requiresPaymentConfirmation
+    ? "Confirmaremos tu pago por email en cuanto recibamos tu comprobante."
+    : "El seguimiento de tu envío llegará en las próximas 24 horas.";
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-surface-canvas px-4 py-16 sm:py-24">
@@ -190,7 +205,7 @@ export function CheckoutConfirmation() {
               delay: 0.52,
             }}
           >
-            ¡Pedido confirmado, {order.customerName}!
+            {heroTitle}
           </motion.h1>
 
           <motion.p
@@ -203,8 +218,14 @@ export function CheckoutConfirmation() {
               delay: 0.64,
             }}
           >
-            Recibirás un email de confirmación en{" "}
-            <span className="font-medium text-text-secondary">{order.email}</span>
+            {order.requiresPaymentConfirmation ? (
+              heroSubtitle
+            ) : (
+              <>
+                Recibirás un email de confirmación en{" "}
+                <span className="font-medium text-text-secondary">{order.email}</span>
+              </>
+            )}
           </motion.p>
         </motion.div>
 
@@ -279,14 +300,14 @@ export function CheckoutConfirmation() {
           <div className="h-px bg-border-soft" />
 
           <div className="flex items-center justify-between">
-            <span className="text-label-md font-semibold text-text-primary">Total pagado</span>
+            <span className="text-label-md font-semibold text-text-primary">{totalLabel}</span>
             <span className="tabular-nums text-label-lg font-semibold text-text-primary">
               {formattedTotal}
             </span>
           </div>
 
           <p className="text-body-sm text-text-muted">
-            El seguimiento de tu envío llegará en las próximas 24 horas.
+            {fulfillmentMessage}
           </p>
         </motion.div>
 
@@ -383,14 +404,11 @@ export function CheckoutConfirmation() {
                     }}
                     className="mt-5 space-y-3"
                   >
-                    <SignUp routing="hash" forceRedirectUrl="/mi-cuenta" />
-                    <button
-                      type="button"
-                      onClick={() => setShowSignUp(false)}
-                      className="w-full text-center text-label-sm text-text-muted underline-offset-2 transition-colors hover:text-text-secondary hover:underline"
-                    >
-                      Cancelar
-                    </button>
+                    <InlineSignUpForm
+                      onBack={() => setShowSignUp(false)}
+                      onSuccess={() => router.replace("/mi-cuenta")}
+                      backLabel="Cancelar"
+                    />
                   </motion.div>
                 )}
               </AnimatePresence>

@@ -19,5 +19,5 @@ export async function requireAdminPageUser(): Promise<AuthenticatedUser> {
 
   const email = user?.emailAddresses[0]?.emailAddress ?? "";
 
-  return { email, role: role as "admin" | "staff" };
+  return { clerkUserId: userId, email, role: role as "admin" | "staff" };
 }

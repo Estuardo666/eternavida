@@ -71,6 +71,11 @@ const catalogNavigation: ReadonlyArray<NavigationItem> = [
 
 const storeNavigation: ReadonlyArray<NavigationItem> = [
   {
+    href: "/admin/orders",
+    label: "Pedidos",
+    icon: OrdersIcon,
+  },
+  {
     href: "/admin/shipping",
     label: "Envío",
     icon: ShippingIcon,
@@ -79,6 +84,29 @@ const storeNavigation: ReadonlyArray<NavigationItem> = [
     href: "/admin/payment-methods",
     label: "Métodos de pago",
     icon: PaymentIcon,
+  },
+  {
+    href: "/admin/email-settings",
+    label: "Configuración de correos",
+    icon: EmailSettingsIcon,
+  },
+  {
+    href: "/admin/email-logs",
+    label: "Logs de correos",
+    icon: EmailLogsIcon,
+  },
+] as const;
+
+const integrationsNavigation: ReadonlyArray<NavigationItem> = [
+  {
+    href: "/admin/webhook-config",
+    label: "Configuración de webhooks",
+    icon: WebhookConfigIcon,
+  },
+  {
+    href: "/admin/webhook-events",
+    label: "Eventos de webhooks",
+    icon: WebhookEventsIcon,
   },
 ] as const;
 
@@ -101,6 +129,11 @@ const navigationSections: ReadonlyArray<{
     id: "store",
     label: "Tienda",
     items: storeNavigation,
+  },
+  {
+    id: "integrations",
+    label: "Integraciones",
+    items: integrationsNavigation,
   },
 ] as const;
 
@@ -242,13 +275,6 @@ function isActivePath(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function isSectionActive(
-  pathname: string,
-  items: ReadonlyArray<NavigationItem>,
-): boolean {
-  return items.some((item) => isActivePath(pathname, item.href));
-}
-
 function NavigationLink(props: NavigationItem & {
   pathname: string;
   compact?: boolean;
@@ -258,10 +284,10 @@ function NavigationLink(props: NavigationItem & {
   const linkClasses = cx(
     props.compact
       ? "group flex h-12 w-12 items-center justify-center rounded-2xl border transition-[background-color,border-color,color,transform] duration-[200ms] ease-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
-      : "group flex min-h-[3.25rem] items-center gap-3 rounded-2xl border px-3.5 py-3 text-left transition-[background-color,border-color,color,transform] duration-[200ms] ease-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas sm:min-h-14 sm:px-4",
+      : "group flex min-h-9 items-center gap-2.5 rounded-lg px-3 py-2 text-left transition-[background-color,color] duration-[200ms] ease-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
     isActive
-      ? "border-border-brand bg-surface-brandTint text-text-primary shadow-sm"
-      : "border-border-soft bg-surface-canvas text-text-secondary hover:border-border-default hover:bg-surface-subtle hover:text-text-primary",
+      ? "bg-surface-brandTint text-text-primary"
+      : "text-text-secondary hover:bg-surface-subtle hover:text-text-primary",
   );
 
   if (props.compact) {
@@ -308,6 +334,7 @@ export function AdminSidebar({ userEmail, userRole, userImageUrl }: AdminSidebar
     general: true,
     catalog: true,
     store: true,
+    integrations: true,
   });
 
   const navigationItems = useMemo(
@@ -382,7 +409,7 @@ export function AdminSidebar({ userEmail, userRole, userImageUrl }: AdminSidebar
               animate="animate"
               exit="exit"
               variants={mobileDrawerReveal}
-              className="fixed inset-y-3 left-3 z-50 flex w-[min(22rem,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(246,250,245,0.98))] shadow-[0_28px_60px_-32px_rgba(28,56,41,0.38)] sm:inset-y-4 sm:left-4 sm:w-[min(22rem,calc(100vw-2rem))] sm:rounded-[30px] lg:hidden"
+              className="fixed inset-y-3 left-3 z-50 flex w-[min(22rem,calc(100vw-1.5rem))] flex-col overflow-y-auto overflow-x-hidden rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(246,250,245,0.98))] shadow-[0_28px_60px_-32px_rgba(28,56,41,0.38)] sm:inset-y-4 sm:left-4 sm:w-[min(22rem,calc(100vw-2rem))] sm:rounded-[30px] lg:hidden"
             >
               <SidebarPanel
                 pathname={pathname}
@@ -428,7 +455,7 @@ export function AdminSidebar({ userEmail, userRole, userImageUrl }: AdminSidebar
                     duration: sidebarContentDuration,
                     ease: sidebarEaseEnter,
                   }}
-              className="flex w-full flex-col items-center gap-3 rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,250,246,0.98))] px-3 py-3 shadow-[0_20px_44px_-34px_rgba(28,56,41,0.34)]"
+              className="flex w-full flex-col items-center gap-3 rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,250,246,0.98))] px-3 py-3 shadow-[0_20px_44px_-34px_rgba(28,56,41,0.34)] max-h-[calc(100vh-3rem)] overflow-y-auto overflow-x-hidden"
             >
               <button
                 type="button"
@@ -496,7 +523,7 @@ export function AdminSidebar({ userEmail, userRole, userImageUrl }: AdminSidebar
                     duration: sidebarContentDuration,
                     ease: sidebarEaseEnter,
                   }}
-              className="w-full"
+              className="w-full max-h-[calc(100vh-3rem)] overflow-y-auto overflow-x-hidden"
             >
               <SidebarPanel
                 pathname={pathname}
@@ -534,8 +561,8 @@ function SidebarPanel(props: {
   collapseLabel: string;
 }) {
   return (
-    <div className="flex h-full w-full flex-col rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,250,246,0.98))] p-3.5 shadow-[0_24px_52px_-36px_rgba(28,56,41,0.36)] sm:rounded-[30px] sm:p-4">
-      <div className="flex items-start justify-between gap-3 border-b border-border-soft pb-3.5 sm:pb-4">
+    <div className="flex h-full w-full flex-col rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,250,246,0.98))] p-3 shadow-[0_24px_52px_-36px_rgba(28,56,41,0.36)] sm:rounded-[30px] sm:p-3.5">
+      <div className="flex items-start justify-between gap-3 border-b border-border-soft pb-3 sm:pb-3.5">
         <div className="space-y-3">
           <Image
             src="/logotipo.png"
@@ -562,28 +589,22 @@ function SidebarPanel(props: {
         initial={props.reduceMotion ? false : "initial"}
         animate="animate"
         variants={navListReveal}
-        className="mt-4 flex-1 space-y-3.5 sm:mt-5 sm:space-y-4"
+        className="mt-3 flex-1 space-y-1 sm:mt-4 sm:space-y-2"
       >
         {navigationSections.map((section) => {
-          const sectionActive = isSectionActive(props.pathname, section.items);
           const isOpen = props.openSections[section.id] ?? true;
 
           return (
             <motion.section
               key={section.id}
               variants={navItemReveal}
-              className={cx(
-                "rounded-[22px] border p-2.5 transition-[background-color,border-color,box-shadow] duration-[200ms] ease-soft sm:rounded-[24px] sm:p-3",
-                sectionActive
-                  ? "border-border-brand bg-surface-brandTint/60 shadow-[0_16px_34px_-28px_rgba(32,92,76,0.4)]"
-                  : "border-border-soft bg-surface-subtle",
-              )}
+              className="py-0.5"
             >
               <button
                 type="button"
                 aria-expanded={isOpen}
                 onClick={() => props.onSectionToggle(section.id, !isOpen)}
-                className="flex w-full items-center justify-between gap-3 rounded-2xl px-1 py-1 text-left transition-[color] duration-[200ms] ease-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-subtle"
+                className="flex w-full items-center justify-between gap-3 rounded-lg px-1 py-1 text-left transition-[color] duration-[200ms] ease-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-subtle"
               >
                 <div className="flex items-center gap-2">
                   <span className="text-label-sm uppercase tracking-[0.16em] text-ink-900">{section.label}</span>
@@ -592,7 +613,7 @@ function SidebarPanel(props: {
                 <span
                   aria-hidden="true"
                   className={cx(
-                    "inline-flex h-8 w-8 items-center justify-center rounded-full border border-border-soft bg-surface-canvas text-text-secondary transition-[transform,background-color,border-color,color] duration-[200ms] ease-soft",
+                    "inline-flex h-6 w-6 items-center justify-center text-text-secondary transition-[transform,color] duration-[200ms] ease-soft",
                     isOpen ? "rotate-0" : "-rotate-90",
                   )}
                 >
@@ -609,7 +630,7 @@ function SidebarPanel(props: {
                     variants={sectionAccordionReveal}
                     className="overflow-hidden"
                   >
-                    <div className="mt-3 space-y-2">
+                    <div className="mt-1.5 space-y-0.5">
                       {section.items.map((item) => (
                         <NavigationLink key={item.href} {...item} pathname={props.pathname} />
                       ))}
@@ -624,9 +645,9 @@ function SidebarPanel(props: {
 
       <Link
         href="/admin/profile"
-        className="mt-4 flex items-center gap-3 rounded-[22px] border border-border-soft bg-surface-subtle p-3 transition-[background-color,border-color] duration-[200ms] ease-soft hover:border-border-brand hover:bg-surface-brandTint sm:mt-5 sm:rounded-[24px]"
+        className="mt-3 flex items-center gap-2.5 rounded-lg px-2 py-2 transition-[background-color] duration-[200ms] ease-soft hover:bg-surface-brandTint sm:mt-4"
       >
-        <div className="flex h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-border-soft bg-surface-canvas text-label-md text-text-primary">
+        <div className="flex h-9 w-9 shrink-0 overflow-hidden rounded-lg border border-border-soft bg-surface-canvas text-label-md text-text-primary">
           {props.userImageUrl ? (
             <Image src={props.userImageUrl} alt={props.userEmail} width={44} height={44} className="h-full w-full object-cover" />
           ) : (
@@ -793,6 +814,26 @@ function ShippingIcon(props: { className?: string }) {
   );
 }
 
+function OrdersIcon(props: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={props.className}
+      aria-hidden="true"
+    >
+      <rect x="4" y="5" width="16" height="14" rx="3" />
+      <path d="M8 9.5H16" />
+      <path d="M8 13.5H13" />
+      <path d="M15.5 14.5L17 16L19.5 12.5" />
+    </svg>
+  );
+}
+
 function PaymentIcon(props: { className?: string }) {
   return (
     <svg
@@ -809,6 +850,93 @@ function PaymentIcon(props: { className?: string }) {
       <path d="M2 10h20" />
       <path d="M6 15h4" />
       <path d="M14 15h4" />
+    </svg>
+  );
+}
+
+function EmailSettingsIcon(props: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={props.className}
+      aria-hidden="true"
+    >
+      <rect x="3" y="5" width="18" height="14" rx="3" />
+      <path d="M4.5 7L12 12.5L19.5 7" />
+      <path d="M16.5 15.5H19.5" />
+      <path d="M16.5 12.5H19.5" />
+    </svg>
+  );
+}
+
+function EmailLogsIcon(props: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={props.className}
+      aria-hidden="true"
+    >
+      <path d="M7 4.5H17L20 7.5V19.5H7V4.5Z" />
+      <path d="M17 4.5V7.5H20" />
+      <path d="M10 11H17" />
+      <path d="M10 14.5H17" />
+      <path d="M10 18H14" />
+      <path d="M4 8.5H5.5" />
+      <path d="M4 12.5H5.5" />
+      <path d="M4 16.5H5.5" />
+    </svg>
+  );
+}
+
+function WebhookConfigIcon(props: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={props.className}
+      aria-hidden="true"
+    >
+      <path d="M8 6.5A2.5 2.5 0 1 0 8 11.5A2.5 2.5 0 1 0 8 6.5Z" />
+      <path d="M16 12.5A2.5 2.5 0 1 0 16 17.5A2.5 2.5 0 1 0 16 12.5Z" />
+      <path d="M10.2 9.7L13.8 14.3" />
+      <path d="M5.5 9H3.5" />
+      <path d="M20.5 15H18.5" />
+      <path d="M8 4V2.5" />
+      <path d="M16 21.5V20" />
+    </svg>
+  );
+}
+
+function WebhookEventsIcon(props: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={props.className}
+      aria-hidden="true"
+    >
+      <rect x="4" y="4.5" width="16" height="15" rx="3" />
+      <path d="M7.5 9H16.5" />
+      <path d="M7.5 13H13.5" />
+      <path d="M16 16L17.5 17.5L20 14.5" />
     </svg>
   );
 }

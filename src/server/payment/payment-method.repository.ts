@@ -10,6 +10,7 @@ function mapPaymentMethod(record: {
   description: string | null;
   type: string;
   instructions: string | null;
+  initialOrderStatus: string | null;
   isActive: boolean;
   sortOrder: number;
   createdAt: Date;
@@ -21,11 +22,17 @@ function mapPaymentMethod(record: {
     description: record.description,
     type: record.type,
     instructions: record.instructions,
+    initialOrderStatus: record.initialOrderStatus,
     isActive: record.isActive,
     sortOrder: record.sortOrder,
     createdAt: record.createdAt.toISOString(),
     updatedAt: record.updatedAt.toISOString(),
   };
+}
+
+export async function getPaymentMethodById(id: string): Promise<PaymentMethodItem | null> {
+  const record = await prisma.paymentMethod.findUnique({ where: { id } });
+  return record ? mapPaymentMethod(record) : null;
 }
 
 export async function listPaymentMethods(): Promise<PaymentMethodItem[]> {
