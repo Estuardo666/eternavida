@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Plus_Jakarta_Sans } from "next/font/google";
 
+import { CartProvider } from "@/features/cart/context/cart-context";
+
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -25,13 +27,13 @@ type RootLayoutProps = Readonly<{
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="es" className={plusJakartaSans.variable}>
+    <html lang="es" className={plusJakartaSans.variable} suppressHydrationWarning>
       <body className="min-h-screen antialiased">
         <ClerkProvider
           signInUrl="/login"
           signUpUrl="/register"
         >
-          {children}
+          <CartProvider>{children}</CartProvider>
         </ClerkProvider>
       </body>
     </html>

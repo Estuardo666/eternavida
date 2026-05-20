@@ -4,6 +4,7 @@ import Image from "next/image";
 import { PublicAccountEntry } from "@/components/layout/public-account-entry";
 import { CartHeaderButton } from "@/components/layout/cart-header-button";
 import { PublicLinkButton } from "@/components/ui/public-link-button";
+import { LiveSearch } from "@/features/search/components/live-search";
 
 const navigationLinks = [
   { href: "/categorias", label: "Categorias" },
@@ -14,8 +15,8 @@ const navigationLinks = [
 export function PublicHeader() {
   return (
     <header className="sticky top-0 z-sticky border-b border-border-soft bg-surface-canvas/95 backdrop-blur">
-      <div className="container flex flex-col gap-4 py-4 md:flex-row md:items-center md:justify-between">
-        <div className="flex items-center justify-between gap-4">
+      <div className="container flex flex-col gap-4 py-4">
+        <div className="flex items-center gap-3 md:gap-6">
           <Link
             href="/"
             className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
@@ -29,7 +30,11 @@ export function PublicHeader() {
             />
           </Link>
 
-          <div className="flex items-center gap-2">
+          <div className="md:min-w-0 md:flex-1">
+            <LiveSearch />
+          </div>
+
+          <div className="ml-auto flex items-center gap-2">
             <PublicAccountEntry />
             <div className="hidden md:block">
               <PublicLinkButton

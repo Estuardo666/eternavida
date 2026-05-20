@@ -373,6 +373,72 @@ export async function countPublicProductRecords(query: PublicProductCountQuery) 
   return where ? prisma.product.count({ where }) : prisma.product.count();
 }
 
+export async function searchPublicProductRecordsByName(query: string) {
+  const trimmedQuery = query.trim();
+
+  if (trimmedQuery.length < 2) {
+    return [];
+  }
+
+  return prisma.product.findMany({
+    where: {
+      AND: [
+        buildPublicProductVisibilityFilter(),
+        {
+          name: {
+            contains: trimmedQuery,
+            mode: "insensitive",
+          },
+        },
+      ],
+    },
+    select: {
+      id: true,
+      slug: true,
+      name: true,
+      brand: true,
+      price: true,
+      discountPrice: true,
+      mediaAsset: {
+        select: {
+          publicUrl: true,
+        },
+      },
+    },
+    orderBy: [{ name: "asc" }, { updatedAt: "desc" }],
+    take: 10,
+  });
+}
+
+export async function searchPublicCategoryRecordsByName(query: string) {
+  const trimmedQuery = query.trim();
+
+  if (trimmedQuery.length < 2) {
+    return [];
+  }
+
+  return prisma.category.findMany({
+    where: {
+      AND: [
+        buildPublicCategoryVisibilityFilter(),
+        {
+          name: {
+            contains: trimmedQuery,
+            mode: "insensitive",
+          },
+        },
+      ],
+    },
+    select: {
+      id: true,
+      slug: true,
+      name: true,
+    },
+    orderBy: [{ name: "asc" }],
+    take: 3,
+  });
+}
+
 export async function findPublicProductRecordBySlug(slug: string) {
   return prisma.product.findFirst({
     where: {
