@@ -3,18 +3,22 @@ import Image from "next/image";
 
 import { PublicAccountEntry } from "@/components/layout/public-account-entry";
 import { CartHeaderButton } from "@/components/layout/cart-header-button";
-import { PublicLinkButton } from "@/components/ui/public-link-button";
 import { LiveSearch } from "@/features/search/components/live-search";
 
 const navigationLinks = [
-  { href: "/categorias", label: "Categorias" },
   { href: "/productos", label: "Productos" },
-  { href: "/#trust-highlights", label: "Beneficios" },
+] as const;
+
+const categoryLinks = [
+  { href: "/categorias/cleansers", label: "Limpieza" },
+  { href: "/categorias/barrier-support", label: "Barrera" },
+  { href: "/categorias/daily-protection", label: "Protección" },
+  { href: "/categorias/post-procedure", label: "Post" },
 ] as const;
 
 export function PublicHeader() {
   return (
-    <header className="sticky top-0 z-sticky border-b border-border-soft bg-surface-canvas/95 backdrop-blur">
+    <header className="sticky top-0 z-sticky border-b border-border-soft bg-surface-canvas/85 backdrop-blur-md">
       <div className="container flex flex-col gap-4 py-4">
         <div className="flex items-center gap-3 md:gap-6">
           <Link
@@ -36,13 +40,6 @@ export function PublicHeader() {
 
           <div className="ml-auto flex items-center gap-2">
             <PublicAccountEntry />
-            <div className="hidden md:block">
-              <PublicLinkButton
-                action={{ href: "/#contact-cta", label: "Contacto" }}
-                variant="secondary"
-                className="min-h-10 px-5 py-2"
-              />
-            </div>
             <CartHeaderButton />
           </div>
         </div>
@@ -69,13 +66,24 @@ export function PublicHeader() {
               </li>
             ))}
 
-            <li className="md:hidden">
-              <PublicLinkButton
-                action={{ href: "/#contact-cta", label: "Contacto" }}
-                variant="secondary"
-                className="min-h-11 px-4 py-2"
-              />
+            <li className="ml-auto flex min-h-11 items-center gap-1.5 pl-2">
+              {categoryLinks.map((category) => (
+                <Link
+                  key={category.label}
+                  href={category.href}
+                  className="inline-flex min-h-10 items-center rounded-pill px-3 text-label-sm text-text-brand transition hover:bg-surface-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
+                >
+                  {category.label}
+                </Link>
+              ))}
+              <span className="inline-flex min-h-9 items-center rounded-pill bg-brand-primary px-4 text-label-sm text-text-inverse">
+                Promociones
+              </span>
+              <span className="inline-flex min-h-9 items-center rounded-pill bg-[#F59E0B] px-4 text-label-sm text-ink-900">
+                Liquidación
+              </span>
             </li>
+
           </ul>
         </nav>
       </div>

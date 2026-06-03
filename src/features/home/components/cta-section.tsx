@@ -8,9 +8,16 @@ interface CtaSectionProps {
 export function CtaSection({ content }: CtaSectionProps) {
   return (
     <section id={content.sectionId} className="container py-12 sm:py-16 lg:py-20">
-      <div className="rounded-[36px] border border-border-brand bg-gradient-to-br from-brand-soft via-surface-canvas to-surface-soft p-6 shadow-sm sm:p-8 lg:p-10">
-        <div className="mx-auto max-w-4xl space-y-6 text-center">
-          <span className="inline-flex rounded-pill border border-border-brand bg-surface-canvas px-3 py-1 text-caption uppercase tracking-[0.14em] text-text-brand">
+      <div className="relative overflow-hidden rounded-[36px] border border-border-brand p-6 shadow-sm sm:p-8 lg:p-10">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/media/IMG_9445.jpeg')" }}
+        />
+        <div aria-hidden="true" className="absolute inset-0 bg-white/75 backdrop-blur-[1px]" />
+
+        <div className="relative mx-auto max-w-4xl space-y-6 text-center">
+          <span className="inline-flex rounded-pill border border-border-brand bg-surface-canvas/90 px-3 py-1 text-caption uppercase tracking-[0.14em] text-text-brand">
             {content.eyebrow}
           </span>
           <div className="space-y-4">

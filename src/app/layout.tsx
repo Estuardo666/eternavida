@@ -3,6 +3,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Plus_Jakarta_Sans } from "next/font/google";
 
 import { CartProvider } from "@/features/cart/context/cart-context";
+import { WhatsAppFloat } from "@/components/layout/whatsapp-float";
 
 import "./globals.css";
 
@@ -33,7 +34,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
           signInUrl="/login"
           signUpUrl="/register"
         >
-          <CartProvider>{children}</CartProvider>
+          <CartProvider>
+            {children}
+            <WhatsAppFloat phone="0982740049" />
+          </CartProvider>
         </ClerkProvider>
       </body>
     </html>

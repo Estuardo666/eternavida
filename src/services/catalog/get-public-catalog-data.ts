@@ -52,6 +52,92 @@ interface DecimalLike {
   toNumber(): number;
 }
 
+const CATEGORY_FALLBACK_IMAGE_FILES = [
+  "1118203697w2.jpg",
+  "695e827d401048-56953560.webp",
+  "Amaela-cuidado-facial-con-productos-dermatologicos-1-scaled-e1775929344399.webp",
+  "BLOG_AQUILEA_UNAS_PELO_PIEL.height-310.jpg",
+  "Como-elegir-productos-dermatologicos-segun-tu-tipo-de-piel.jpg",
+  "DSC0527-scaled.jpg",
+  "FACH13203-FOTO1.jpg",
+  "FACH13203-FOTO2.jpg",
+  "Manchas.jpg",
+  "Productos_dermatologicos_para_el_acne.webp",
+  "acne y piel grasa.jpg",
+  "azelacruglo.webp",
+  "cat 7.webp",
+  "cat 8.jpg",
+  "cat bloqueadores solares.jpg",
+  "cat1.webp",
+  "cat2.webp",
+  "cat3.webp",
+  "cat4.jpg",
+  "cathombre.jpg",
+  "contorno de ojos.webp",
+  "elenederm-banner-principal-expertos-dermocosmetica-avanzada.webp",
+  "limpieza clinica.jpg",
+  "maquillaje dermo.webp",
+  "parafarmacia-dermocosmetica.webp",
+  "productos-dermatologicos-scaled.jpg",
+  "productos_dermatologicos_para_la_piel.webp",
+] as const;
+
+function normalizeCategoryText(value: string): string {
+  return value
+    .toLocaleLowerCase("es-EC")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function hashValue(value: string): number {
+  let hash = 0;
+  for (const char of value) {
+    hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+  }
+  return hash;
+}
+
+function resolveCategoryFallbackImageFile(slug: string, name: string): string {
+  const searchable = normalizeCategoryText(`${slug} ${name}`);
+
+  if (searchable.includes("limpieza")) return "limpieza clinica.jpg";
+  if (searchable.includes("acne") || searchable.includes("grasa")) return "acne y piel grasa.jpg";
+  if (searchable.includes("proteccion") || searchable.includes("solar") || searchable.includes("bloqueador")) {
+    return "cat bloqueadores solares.jpg";
+  }
+  if (searchable.includes("contorno") || searchable.includes("ojos") || searchable.includes("ojo")) {
+    return "contorno de ojos.webp";
+  }
+  if (searchable.includes("maquillaje")) return "maquillaje dermo.webp";
+  if (searchable.includes("hombre") || searchable.includes("men")) return "cathombre.jpg";
+  if (
+    searchable.includes("post") ||
+    searchable.includes("procedimiento") ||
+    searchable.includes("barrera") ||
+    searchable.includes("reparacion")
+  ) {
+    return "cat4.jpg";
+  }
+
+  return CATEGORY_FALLBACK_IMAGE_FILES[hashValue(slug) % CATEGORY_FALLBACK_IMAGE_FILES.length] ?? "cat1.webp";
+}
+
+function buildCategoryFallbackMedia(slug: string, name: string): MediaAsset {
+  const fileName = resolveCategoryFallbackImageFile(slug, name);
+  return {
+    id: `fallback-category-media-${slug}`,
+    kind: "image",
+    url: `/categorias/${encodeURIComponent(fileName)}`,
+    storageKey: `public/categorias/${fileName}`,
+    altText: name,
+    mimeType: null,
+    posterUrl: null,
+    width: null,
+    height: null,
+    durationSeconds: null,
+  };
+}
+
 function toNumberValue(value: number | DecimalLike): number {
   return typeof value === "number" ? value : value.toNumber();
 }
@@ -146,13 +232,15 @@ function mapCategorySummary(record: {
     productAssignments: number;
   };
 }): PublicCatalogCategorySummary {
+  const resolvedMedia = mapMediaAsset(record.mediaAsset) ?? buildCategoryFallbackMedia(record.slug, record.name);
+
   return {
     id: record.id,
     slug: record.slug,
     name: record.name,
     description: record.description,
     href: buildCategoryHref(record.slug),
-    media: mapMediaAsset(record.mediaAsset),
+    media: resolvedMedia,
     productCount: record._count.productAssignments,
   };
 }

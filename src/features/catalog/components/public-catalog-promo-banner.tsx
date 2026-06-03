@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 /**
  * Promo banner components for the public catalog.
  *
@@ -17,17 +19,21 @@ interface PublicCatalogPageBannerProps {
 export function PublicCatalogPageBanner({ className }: PublicCatalogPageBannerProps) {
   return (
     <div
-      aria-label="Espacio para banner promocional de categoría"
       className={[
-        "flex min-h-[100px] items-center justify-center rounded-[20px] border border-border-brand bg-brand-soft px-6 py-8 sm:min-h-[120px]",
+        "relative min-h-[100px] overflow-hidden rounded-[20px] border border-border-brand sm:min-h-[120px]",
         className,
       ]
         .filter(Boolean)
         .join(" ")}
     >
-      <p className="text-center text-label-md text-text-brand opacity-60">
-        Banner promocional de categoría
-      </p>
+      <Image
+        src="/promocat.png"
+        alt="Banner promocional de categoría"
+        fill
+        className="object-cover"
+        sizes="(max-width: 768px) 95vw, 80vw"
+        priority
+      />
     </div>
   );
 }
@@ -49,22 +55,24 @@ export function PublicCatalogInlineBannerCard({
   className,
 }: PublicCatalogInlineBannerCardProps) {
   const base =
-    "flex h-full min-h-[220px] flex-col items-center justify-center rounded-[20px] border p-5 text-center sm:min-h-[260px]";
+    "relative h-full min-h-[220px] overflow-hidden rounded-[20px] border sm:min-h-[260px]";
 
   const variantClass =
     variant === "category"
-      ? "border-border-brand bg-brand-soft"
-      : "border-border-soft bg-surface-canvas";
-
-  const textClass =
-    variant === "category" ? "text-text-brand opacity-60" : "text-text-muted";
+      ? "border-border-brand"
+      : "border-border-soft";
 
   return (
     <div
-      aria-label="Espacio para banner promocional"
       className={[base, variantClass, className].filter(Boolean).join(" ")}
     >
-      <p className={["text-label-md", textClass].join(" ")}>Banner promocional</p>
+      <Image
+        src="/bannerpromo.jpg"
+        alt="Banner promocional"
+        fill
+        className="object-cover"
+        sizes="(max-width: 640px) 45vw, 300px"
+      />
     </div>
   );
 }

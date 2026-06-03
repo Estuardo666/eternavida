@@ -251,7 +251,8 @@ function resolveFeaturedCategories(record: StoredHomePageContentRecord): Feature
 
 function resolveFeaturedProducts(record: StoredHomePageContentRecord): FeaturedProductContent[] {
   const relationalItems = parseFeaturedProductSelections(record.featuredProductSelections);
-  return relationalItems.length > 0 ? relationalItems : parseFeaturedProductsItems(record.featuredProductsItems);
+  const items = relationalItems.length > 0 ? relationalItems : parseFeaturedProductsItems(record.featuredProductsItems);
+  return items.slice(0, 10);
 }
 
 function parseTrustHighlightsItems(value: unknown): TrustHighlightContent[] {

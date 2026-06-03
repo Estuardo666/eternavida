@@ -42,7 +42,8 @@ type CartAction =
   | { type: "CLOSE" }
   | { type: "TOGGLE" }
   | { type: "CLEAR_LAST_ADDED" }
-  | { type: "CLEAR" };
+  | { type: "CLEAR" }
+  | { type: "HYDRATE"; items: CartItem[] };
 
 function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
@@ -101,6 +102,9 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     case "CLEAR":
       return { ...state, items: [], isOpen: false, lastAddedId: null };
 
+    case "HYDRATE":
+      return { ...state, items: action.items };
+
     default:
       return state;
   }
@@ -129,10 +133,18 @@ const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, undefined, () => ({
-    items: loadItemsFromStorage(),
+    items: [],
     isOpen: false,
     lastAddedId: null,
   }));
+
+  // Hydrate cart from localStorage after mount (avoids SSR mismatch)
+  useEffect(() => {
+    const items = loadItemsFromStorage();
+    if (items.length > 0) {
+      dispatch({ type: "HYDRATE", items });
+    }
+  }, []);
 
   // Persist cart items to localStorage on change
   useEffect(() => {

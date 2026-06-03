@@ -34,7 +34,7 @@ export function ProductShelfSection({
               {content.cta ? (
                 <Link
                   href={content.cta.href}
-                  className="inline-flex min-h-11 items-center rounded-pill border border-border-default bg-surface-subtle px-5 py-3 text-label-md text-text-primary transition hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface-canvas focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
+                  className="inline-flex min-h-11 items-center rounded-pill bg-brand-primary px-5 py-3 text-label-md text-text-inverse transition hover:-translate-y-0.5 hover:bg-brand-primaryHover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
                 >
                   {content.cta.label}
                 </Link>
@@ -72,7 +72,7 @@ export function ProductShelfSection({
           {content.cta ? (
             <Link
               href={content.cta.href}
-              className="inline-flex min-h-11 items-center rounded-pill border border-border-default bg-surface-subtle px-5 py-3 text-label-md text-text-primary transition hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface-canvas focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
+              className="inline-flex min-h-11 items-center rounded-pill bg-brand-primary px-5 py-3 text-label-md text-text-inverse transition hover:-translate-y-0.5 hover:bg-brand-primaryHover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
             >
               {content.cta.label}
             </Link>

@@ -1,10 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useEffectEvent, useState } from "react";
 
-import { MediaAssetFrame } from "@/components/media/media-asset-frame";
 import { cx } from "@/lib/utils";
 import type { HomeHeroContent, HomeHeroSlide } from "@/types/content";
 
@@ -175,39 +173,6 @@ export function HeroSection({ content }: HeroSectionProps) {
           </div>
         ) : null}
 
-        <div className="container relative">
-          <div className="overflow-x-auto pb-2">
-            <ul
-              aria-label="Destacados del hero"
-              className="grid min-w-max grid-flow-col gap-4 sm:grid-flow-row sm:grid-cols-3 sm:min-w-0"
-            >
-              {content.spotlightCards.map((item) => (
-                <li key={item.id} className="w-[240px] sm:w-auto">
-                  <Link
-                    href={item.href}
-                    className="group flex h-full flex-col gap-4 rounded-[28px] border border-border-soft bg-surface-canvas p-4 shadow-sm transition hover:-translate-y-1 hover:border-border-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-subtle sm:p-5"
-                  >
-                    <MediaAssetFrame
-                      asset={item.media}
-                      label={`Spotlight del hero para ${item.title}`}
-                      minHeightClassName="min-h-[180px]"
-                    />
-
-                    <div className="space-y-2">
-                      <p className="text-caption uppercase tracking-[0.14em] text-text-brand">
-                        {item.eyebrow}
-                      </p>
-                      <h2 className="text-section-md text-text-primary">{item.title}</h2>
-                      <span className="inline-flex text-label-sm text-text-secondary transition group-hover:translate-x-1 group-hover:text-text-primary">
-                        Descubrir bloque
-                      </span>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
       </div>
     </section>
   );
