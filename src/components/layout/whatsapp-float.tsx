@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { MessageCircle } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 interface WhatsAppFloatProps {
   phone: string;
@@ -12,6 +13,13 @@ export function WhatsAppFloat({
   phone,
   message = "Hola, tengo una consulta sobre Dermatologika.",
 }: WhatsAppFloatProps) {
+  const pathname = usePathname();
+  const isCheckoutRoute = pathname?.startsWith("/checkout") ?? false;
+
+  if (isCheckoutRoute) {
+    return null;
+  }
+
   const cleanPhone = phone.replace(/\D/g, "");
   const href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
 

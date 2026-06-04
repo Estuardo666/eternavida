@@ -480,6 +480,7 @@ export function CheckoutPageClient() {
   const [shippingMethod, setShippingMethod] = useState<CheckoutShippingMethod>("standard");
   const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
   const selectedPaymentMethod = paymentMethods.find((m) => m.id === selectedPaymentMethodId) ?? paymentMethods[0] ?? null;
   const selectedPaymentRequiresConfirmation = requiresPaymentConfirmation(
     selectedPaymentMethod?.initialOrderStatus,
@@ -562,6 +563,11 @@ export function CheckoutPageClient() {
 
   async function handleSubmit() {
     if (buttonState !== "idle") return;
+
+    if (!hasAcceptedTerms) {
+      setSubmitError("Debes aceptar los términos y condiciones para finalizar la compra.");
+      return;
+    }
 
     if (isPricingLoading) {
       setSubmitError("Estamos recalculando el total del pedido. Espera un momento e intenta de nuevo.");
@@ -717,9 +723,9 @@ export function CheckoutPageClient() {
   // ─────────────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen overflow-x-clip bg-surface-canvas">
+    <div className="min-h-screen overflow-x-clip bg-surface-canvas pb-36 pt-16 sm:pb-40 lg:pb-0 lg:pt-0">
       {/* ── Mobile order summary toggle (hidden on lg) ─────────────────────── */}
-      <div className="border-b border-border-soft bg-surface-subtle lg:hidden">
+      <div className="fixed inset-x-0 top-0 z-40 border-b border-border-soft bg-surface-subtle/95 backdrop-blur supports-[backdrop-filter]:bg-surface-subtle/85 lg:hidden">
         <button
           type="button"
           onClick={() => setSummaryOpen((o) => !o)}
@@ -752,9 +758,9 @@ export function CheckoutPageClient() {
               animate="visible"
               exit="hidden"
               variants={summaryVariants}
-              className="overflow-hidden"
+              className="max-h-[68vh] overflow-y-auto border-t border-border-soft bg-surface-subtle"
             >
-              <div className="border-t border-border-soft px-4 py-5">
+              <div className="px-4 py-5">
                 <CheckoutOrderSummary
                   items={items}
                   subtotal={subtotal}
@@ -782,7 +788,7 @@ export function CheckoutPageClient() {
           initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: motionTokens.duration.moderate, ease: motionTokens.ease.soft }}
-          className="px-6 pb-20 pt-10 sm:px-10 lg:px-12 xl:px-16"
+          className="px-6 pb-40 pt-10 sm:px-10 sm:pb-44 lg:px-12 lg:pb-20 xl:px-16"
         >
           {/* Back to shopping — above logo */}
           <div className="mb-5">
@@ -1140,16 +1146,27 @@ export function CheckoutPageClient() {
           </FormSection>
 
           {/* ── Submit button ─────────────────────────────────────────────── */}
-          <div className="border-t border-border-soft/40 pt-6 mt-2">
+          <div className="fixed inset-x-0 bottom-0 z-40 mt-2 border-t border-border-soft/40 bg-white/95 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] shadow-[0_-10px_24px_rgba(17,24,39,0.06)] backdrop-blur supports-[backdrop-filter]:bg-white/90 lg:static lg:bg-transparent lg:p-0 lg:pb-0 lg:pt-6 lg:shadow-none">
             {submitError ? (
               <p className="mb-4 rounded-lg border border-status-error/15 bg-status-error/5 px-4 py-3 text-body-sm text-status-error">
                 {submitError}
               </p>
             ) : null}
+            <label className="mb-3 flex items-start gap-2.5 text-body-sm text-text-secondary">
+              <input
+                type="checkbox"
+                checked={hasAcceptedTerms}
+                onChange={(event) => setHasAcceptedTerms(event.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded border-border-strong text-brand-primary focus:ring-brand-primary"
+              />
+              <span>
+                Acepto los términos y condiciones y las políticas de privacidad de Dermatologika.
+              </span>
+            </label>
             <motion.button
               type="button"
               onClick={handleSubmit}
-              disabled={buttonState !== "idle" || isPricingLoading || Boolean(pricingError)}
+              disabled={buttonState !== "idle" || isPricingLoading || Boolean(pricingError) || !hasAcceptedTerms}
               {...buttonMotionProps}
               className={cx(
                 "relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-pill px-8 py-3.5 text-label-md font-semibold text-white",
@@ -1157,7 +1174,7 @@ export function CheckoutPageClient() {
                 buttonState === "done"
                   ? "bg-status-success shadow-[0_2px_12px_rgba(46,139,87,0.28)]"
                   : "bg-brand-primary hover:bg-brand-primaryHover",
-                (buttonState !== "idle" || isPricingLoading || pricingError) && "cursor-default opacity-95",
+                (buttonState !== "idle" || isPricingLoading || pricingError || !hasAcceptedTerms) && "cursor-default opacity-95",
               )}
               aria-live="polite"
               aria-label={
