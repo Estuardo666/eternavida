@@ -19,6 +19,7 @@ interface PublicProductCardProps {
     href: string;
     price: number | null;
     discountPrice: number | null;
+    stock?: number;
     badge?: string;
     badgeColor?: string;
     activePromotion?: PublicPromotionPill | null;
@@ -97,6 +98,7 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
   const [cardState, setCardState] = useState<"idle" | "added">("idle");
   const cardTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { addItem } = useCart();
+  const isOutOfStock = typeof product.stock === "number" && product.stock <= 0;
   const mediaLabel = product.media?.altText?.trim() || product.name;
 
   useEffect(() => {
@@ -108,7 +110,7 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
   function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
-    if (cardState === "added") return;
+    if (cardState === "added" || isOutOfStock) return;
     addItem({
       id: product.id,
       name: product.name,
@@ -213,16 +215,26 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
                 <motion.button
                   type="button"
                   onClick={handleAddToCart}
-                  disabled={cardState === "added"}
+                  disabled={cardState === "added" || isOutOfStock}
                   whileTap={reduceMotion ? {} : { scale: 0.975, transition: { duration: 0.1 } }}
                   className={[
                     "flex w-full min-h-11 items-center justify-center overflow-hidden rounded-full px-3 py-2 text-white transition-colors duration-200 ease-soft sm:px-4",
-                    cardState === "added" ? "cursor-default bg-[#3d9c2a]" : "cursor-pointer bg-[#5bb446] hover:bg-[#499038]",
+                    isOutOfStock
+                      ? "cursor-not-allowed bg-neutral-400"
+                      : cardState === "added"
+                        ? "cursor-default bg-[#3d9c2a]"
+                        : "cursor-pointer bg-[#5bb446] hover:bg-[#499038]",
                   ].join(" ")}
-                  aria-label={cardState === "added" ? "Producto agregado al carrito" : `Agregar ${product.name} al carrito`}
+                  aria-label={
+                    isOutOfStock
+                      ? "Producto sin stock"
+                      : cardState === "added"
+                        ? "Producto agregado al carrito"
+                        : `Agregar ${product.name} al carrito`
+                  }
                 >
                   <AnimatePresence mode="wait" initial={false}>
-                    {cardState === "idle" ? (
+                    {cardState === "idle" || isOutOfStock ? (
                       <motion.span
                         key="idle"
                         className="inline-flex items-center gap-1.5 whitespace-nowrap text-[0.78rem] font-normal tracking-[0.02em] sm:gap-2 sm:text-[0.84rem] sm:tracking-[0.03em]"
@@ -246,7 +258,7 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
                           <circle cx="20" cy="21" r="1" />
                           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                         </svg>
-                        Agregar al carrito
+                        {isOutOfStock ? "Sin stock" : "Agregar al carrito"}
                       </motion.span>
                     ) : (
                       <motion.span
@@ -288,16 +300,26 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
                 <motion.button
                   type="button"
                   onClick={handleAddToCart}
-                  disabled={cardState === "added"}
+                  disabled={cardState === "added" || isOutOfStock}
                   whileTap={reduceMotion ? {} : { scale: 0.975, transition: { duration: 0.1 } }}
                   className={[
                     "flex w-full min-h-11 items-center justify-center overflow-hidden rounded-full px-3 py-2 text-white transition-colors duration-200 ease-soft sm:px-4",
-                    cardState === "added" ? "cursor-default bg-[#3d9c2a]" : "cursor-pointer bg-[#5bb446] hover:bg-[#499038]",
+                    isOutOfStock
+                      ? "cursor-not-allowed bg-neutral-400"
+                      : cardState === "added"
+                        ? "cursor-default bg-[#3d9c2a]"
+                        : "cursor-pointer bg-[#5bb446] hover:bg-[#499038]",
                   ].join(" ")}
-                  aria-label={cardState === "added" ? "Producto agregado al carrito" : `Agregar ${product.name} al carrito`}
+                  aria-label={
+                    isOutOfStock
+                      ? "Producto sin stock"
+                      : cardState === "added"
+                        ? "Producto agregado al carrito"
+                        : `Agregar ${product.name} al carrito`
+                  }
                 >
                   <AnimatePresence mode="wait" initial={false}>
-                    {cardState === "idle" ? (
+                    {cardState === "idle" || isOutOfStock ? (
                       <motion.span
                         key="idle"
                         className="inline-flex items-center gap-1.5 whitespace-nowrap text-[0.78rem] font-normal tracking-[0.02em] sm:gap-2 sm:text-[0.84rem] sm:tracking-[0.03em]"
@@ -321,7 +343,7 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
                           <circle cx="20" cy="21" r="1" />
                           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                         </svg>
-                        Agregar al carrito
+                        {isOutOfStock ? "Sin stock" : "Agregar al carrito"}
                       </motion.span>
                     ) : (
                       <motion.span
@@ -397,16 +419,26 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
           <motion.button
             type="button"
             onClick={handleAddToCart}
-            disabled={cardState === "added"}
+            disabled={cardState === "added" || isOutOfStock}
             whileTap={reduceMotion ? {} : { scale: 0.975, transition: { duration: 0.1 } }}
             className={[
               "flex w-full min-h-11 items-center justify-center overflow-hidden rounded-full px-3 py-2 text-white transition-colors duration-200 ease-soft",
-              cardState === "added" ? "cursor-default bg-[#3d9c2a]" : "cursor-pointer bg-[#5bb446] hover:bg-[#499038]",
+              isOutOfStock
+                ? "cursor-not-allowed bg-neutral-400"
+                : cardState === "added"
+                  ? "cursor-default bg-[#3d9c2a]"
+                  : "cursor-pointer bg-[#5bb446] hover:bg-[#499038]",
             ].join(" ")}
-            aria-label={cardState === "added" ? "Producto agregado al carrito" : `Agregar ${product.name} al carrito`}
+            aria-label={
+              isOutOfStock
+                ? "Producto sin stock"
+                : cardState === "added"
+                  ? "Producto agregado al carrito"
+                  : `Agregar ${product.name} al carrito`
+            }
           >
             <AnimatePresence mode="wait" initial={false}>
-              {cardState === "idle" ? (
+              {cardState === "idle" || isOutOfStock ? (
                 <motion.span
                   key="idle"
                   className="inline-flex items-center gap-1.5 whitespace-nowrap text-[0.78rem] font-normal tracking-[0.02em]"
@@ -430,7 +462,7 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
                     <circle cx="20" cy="21" r="1" />
                     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                   </svg>
-                  Agregar al carrito
+                  {isOutOfStock ? "Sin stock" : "Agregar al carrito"}
                 </motion.span>
               ) : (
                 <motion.span
