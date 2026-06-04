@@ -190,13 +190,21 @@ function parseFeaturedCategorySelections(value: unknown): FeaturedCategoryConten
 }
 
 function parseFeaturedProductsItems(value: unknown): FeaturedProductContent[] {
+  function resolveProductHref(currentHref: string, productIdentifier: string): string {
+    if (currentHref.startsWith("/productos/")) {
+      return currentHref;
+    }
+
+    return `/productos/${encodeURIComponent(productIdentifier)}`;
+  }
+
   return featuredProductItemSchema.array().parse(value).map((item) => {
     const baseItem = {
       id: item.id,
       name: item.name,
       brand: item.brand ?? "Sin marca",
       description: item.description,
-      href: item.href,
+      href: resolveProductHref(item.href, item.id),
       price: item.price ?? null,
       discountPrice: item.discountPrice ?? null,
       category: item.category ?? null,
@@ -214,13 +222,21 @@ function parseFeaturedProductsItems(value: unknown): FeaturedProductContent[] {
 }
 
 function parseFeaturedProductSelections(value: unknown): FeaturedProductContent[] {
+  function resolveProductHref(currentHref: string, productSlug: string): string {
+    if (currentHref.startsWith("/productos/")) {
+      return currentHref;
+    }
+
+    return `/productos/${encodeURIComponent(productSlug)}`;
+  }
+
   return storedProductSelectionSchema.array().parse(value).map((selection) => {
     const baseItem = {
       id: selection.product.slug,
       name: selection.product.name,
       brand: selection.product.brand ?? "Sin marca",
       description: selection.product.description,
-      href: selection.product.href,
+      href: resolveProductHref(selection.product.href, selection.product.slug),
       price: selection.product.price,
       discountPrice: selection.product.discountPrice ?? null,
       category: selection.product.category

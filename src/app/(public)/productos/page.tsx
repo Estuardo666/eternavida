@@ -20,6 +20,8 @@ interface PublicProductsPageProps {
 export default async function PublicProductsPage({ searchParams }: PublicProductsPageProps) {
   const resolvedSearchParams = await searchParams;
   const data = await getPublicProductCatalogData(resolvedSearchParams);
+  const searchQuery = data.filters.query.trim();
+  const isSearchResultsMode = searchQuery.length > 0;
 
   const normalizedSearchParams: Record<string, string> = {
     ...(data.filters.query ? { q: data.filters.query } : {}),
@@ -31,6 +33,19 @@ export default async function PublicProductsPage({ searchParams }: PublicProduct
     ...(data.filters.onSale ? { enOferta: "1" } : {}),
     ...(data.filters.brandIds.length > 0 ? { marcas: mapBrandIdsToSlugs(data.filters.brandIds, data.brandOptions).join(",") } : {}),
   };
+
+  const headingTitle = isSearchResultsMode
+    ? `Resultados para: "${searchQuery}"`
+    : "Tienda Dermatologika";
+  const headingDescription = isSearchResultsMode
+    ? "Explora los productos que coinciden con tu búsqueda y ajusta los filtros para encontrar justo lo que necesitas."
+    : "Descubre nuestra selección de productos dermatológicos. Cuidado de la piel respaldado por especialistas.";
+  const emptyStateTitle = isSearchResultsMode
+    ? `No encontramos resultados para: "${searchQuery}"`
+    : "No encontramos productos disponibles";
+  const emptyStateDescription = isSearchResultsMode
+    ? "Prueba con otro término de búsqueda o ajusta los filtros para ver más resultados."
+    : "Vuelve pronto o explora nuestras categorías para encontrar lo que buscas.";
 
   return (
     <div className="w-full">
@@ -52,26 +67,36 @@ export default async function PublicProductsPage({ searchParams }: PublicProduct
               <li aria-current="page" className="text-text-secondary">
                 Tienda
               </li>
+              {isSearchResultsMode ? (
+                <>
+                  <li aria-hidden="true" className="text-text-muted">/</li>
+                  <li aria-current="page" className="text-text-secondary">
+                    Resultados
+                  </li>
+                </>
+              ) : null}
             </ol>
           </nav>
 
           {/* Page heading */}
           <div className="space-y-3 text-center">
             <h1 className="text-headline-md text-text-primary sm:text-headline-lg">
-              Tienda Dermatologika
+              {headingTitle}
             </h1>
             <p className="mx-auto max-w-xl text-body-md text-text-secondary">
-              Descubre nuestra selección de productos dermatológicos. Cuidado de la piel respaldado por especialistas.
+              {headingDescription}
             </p>
           </div>
         </div>
       </div>
 
       {/* ── Catalog navs — full width above the sidebar+grid row ─────────── */}
-      <div className="mx-auto w-[95vw] space-y-4 px-[5px] pb-6 sm:px-6">
-        <PublicCategoryHorizontalNav categories={data.categoryOptions} />
-        <PublicBrandHorizontalNav brands={data.brandOptions} />
-      </div>
+      {!isSearchResultsMode ? (
+        <div className="mx-auto w-[95vw] space-y-4 px-[5px] pb-6 sm:px-6">
+          <PublicCategoryHorizontalNav categories={data.categoryOptions} />
+          <PublicBrandHorizontalNav brands={data.brandOptions} />
+        </div>
+      ) : null}
 
       {/* ── Catalog body: sidebar + grid ────────────────────────────────── */}
       <div className="mx-auto w-[95vw] px-[5px] pb-16 sm:px-6">
@@ -106,8 +131,8 @@ export default async function PublicProductsPage({ searchParams }: PublicProduct
               </>
             ) : (
               <PublicCatalogEmptyState
-                title="No encontramos productos disponibles"
-                description="Vuelve pronto o explora nuestras categorías para encontrar lo que buscas."
+                title={emptyStateTitle}
+                description={emptyStateDescription}
                 action={{ href: "/productos", label: "Ver toda la tienda" }}
               />
             )}

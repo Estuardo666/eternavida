@@ -14,9 +14,10 @@ interface HeroSlideMediaProps {
   slide: HomeHeroSlide;
   isActive: boolean;
   shouldPrioritize: boolean;
+  shouldRenderMedia: boolean;
 }
 
-function HeroSlideMedia({ slide, isActive, shouldPrioritize }: HeroSlideMediaProps) {
+function HeroSlideMedia({ slide, isActive, shouldPrioritize, shouldRenderMedia }: HeroSlideMediaProps) {
   if (!slide.media?.url) {
     return (
       <div
@@ -52,26 +53,29 @@ function HeroSlideMedia({ slide, isActive, shouldPrioritize }: HeroSlideMediaPro
       {slide.media.kind === "video" ? (
         <video
           className="absolute inset-0 h-full w-full object-cover"
-          autoPlay
+          autoPlay={isActive}
           muted
           loop
           playsInline
+          preload={isActive ? "metadata" : "none"}
           aria-label={slide.media.altText}
           poster={slide.media.posterUrl ?? undefined}
         >
-          <source src={slide.media.url} type={slide.media.mimeType ?? undefined} />
+          {shouldRenderMedia ? <source src={slide.media.url} type={slide.media.mimeType ?? undefined} /> : null}
         </video>
       ) : (
-        <Image
-          src={slide.media.url}
-          alt={slide.media.altText}
-          fill
-          sizes="100vw"
-          priority={shouldPrioritize}
-          loading={shouldPrioritize ? "eager" : "lazy"}
-          fetchPriority={shouldPrioritize ? "high" : "auto"}
-          className="object-cover"
-        />
+        shouldRenderMedia ? (
+          <Image
+            src={slide.media.url}
+            alt={slide.media.altText}
+            fill
+            sizes="100vw"
+            priority={shouldPrioritize}
+            loading={shouldPrioritize ? "eager" : "lazy"}
+            fetchPriority={shouldPrioritize ? "high" : "auto"}
+            className="object-cover"
+          />
+        ) : null
       )}
 
     </div>
@@ -125,6 +129,7 @@ export function HeroSection({ content }: HeroSectionProps) {
                 slide={slide}
                 isActive={index === activeIndex}
                 shouldPrioritize={index === 0}
+                shouldRenderMedia={Math.abs(index - activeIndex) <= 1 || (activeIndex === 0 && index === totalSlides - 1) || (activeIndex === totalSlides - 1 && index === 0)}
               />
             ))}
 

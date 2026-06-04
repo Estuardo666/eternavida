@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import dynamic from "next/dynamic";
 
 import { CartProvider } from "@/features/cart/context/cart-context";
-import { WhatsAppFloat } from "@/components/layout/whatsapp-float";
-
 import "./globals.css";
+
+const WhatsAppFloatDeferred = dynamic(
+  () => import("@/components/layout/whatsapp-float").then((mod) => mod.WhatsAppFloat),
+);
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -36,7 +39,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         >
           <CartProvider>
             {children}
-            <WhatsAppFloat phone="0982740049" />
+            <WhatsAppFloatDeferred phone="0982740049" />
           </CartProvider>
         </ClerkProvider>
       </body>

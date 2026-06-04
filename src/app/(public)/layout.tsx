@@ -1,8 +1,12 @@
 import type { ReactNode } from "react";
+import dynamic from "next/dynamic";
 
 import { PublicFooter } from "@/components/layout/public-footer";
 import { PublicHeader } from "@/components/layout/public-header";
-import { CartSidebar } from "@/features/cart/components/cart-sidebar";
+
+const CartSidebarDeferred = dynamic(
+  () => import("@/features/cart/components/cart-sidebar").then((mod) => mod.CartSidebar),
+);
 
 interface PublicLayoutProps {
   children: ReactNode;
@@ -30,7 +34,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
         <PublicFooter />
       </div>
 
-      <CartSidebar />
+      <CartSidebarDeferred />
     </div>
   );
 }

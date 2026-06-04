@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 
@@ -20,7 +18,7 @@ export function PromoCollectionSection({ content }: PromoCollectionSectionProps)
             width={800}
             height={600}
             className="h-auto w-full object-cover"
-            priority
+            sizes="(max-width: 1024px) 100vw, 50vw"
           />
         </div>
 

@@ -73,25 +73,39 @@ export function BestOffersSection({ content }: BestOffersSectionProps) {
   const dragStartX = useRef(0);
   const dragStartScroll = useRef(0);
   const hasDragged = useRef(false);
+  const isPointerDown = useRef(false);
   const pointerId = useRef<number | null>(null);
 
   const onPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     if (!trackRef.current) return;
     const track = trackRef.current;
+    isPointerDown.current = true;
     pointerId.current = e.pointerId;
-    track.setPointerCapture(e.pointerId);
     dragStartX.current = e.clientX;
     dragStartScroll.current = track.scrollLeft;
     hasDragged.current = false;
-    setIsDragging(true);
+    setIsDragging(false);
   }, []);
 
   const onPointerMove = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
-      if (!isDragging || !trackRef.current) return;
+      if (!trackRef.current || !isPointerDown.current) return;
       const dx = dragStartX.current - e.clientX;
       if (Math.abs(dx) > DRAG_THRESHOLD) {
         hasDragged.current = true;
+        if (!isDragging) {
+          if (pointerId.current !== null) {
+            try {
+              trackRef.current.setPointerCapture(pointerId.current);
+            } catch {
+              /* noop */
+            }
+          }
+          setIsDragging(true);
+        }
+      }
+      if (!hasDragged.current) {
+        return;
       }
       trackRef.current.scrollLeft = dragStartScroll.current + dx;
     },
@@ -100,6 +114,7 @@ export function BestOffersSection({ content }: BestOffersSectionProps) {
 
   const onPointerUp = useCallback(() => {
     if (!trackRef.current) return;
+    isPointerDown.current = false;
     if (pointerId.current !== null) {
       try {
         trackRef.current.releasePointerCapture(pointerId.current);

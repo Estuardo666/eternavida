@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 
@@ -22,7 +20,7 @@ export function WideBannerSection({ content }: WideBannerSectionProps) {
           width={1200}
           height={400}
           className="h-auto w-full object-cover"
-          priority
+          sizes="100vw"
         />
       </Link>
     </section>
