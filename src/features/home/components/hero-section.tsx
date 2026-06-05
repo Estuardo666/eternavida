@@ -84,6 +84,7 @@ function HeroSlideMedia({ slide, isActive, shouldPrioritize, shouldRenderMedia }
 
 export function HeroSection({ content }: HeroSectionProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   const totalSlides = content.slides.length;
   const activeSlide = content.slides[activeIndex] ?? content.slides[0];
@@ -95,6 +96,19 @@ export function HeroSection({ content }: HeroSectionProps) {
   const showNextSlide = useEffectEvent(() => {
     setActiveIndex((currentIndex) => (currentIndex + 1) % totalSlides);
   });
+
+  useEffect(() => {
+    setMounted(true);
+
+    const staticHero = document.querySelector("[data-hero-static]");
+    if (staticHero instanceof HTMLElement) {
+      staticHero.style.opacity = "0";
+      staticHero.style.pointerEvents = "none";
+      staticHero.style.position = "absolute";
+      staticHero.style.height = "0";
+      staticHero.style.overflow = "hidden";
+    }
+  }, []);
 
   useEffect(() => {
     if (totalSlides < 2) {

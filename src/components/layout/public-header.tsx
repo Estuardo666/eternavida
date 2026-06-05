@@ -4,7 +4,6 @@ import { useState } from "react";
 
 import Link from "next/link";
 import Image from "next/image";
-import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 
 import { PublicAccountEntry } from "@/components/layout/public-account-entry";
@@ -27,31 +26,23 @@ export function PublicHeader() {
 
   return (
     <header className="sticky top-0 z-sticky border-b border-border-soft bg-surface-canvas/85 backdrop-blur-md">
-      <AnimatePresence initial={false}>
-        {isPromoBarVisible ? (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="border-b border-brand-primary/35 bg-brand-soft"
-          >
-            <div className="container flex min-h-9 items-center justify-between gap-2 py-1.5">
-              <p className="truncate text-body-sm font-semibold text-text-brand">
-                Promociones activas hoy: descuentos especiales en dermocosmética seleccionada.
-              </p>
-              <button
-                type="button"
-                onClick={() => setIsPromoBarVisible(false)}
-                aria-label="Cerrar barra de promociones"
-                className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-brand-primary/30 bg-white/70 text-text-brand transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-brand-soft"
-              >
-                <X className="h-3.5 w-3.5" aria-hidden="true" />
-              </button>
-            </div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+      {isPromoBarVisible && (
+        <div className="border-b border-brand-primary/35 bg-brand-soft transition-all duration-200 ease-out animate-[promo-in_200ms_ease-out]">
+          <div className="container flex min-h-9 items-center justify-between gap-2 py-1.5">
+            <p className="truncate text-body-sm font-semibold text-text-brand">
+              Promociones activas hoy: descuentos especiales en dermocosmética seleccionada.
+            </p>
+            <button
+              type="button"
+              onClick={() => setIsPromoBarVisible(false)}
+              aria-label="Cerrar barra de promociones"
+              className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-brand-primary/30 bg-white/70 text-text-brand transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-brand-soft"
+            >
+              <X className="h-3.5 w-3.5" aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="container flex flex-col gap-2.5 py-2.5">
         <div className="flex items-center gap-2.5 md:gap-4">

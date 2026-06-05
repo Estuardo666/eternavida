@@ -27,7 +27,7 @@ export function HomePageView({ contentResult }: HomePageViewProps) {
   const { content } = contentResult;
 
   return (
-    <div className="bg-gradient-to-b from-[#72b25514] via-white to-white [&_h2]:tracking-[-0.03em]">
+    <>
       <HeroSection content={content.hero} />
       <BestOffersSectionDeferred content={content.featuredProducts} />
       <PromoCollectionSection content={content.featuredCampaign} />
@@ -36,6 +36,6 @@ export function HomePageView({ contentResult }: HomePageViewProps) {
       <FeaturedCategoriesGridSection content={content.featuredCategories} />
       <CtaSection content={content.cta} />
       <HomeBottomBenefitsStrip />
-    </div>
+    </>
   );
 }

@@ -32,6 +32,10 @@ type RootLayoutProps = Readonly<{
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="es" className={plusJakartaSans.variable} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev" />
+        <link rel="preconnect" href="https://img.clerk.com" />
+      </head>
       <body className="min-h-screen antialiased">
         <ClerkProvider
           signInUrl="/login"

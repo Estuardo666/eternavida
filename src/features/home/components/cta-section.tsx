@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { PublicLinkButton } from "@/components/ui/public-link-button";
 import type { HomeCtaSectionContent } from "@/types/content";
 
@@ -9,10 +11,13 @@ export function CtaSection({ content }: CtaSectionProps) {
   return (
     <section id={content.sectionId} className="container py-12 sm:py-16 lg:py-20">
       <div className="relative overflow-hidden rounded-[36px] border border-border-brand p-6 shadow-sm sm:p-8 lg:p-10">
-        <div
+        <Image
+          src="/media/IMG_9445.jpeg"
+          alt=""
           aria-hidden="true"
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/media/IMG_9445.jpeg')" }}
+          fill
+          sizes="(max-width: 768px) 100vw, 900px"
+          className="object-cover"
         />
         <div aria-hidden="true" className="absolute inset-0 bg-white/75 backdrop-blur-[1px]" />
 
