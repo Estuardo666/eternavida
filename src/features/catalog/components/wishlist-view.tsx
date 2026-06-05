@@ -14,6 +14,10 @@ interface WishlistProduct {
   href: string;
   mediaAssetId: string | null;
   isActive: boolean;
+  mediaAsset: {
+    publicUrl: string | null;
+    altText: string | null;
+  } | null;
 }
 
 interface WishlistItemData {
@@ -119,11 +123,21 @@ export function WishlistView() {
             <div key={item.id} className="group relative overflow-hidden rounded-2xl border border-border-soft bg-white">
               <Link href={product.href} className="block">
                 <div className="aspect-square overflow-hidden bg-neutral-50 p-4">
-                  <div className="flex h-full w-full items-center justify-center">
-                    <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 text-label-lg text-text-muted">
-                      {product.name.slice(0, 1).toUpperCase()}
-                    </span>
-                  </div>
+                  {product.mediaAsset?.publicUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element -- R2 assets use native img
+                    <img
+                      src={product.mediaAsset.publicUrl}
+                      alt={product.mediaAsset.altText || product.name}
+                      className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.03]"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center">
+                      <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 text-label-lg text-text-muted">
+                        {product.name.slice(0, 1).toUpperCase()}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </Link>
 

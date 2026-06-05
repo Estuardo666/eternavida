@@ -42,6 +42,12 @@ export const wishlistRepository = {
               href: true,
               mediaAssetId: true,
               isActive: true,
+              mediaAsset: {
+                select: {
+                  publicUrl: true,
+                  altText: true,
+                },
+              },
             },
           },
         },
