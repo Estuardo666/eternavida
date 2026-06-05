@@ -67,6 +67,11 @@ const catalogNavigation: ReadonlyArray<NavigationItem> = [
     label: "Promociones",
     icon: PromotionIcon,
   },
+  {
+    href: "/admin/collections",
+    label: "Colecciones",
+    icon: CollectionIcon,
+  },
 ] as const;
 
 const storeNavigation: ReadonlyArray<NavigationItem> = [
@@ -74,6 +79,11 @@ const storeNavigation: ReadonlyArray<NavigationItem> = [
     href: "/admin/orders",
     label: "Pedidos",
     icon: OrdersIcon,
+  },
+  {
+    href: "/admin/reviews",
+    label: "Reseñas",
+    icon: ReviewsIcon,
   },
   {
     href: "/admin/shipping",
@@ -94,6 +104,26 @@ const storeNavigation: ReadonlyArray<NavigationItem> = [
     href: "/admin/email-logs",
     label: "Logs de correos",
     icon: EmailLogsIcon,
+  },
+  {
+    href: "/admin/restock-alerts",
+    label: "Alertas de restock",
+    icon: RestockAlertIcon,
+  },
+  {
+    href: "/admin/abandoned-carts",
+    label: "Carritos abandonados",
+    icon: AbandonedCartIcon,
+  },
+  {
+    href: "/admin/referrals",
+    label: "Referidos",
+    icon: ReferralIcon,
+  },
+  {
+    href: "/admin/subscriptions",
+    label: "Suscripciones",
+    icon: SubscriptionIcon,
   },
 ] as const;
 
@@ -937,6 +967,91 @@ function WebhookEventsIcon(props: { className?: string }) {
       <path d="M7.5 9H16.5" />
       <path d="M7.5 13H13.5" />
       <path d="M16 16L17.5 17.5L20 14.5" />
+    </svg>
+  );
+}
+
+function ReviewsIcon(props: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={props.className}
+      aria-hidden="true"
+    >
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
+  );
+}
+
+function RestockAlertIcon(props: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={props.className}
+      aria-hidden="true"
+    >
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+      <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+    </svg>
+  );
+}
+
+function AbandonedCartIcon(props: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={props.className}
+      aria-hidden="true"
+    >
+      <circle cx="9" cy="21" r="1" />
+      <circle cx="20" cy="21" r="1" />
+      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+      <path d="M14 14h-4" />
+    </svg>
+  );
+}
+
+function ReferralIcon(props: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={props.className} aria-hidden="true">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  );
+}
+
+function SubscriptionIcon(props: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={props.className} aria-hidden="true">
+      <path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.66 0 3-4.03 3-9s-1.34-9-3-9m0 18c-1.66 0-3-4.03-3-9s1.34-9 3-9" />
+    </svg>
+  );
+}
+
+function CollectionIcon(props: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={props.className} aria-hidden="true">
+      <rect x="3" y="3" width="7" height="7" rx="1.5" />
+      <rect x="14" y="3" width="7" height="7" rx="1.5" />
+      <rect x="3" y="14" width="7" height="7" rx="1.5" />
+      <rect x="14" y="14" width="7" height="7" rx="1.5" />
     </svg>
   );
 }

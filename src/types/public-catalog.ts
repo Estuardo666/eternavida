@@ -106,8 +106,16 @@ export interface PublicCategoryDetailData {
   maxPrice: number;
 }
 
+export interface PublicReviewAggregate {
+  averageRating: number;
+  totalReviews: number;
+  ratingDistribution: Record<number, number>;
+  verifiedCount: number;
+}
+
 export interface PublicProductDetailData {
   product: PublicCatalogProductSummary;
   brandProducts: PublicCatalogProductSummary[];
   recommendedProducts: PublicCatalogProductSummary[];
+  reviewAggregate: PublicReviewAggregate | null;
 }

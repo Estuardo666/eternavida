@@ -1,6 +1,5 @@
 -- AlterTable
-ALTER TABLE "Product" ADD COLUMN     "categoryId" TEXT,
-ALTER COLUMN "lastSyncedAt" SET DATA TYPE TIMESTAMP(3);
+ALTER TABLE "Product" ADD COLUMN     "categoryId" TEXT;
 
 -- CreateIndex
 CREATE INDEX "Product_categoryId_idx" ON "Product"("categoryId");

@@ -659,6 +659,14 @@ export async function getPublicProductDetailData(
     listProductsByBrand({ productId: product.id, brand: product.brand }),
     listRelatedPublicProductRecords({ productId: product.id, categoryIds }),
   ]);
+
+  let reviewAggregate = null;
+  try {
+    const { reviewRepository } = await import("@/server/reviews/review.repository");
+    reviewAggregate = await reviewRepository.getAggregate(product.id);
+  } catch {
+    // Reviews not critical — fail silently
+  }
   const promotionByProductId = await resolvePromotionByProductId([
     product,
     ...brandProductRecords,
@@ -673,5 +681,6 @@ export async function getPublicProductDetailData(
     recommendedProducts: recommendedProductRecords
       .filter((p) => !brandProductIds.has(p.id))
       .map((record) => mapProductSummary(record, promotionByProductId)),
+    reviewAggregate,
   };
 }

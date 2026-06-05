@@ -9,9 +9,14 @@ import { ProductBadge } from "@/components/ui/product-badge";
 import { useCart } from "@/features/cart/context/cart-context";
 import { motionTokens } from "@/motion/tokens";
 import type { PublicProductDetailData } from "@/types/public-catalog";
+import { useWishlist } from "../hooks/use-wishlist";
 
 import { PublicProductCarousel } from "./public-product-carousel";
 import { PublicProductGrid } from "./public-product-grid";
+import { StarRating } from "./star-rating";
+import { ReviewForm } from "./review-form";
+import { ReviewList } from "./review-list";
+import { RestockAlertForm } from "./restock-alert-form";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -73,12 +78,12 @@ interface PublicProductDetailViewProps {
 
 export function PublicProductDetailView({ data }: PublicProductDetailViewProps) {
   const reduceMotion = useReducedMotion() ?? false;
-  const { product, brandProducts, recommendedProducts } = data;
+  const { product, brandProducts, recommendedProducts, reviewAggregate } = data;
 
   const { addItem } = useCart();
+  const { isFavorited, toggle: toggleWishlist } = useWishlist();
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState<"idle" | "added">("idle");
-  const [isFavorited, setIsFavorited] = useState(false);
   const [isHeartBeating, setIsHeartBeating] = useState(false);
   const cartTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const heartTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -132,20 +137,12 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
     };
   }, []);
 
-  const handleFavorite = useCallback(() => {
-    setIsFavorited((prev) => {
-      const next = !prev;
-      if (next) {
-        setIsHeartBeating(true);
-        if (heartTimerRef.current) clearTimeout(heartTimerRef.current);
-        heartTimerRef.current = setTimeout(() => setIsHeartBeating(false), 2100);
-      } else {
-        setIsHeartBeating(false);
-        if (heartTimerRef.current) clearTimeout(heartTimerRef.current);
-      }
-      return next;
-    });
-  }, []);
+  const handleFavorite = useCallback(async () => {
+    setIsHeartBeating(true);
+    if (heartTimerRef.current) clearTimeout(heartTimerRef.current);
+    heartTimerRef.current = setTimeout(() => setIsHeartBeating(false), 2100);
+    await toggleWishlist(product.id);
+  }, [toggleWishlist, product.id]);
 
   return (
     <div className="container overflow-x-hidden py-10 sm:py-14">
@@ -257,43 +254,27 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
               </div>
             </div>
 
-            {/* Rating — static placeholder */}
-            <div
-              className="flex items-center gap-2"
-              aria-label="Calificación: 4.5 de 5 estrellas, 3 reseñas"
-            >
-              <div className="flex items-center gap-0.5" aria-hidden="true">
-                {[1, 2, 3, 4].map((i) => (
-                  <svg
-                    key={i}
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="h-4 w-4 text-[#f5a623]"
-                    aria-hidden="true"
-                  >
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                  </svg>
-                ))}
-                {/* Half star */}
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-4 w-4 text-[#f5a623]" aria-hidden="true">
-                  <defs>
-                    <linearGradient id="half-star-detail">
-                      <stop offset="50%" stopColor="#f5a623" />
-                      <stop offset="50%" stopColor="transparent" />
-                    </linearGradient>
-                  </defs>
-                  <polygon
-                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-                    fill="url(#half-star-detail)"
-                    stroke="#f5a623"
-                    strokeWidth="1"
-                  />
-                </svg>
+            {/* Rating — real data */}
+            {reviewAggregate && reviewAggregate.totalReviews > 0 ? (
+              <a
+                href="#reviews"
+                className="flex items-center gap-2 transition hover:opacity-80"
+                aria-label={`Calificación: ${reviewAggregate.averageRating} de 5 estrellas, ${reviewAggregate.totalReviews} reseñas`}
+              >
+                <StarRating value={Math.round(reviewAggregate.averageRating)} readonly size="sm" />
+                <span className="text-body-sm font-semibold text-text-primary">
+                  {reviewAggregate.averageRating}
+                </span>
+                <span className="text-body-sm text-text-secondary">
+                  ({reviewAggregate.totalReviews} reseña{reviewAggregate.totalReviews !== 1 ? "s" : ""})
+                </span>
+              </a>
+            ) : (
+              <div className="flex items-center gap-2">
+                <StarRating value={0} readonly size="sm" />
+                <span className="text-body-sm text-text-secondary">Sin reseñas</span>
               </div>
-              <span className="text-body-sm font-semibold text-text-primary">4.5</span>
-              <span className="text-body-sm text-text-secondary">(3 reseñas)</span>
-            </div>
+            )}
 
             {/* Description */}
             <p className="text-body-md leading-relaxed text-text-secondary">
@@ -443,12 +424,12 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                     whileTap={reduceMotion ? {} : { scale: 0.85, transition: { duration: 0.1 } }}
                     className={[
                       "flex h-12 w-12 items-center justify-center rounded-full border transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2",
-                      isFavorited
+                      isFavorited(product.id)
                         ? "border-rose-200 bg-rose-50"
                         : "border-border-soft bg-surface-canvas hover:border-rose-200 hover:bg-rose-50",
                     ].join(" ")}
-                    aria-label={isFavorited ? "Quitar de favoritos" : "Añadir a mis favoritos"}
-                    aria-pressed={isFavorited}
+                    aria-label={isFavorited(product.id) ? "Quitar de favoritos" : "Añadir a mis favoritos"}
+                    aria-pressed={isFavorited(product.id)}
                   >
                     {/* Heartbeat 2s on activate, spring return on deactivate */}
                     <motion.div
@@ -483,8 +464,8 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           animate={{
-                            fill: isFavorited ? "#ef4444" : "rgba(0,0,0,0)",
-                            stroke: isFavorited ? "#ef4444" : "#9ca3af",
+                            fill: isFavorited(product.id) ? "#ef4444" : "rgba(0,0,0,0)",
+                            stroke: isFavorited(product.id) ? "#ef4444" : "#9ca3af",
                           }}
                           transition={
                             reduceMotion
@@ -501,12 +482,19 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                     role="tooltip"
                     className="pointer-events-none absolute bottom-full left-1/2 z-tooltip mb-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-ink-700 px-2.5 py-1 text-[0.72rem] font-medium text-white opacity-0 shadow-sm transition-opacity duration-150 group-hover:opacity-100"
                   >
-                    {isFavorited ? "Quitar de favoritos" : "Añadir a mis favoritos"}
+                    {isFavorited(product.id) ? "Quitar de favoritos" : "Añadir a mis favoritos"}
                   </span>
                 </div>
 
               </div>
             </div>
+
+            {/* ── Restock alert (when out of stock) ──────────────────────── */}
+            {outOfStock ? (
+              <div className="rounded-xl border border-border-soft bg-white p-4">
+                <RestockAlertForm productId={product.id} productName={product.name} />
+              </div>
+            ) : null}
 
             {/* ── Trust badges ───────────────────────────────────────────── */}
             <div className="space-y-3">
@@ -570,6 +558,31 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
               ID: {product.id}
             </p>
 
+          </div>
+        </section>
+
+        {/* ── Reviews ──────────────────────────────────────────────────────── */}
+        <section id="reviews" className="space-y-8">
+          <div className="space-y-2">
+            <h2 className="text-section-xl text-text-primary">Reseñas de clientes</h2>
+            <p className="text-body-md text-text-secondary">
+              Opiniones verificadas de quienes han probado este producto.
+            </p>
+          </div>
+
+          <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
+            {/* Review form */}
+            <div className="space-y-3">
+              <h3 className="text-body-lg font-semibold text-text-primary">
+                Deja tu reseña
+              </h3>
+              <ReviewForm productId={product.id} />
+            </div>
+
+            {/* Review list */}
+            <div>
+              <ReviewList productSlug={product.slug} aggregate={reviewAggregate} />
+            </div>
           </div>
         </section>
 

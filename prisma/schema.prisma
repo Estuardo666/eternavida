@@ -59,26 +59,27 @@ model MediaFolder {
 }
 
 model MediaAsset {
-  id                    String            @id @default(cuid())
-  storageKey            String            @unique
-  publicUrl             String?
-  kind                  MediaAssetKind
-  mimeType              String?
-  altText               String?
-  posterUrl             String?
-  width                 Int?
-  height                Int?
-  durationSeconds       Int?
-  folderId              String?
-  folder                MediaFolder?      @relation(fields: [folderId], references: [id], onDelete: SetNull)
-  createdAt             DateTime          @default(now())
-  updatedAt             DateTime          @updatedAt
-  primaryHeroHomePages  HomePageContent[] @relation("HomePrimaryHeroMedia")
+  id                     String            @id @default(cuid())
+  storageKey             String            @unique
+  publicUrl              String?
+  kind                   MediaAssetKind
+  mimeType               String?
+  altText                String?
+  posterUrl              String?
+  width                  Int?
+  height                 Int?
+  durationSeconds        Int?
+  folderId               String?
+  folder                 MediaFolder?      @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+  primaryHeroHomePages   HomePageContent[] @relation("HomePrimaryHeroMedia")
   secondaryHeroHomePages HomePageContent[] @relation("HomeSecondaryHeroMedia")
-  tertiaryHeroHomePages HomePageContent[] @relation("HomeTertiaryHeroMedia")
-  categoryCards         Category[]        @relation("CategoryMediaAsset")
-  productCards          Product[]         @relation("ProductMediaAsset")
-  brandLogos            Brand[]           @relation("BrandLogoMediaAsset")
+  tertiaryHeroHomePages  HomePageContent[] @relation("HomeTertiaryHeroMedia")
+  categoryCards          Category[]        @relation("CategoryMediaAsset")
+  productCards           Product[]         @relation("ProductMediaAsset")
+  brandLogos             Brand[]           @relation("BrandLogoMediaAsset")
+  collections            Collection[]      @relation("CollectionMediaAsset")
 
   @@index([kind])
   @@index([folderId])
@@ -86,20 +87,21 @@ model MediaAsset {
 }
 
 model Category {
-  id              String                 @id @default(cuid())
-  slug            String                 @unique
-  name            String
-  description     String
-  href            String
-  isActive        Boolean                @default(true)
-  mediaAssetId    String?
-  createdAt       DateTime               @default(now())
-  updatedAt       DateTime               @updatedAt
-  mediaAsset      MediaAsset?            @relation("CategoryMediaAsset", fields: [mediaAssetId], references: [id], onDelete: SetNull)
-  products        Product[]
-  productAssignments ProductCategoryAssignment[]
-  promotionScopes PromotionCategory[]
-  homeSelections  HomeFeaturedCategory[]
+  id                    String                      @id @default(cuid())
+  slug                  String                      @unique
+  name                  String
+  description           String
+  href                  String
+  isActive              Boolean                     @default(true)
+  mediaAssetId          String?
+  createdAt             DateTime                    @default(now())
+  updatedAt             DateTime                    @updatedAt
+  mediaAsset            MediaAsset?                 @relation("CategoryMediaAsset", fields: [mediaAssetId], references: [id], onDelete: SetNull)
+  products              Product[]
+  productAssignments    ProductCategoryAssignment[]
+  promotionScopes       PromotionCategory[]
+  homeSelections        HomeFeaturedCategory[]
+  collectionAssignments CollectionCategory[]
 
   @@index([isActive])
   @@index([mediaAssetId])
@@ -107,38 +109,43 @@ model Category {
 }
 
 model Product {
-  id                 String                @id @default(cuid())
-  slug               String                @unique
-  name               String
-  brand              String                @default("Sin marca")
-  brandId            String?
-  description        String
-  href               String
-  badge              String?
-  badgeColor         String?
-  price              Decimal               @default(0) @db.Decimal(10, 2)
-  discountPrice      Decimal?              @db.Decimal(10, 2)
-  discountPercent     Decimal              @default(0) @db.Decimal(5, 2)
-  stock              Int                   @default(0)
-  isActive           Boolean               @default(true)
-  categoryId         String?
-  mediaAssetId       String?
-  
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  name            String
+  brand           String   @default("Sin marca")
+  brandId         String?
+  description     String
+  href            String
+  badge           String?
+  badgeColor      String?
+  price           Decimal  @default(0) @db.Decimal(10, 2)
+  discountPrice   Decimal? @db.Decimal(10, 2)
+  discountPercent Decimal  @default(0) @db.Decimal(5, 2)
+  stock           Int      @default(0)
+  isActive        Boolean  @default(true)
+  categoryId      String?
+  mediaAssetId    String?
+
   // Sync tracking
-  externalId         String?               @unique
-  externalSourceId   String?               // Origin system identifier (e.g., "shopify", "custom-api")
-  lastSyncedAt       DateTime?
-  syncVersion        Int                   @default(0)
-  externalMetadata   Json?                 // Store raw external data for audit/enrichment
-  
-  createdAt          DateTime              @default(now())
-  updatedAt          DateTime              @updatedAt
-  brandRecord        Brand?                @relation(fields: [brandId], references: [id], onDelete: SetNull)
-  category           Category?             @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  categoryAssignments ProductCategoryAssignment[]
-  mediaAsset         MediaAsset?           @relation("ProductMediaAsset", fields: [mediaAssetId], references: [id], onDelete: SetNull)
-  promotionScopes    PromotionProduct[]
-  homeSelections     HomeFeaturedProduct[]
+  externalId       String?   @unique
+  externalSourceId String? // Origin system identifier (e.g., "shopify", "custom-api")
+  lastSyncedAt     DateTime?
+  syncVersion      Int       @default(0)
+  externalMetadata Json? // Store raw external data for audit/enrichment
+
+  createdAt             DateTime                    @default(now())
+  updatedAt             DateTime                    @updatedAt
+  brandRecord           Brand?                      @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  category              Category?                   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryAssignments   ProductCategoryAssignment[]
+  mediaAsset            MediaAsset?                 @relation("ProductMediaAsset", fields: [mediaAssetId], references: [id], onDelete: SetNull)
+  promotionScopes       PromotionProduct[]
+  homeSelections        HomeFeaturedProduct[]
+  reviews               Review[]
+  wishlistItems         WishlistItem[]
+  restockAlerts         RestockAlert[]
+  subscriptions         Subscription[]
+  collectionAssignments CollectionProduct[]
 
   @@index([isActive])
   @@index([categoryId])
@@ -152,13 +159,13 @@ model Product {
 }
 
 model Brand {
-  id          String     @id @default(cuid())
-  name        String     @unique
-  mediaAssetId String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  mediaAsset  MediaAsset? @relation("BrandLogoMediaAsset", fields: [mediaAssetId], references: [id], onDelete: SetNull)
-  products    Product[]
+  id              String           @id @default(cuid())
+  name            String           @unique
+  mediaAssetId    String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  mediaAsset      MediaAsset?      @relation("BrandLogoMediaAsset", fields: [mediaAssetId], references: [id], onDelete: SetNull)
+  products        Product[]
   promotionScopes PromotionBrand[]
 
   @@index([mediaAssetId])
@@ -166,12 +173,12 @@ model Brand {
 }
 
 model ProductCategoryAssignment {
-  productId   String
-  categoryId  String
-  position    Int      @default(0)
-  createdAt   DateTime @default(now())
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  productId  String
+  categoryId String
+  position   Int      @default(0)
+  createdAt  DateTime @default(now())
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@id([productId, categoryId])
   @@index([categoryId])
@@ -190,6 +197,57 @@ model ProductBadgePreset {
   @@index([isActive])
   @@index([sortOrder])
   @@index([createdAt])
+}
+
+model Collection {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  name         String
+  description  String?
+  excerpt      String?
+  isActive     Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  mediaAssetId String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  mediaAsset MediaAsset?          @relation("CollectionMediaAsset", fields: [mediaAssetId], references: [id], onDelete: SetNull)
+  products   CollectionProduct[]
+  categories CollectionCategory[]
+
+  @@index([isActive])
+  @@index([slug])
+  @@index([sortOrder])
+  @@index([mediaAssetId])
+  @@index([createdAt])
+}
+
+model CollectionProduct {
+  collectionId String
+  productId    String
+  position     Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  product    Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([collectionId, productId])
+  @@index([productId])
+  @@index([collectionId, position])
+}
+
+model CollectionCategory {
+  collectionId String
+  categoryId   String
+  position     Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  category   Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([collectionId, categoryId])
+  @@index([categoryId])
+  @@index([collectionId, position])
 }
 
 model Promotion {
@@ -282,45 +340,45 @@ model HomeFeaturedProduct {
 }
 
 model HomePageContent {
-  id                           String      @id @default(cuid())
-  slug                         String      @unique @default("home")
-  heroEyebrow                  String
-  heroTitle                    String
-  heroSubtitle                 String
-  heroSupportingBadge          String
-  heroPrimaryCtaText           String
-  heroPrimaryCtaHref           String
-  heroSecondaryCtaText         String?
-  heroSecondaryCtaHref         String?
-  heroMediaId                  String?
-  heroSecondaryMediaId         String?
-  heroTertiaryMediaId          String?
-  featuredCategoriesEyebrow    String
-  featuredCategoriesTitle      String
-  featuredCategorySelections   HomeFeaturedCategory[]
-  featuredProductSelections    HomeFeaturedProduct[]
+  id                            String                 @id @default(cuid())
+  slug                          String                 @unique @default("home")
+  heroEyebrow                   String
+  heroTitle                     String
+  heroSubtitle                  String
+  heroSupportingBadge           String
+  heroPrimaryCtaText            String
+  heroPrimaryCtaHref            String
+  heroSecondaryCtaText          String?
+  heroSecondaryCtaHref          String?
+  heroMediaId                   String?
+  heroSecondaryMediaId          String?
+  heroTertiaryMediaId           String?
+  featuredCategoriesEyebrow     String
+  featuredCategoriesTitle       String
+  featuredCategorySelections    HomeFeaturedCategory[]
+  featuredProductSelections     HomeFeaturedProduct[]
   featuredCategoriesDescription String
-  featuredCategoriesItems      Json
-  featuredProductsEyebrow      String
-  featuredProductsTitle        String
-  featuredProductsDescription  String
-  featuredProductsItems        Json
-  trustHighlightsEyebrow       String
-  trustHighlightsTitle         String
-  trustHighlightsDescription   String
-  trustHighlightsItems         Json
-  ctaEyebrow                   String
-  ctaTitle                     String
-  ctaDescription               String
-  ctaPrimaryCtaText            String
-  ctaPrimaryCtaHref            String
-  ctaSecondaryCtaText          String?
-  ctaSecondaryCtaHref          String?
-  createdAt                    DateTime    @default(now())
-  updatedAt                    DateTime    @updatedAt
-  heroMedia                    MediaAsset? @relation("HomePrimaryHeroMedia", fields: [heroMediaId], references: [id], onDelete: SetNull)
-  heroSecondaryMedia           MediaAsset? @relation("HomeSecondaryHeroMedia", fields: [heroSecondaryMediaId], references: [id], onDelete: SetNull)
-  heroTertiaryMedia            MediaAsset? @relation("HomeTertiaryHeroMedia", fields: [heroTertiaryMediaId], references: [id], onDelete: SetNull)
+  featuredCategoriesItems       Json
+  featuredProductsEyebrow       String
+  featuredProductsTitle         String
+  featuredProductsDescription   String
+  featuredProductsItems         Json
+  trustHighlightsEyebrow        String
+  trustHighlightsTitle          String
+  trustHighlightsDescription    String
+  trustHighlightsItems          Json
+  ctaEyebrow                    String
+  ctaTitle                      String
+  ctaDescription                String
+  ctaPrimaryCtaText             String
+  ctaPrimaryCtaHref             String
+  ctaSecondaryCtaText           String?
+  ctaSecondaryCtaHref           String?
+  createdAt                     DateTime               @default(now())
+  updatedAt                     DateTime               @updatedAt
+  heroMedia                     MediaAsset?            @relation("HomePrimaryHeroMedia", fields: [heroMediaId], references: [id], onDelete: SetNull)
+  heroSecondaryMedia            MediaAsset?            @relation("HomeSecondaryHeroMedia", fields: [heroSecondaryMediaId], references: [id], onDelete: SetNull)
+  heroTertiaryMedia             MediaAsset?            @relation("HomeTertiaryHeroMedia", fields: [heroTertiaryMediaId], references: [id], onDelete: SetNull)
 
   @@index([heroMediaId])
   @@index([heroSecondaryMediaId])
@@ -344,6 +402,38 @@ enum PaymentStatus {
   failed
   refunded
   partially_refunded
+}
+
+enum ReviewStatus {
+  pending
+  approved
+  rejected
+}
+
+enum AbandonedCartStatus {
+  active
+  recovered
+  expired
+}
+
+enum ReferralRewardType {
+  percent_discount
+  fixed_amount
+}
+
+enum SubscriptionFrequency {
+  days_15
+  days_30
+  days_45
+  days_60
+  days_90
+}
+
+enum SubscriptionStatus {
+  active
+  paused
+  cancelled
+  expired
 }
 
 enum OrderSource {
@@ -374,43 +464,43 @@ enum EmailStatus {
 }
 
 model Order {
-  id                String      @id @default(cuid())
-  orderNumber       String      @unique
-  clerkUserId       String?
-  guestEmail        String?
-  guestPhone        String?
-  status            OrderStatus @default(pending)
-  paymentStatus     PaymentStatus @default(pending)
-  trackingNumber    String?
-  trackingUrl       String?
-  source            OrderSource @default(web)
-  externalOrderId   String?     @unique
-  syncedAt          DateTime?
-  firstName         String
-  lastName          String
-  address           String
-  apartment         String?
-  province          String
-  city              String
-  phone             String
-  idNumber          String?
-  shippingMethodId  String?
+  id                 String          @id @default(cuid())
+  orderNumber        String          @unique
+  clerkUserId        String?
+  guestEmail         String?
+  guestPhone         String?
+  status             OrderStatus     @default(pending)
+  paymentStatus      PaymentStatus   @default(pending)
+  trackingNumber     String?
+  trackingUrl        String?
+  source             OrderSource     @default(web)
+  externalOrderId    String?         @unique
+  syncedAt           DateTime?
+  firstName          String
+  lastName           String
+  address            String
+  apartment          String?
+  province           String
+  city               String
+  phone              String
+  idNumber           String?
+  shippingMethodId   String?
   shippingMethodName String
-  paymentMethodId   String?
-  paymentMethodName String
-  couponCode        String?
-  subtotal          Decimal     @db.Decimal(10, 2)
-  shippingCost      Decimal     @db.Decimal(10, 2)
-  discountAmount    Decimal     @default(0) @db.Decimal(10, 2)
-  taxAmount         Decimal     @default(0) @db.Decimal(10, 2)
-  total             Decimal     @db.Decimal(10, 2)
-  checkoutNotes     String?     @map("notes")
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
-  items             OrderItem[]
-  notes             OrderNote[]
-  timeline          OrderTimeline[]
-  webhookEvents     WebhookEvent[]
+  paymentMethodId    String?
+  paymentMethodName  String
+  couponCode         String?
+  subtotal           Decimal         @db.Decimal(10, 2)
+  shippingCost       Decimal         @db.Decimal(10, 2)
+  discountAmount     Decimal         @default(0) @db.Decimal(10, 2)
+  taxAmount          Decimal         @default(0) @db.Decimal(10, 2)
+  total              Decimal         @db.Decimal(10, 2)
+  checkoutNotes      String?         @map("notes")
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  items              OrderItem[]
+  notes              OrderNote[]
+  timeline           OrderTimeline[]
+  webhookEvents      WebhookEvent[]
 
   @@index([clerkUserId])
   @@index([guestEmail])
@@ -556,17 +646,240 @@ model ShippingMethod {
 }
 
 model PaymentMethod {
-  id           String   @id @default(cuid())
-  name         String
-  description  String?
-  type         String   @unique
-  instructions String?  @db.Text
+  id                 String   @id @default(cuid())
+  name               String
+  description        String?
+  type               String   @unique
+  instructions       String?  @db.Text
   initialOrderStatus String?
-  isActive     Boolean  @default(true)
-  sortOrder    Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  isActive           Boolean  @default(true)
+  sortOrder          Int      @default(0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
   @@index([isActive])
   @@index([sortOrder])
+}
+
+// ─── Reviews ─────────────────────────────────────────────────────────────────
+
+model Review {
+  id                 String       @id @default(cuid())
+  productId          String
+  clerkUserId        String
+  rating             Int
+  title              String?
+  body               String?
+  isVerifiedPurchase Boolean      @default(false)
+  status             ReviewStatus @default(pending)
+  adminResponse      String?
+  adminRespondedAt   DateTime?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, clerkUserId])
+  @@index([productId])
+  @@index([clerkUserId])
+  @@index([status])
+  @@index([isVerifiedPurchase])
+  @@index([createdAt])
+}
+
+// ─── Wishlist ────────────────────────────────────────────────────────────────
+
+model WishlistItem {
+  id          String   @id @default(cuid())
+  clerkUserId String
+  productId   String
+  createdAt   DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([clerkUserId, productId])
+  @@index([clerkUserId])
+  @@index([productId])
+  @@index([createdAt])
+}
+
+// ─── Abandoned Cart ──────────────────────────────────────────────────────────
+
+model AbandonedCart {
+  id             String              @id @default(cuid())
+  clerkUserId    String?
+  guestEmail     String?
+  guestPhone     String?
+  cartData       Json
+  status         AbandonedCartStatus @default(active)
+  lastActivityAt DateTime
+  recoveryStep   Int                 @default(0)
+  recoveredAt    DateTime?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  recoveryLogs AbandonedCartRecoveryLog[]
+
+  @@index([clerkUserId])
+  @@index([guestEmail])
+  @@index([status])
+  @@index([lastActivityAt])
+  @@index([createdAt])
+}
+
+model AbandonedCartRecoveryLog {
+  id              String    @id @default(cuid())
+  abandonedCartId String
+  step            Int
+  emailSentAt     DateTime
+  clickedAt       DateTime?
+  convertedAt     DateTime?
+
+  abandonedCart AbandonedCart @relation(fields: [abandonedCartId], references: [id], onDelete: Cascade)
+
+  @@index([abandonedCartId])
+  @@index([step])
+  @@index([emailSentAt])
+}
+
+model AbandonedCartSettings {
+  id               String   @id @default("default")
+  isEnabled        Boolean  @default(true)
+  steps            Json
+  maxRecoverySteps Int      @default(3)
+  includeDiscount  Boolean  @default(false)
+  discountPercent  Decimal? @db.Decimal(5, 2)
+  couponPrefix     String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+// ─── Restock Alerts ──────────────────────────────────────────────────────────
+
+model RestockAlert {
+  id         String    @id @default(cuid())
+  email      String
+  productId  String
+  notifiedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([email, productId])
+  @@index([productId])
+  @@index([notifiedAt])
+  @@index([createdAt])
+}
+
+model RestockAlertSettings {
+  id                  String   @id @default("default")
+  isEnabled           Boolean  @default(true)
+  emailSubject        String   @default("¡Tu producto está disponible!")
+  maxAlertsPerProduct Int      @default(500)
+  expiresAfterDays    Int      @default(90)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+// ─── Referral Program ────────────────────────────────────────────────────────
+
+model ReferralProgram {
+  id                  String             @id @default("default")
+  isEnabled           Boolean            @default(true)
+  referrerRewardType  ReferralRewardType @default(percent_discount)
+  referrerRewardValue Decimal            @db.Decimal(5, 2)
+  referredRewardType  ReferralRewardType @default(percent_discount)
+  referredRewardValue Decimal            @db.Decimal(5, 2)
+  couponDurationDays  Int?
+  maxReferralsPerUser Int?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+}
+
+model ReferralCode {
+  id          String   @id @default(cuid())
+  clerkUserId String   @unique
+  code        String   @unique
+  usesCount   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  referrals Referral[]
+
+  @@index([code])
+  @@index([clerkUserId])
+  @@index([isActive])
+}
+
+model Referral {
+  id             String    @id @default(cuid())
+  referralCodeId String
+  referredUserId String?
+  referredEmail  String
+  status         String    @default("pending")
+  referrerCoupon String?
+  referredCoupon String?
+  rewardedAt     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  referralCode ReferralCode @relation(fields: [referralCodeId], references: [id], onDelete: Cascade)
+
+  @@index([referralCodeId])
+  @@index([referredEmail])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ─── Subscriptions ───────────────────────────────────────────────────────────
+
+model Subscription {
+  id                 String                @id @default(cuid())
+  clerkUserId        String
+  productId          String
+  frequency          SubscriptionFrequency
+  quantity           Int                   @default(1)
+  status             SubscriptionStatus    @default(active)
+  nextOrderAt        DateTime
+  lastOrderAt        DateTime?
+  lastOrderId        String?
+  totalCycles        Int                   @default(0)
+  maxCycles          Int?
+  paymentMethodToken String?
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+
+  product Product             @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orders  SubscriptionOrder[]
+
+  @@index([clerkUserId])
+  @@index([productId])
+  @@index([status])
+  @@index([nextOrderAt])
+  @@index([createdAt])
+}
+
+model SubscriptionOrder {
+  id             String   @id @default(cuid())
+  subscriptionId String
+  orderId        String
+  cycleNumber    Int
+  createdAt      DateTime @default(now())
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@index([subscriptionId])
+  @@index([orderId])
+}
+
+model SubscriptionSettings {
+  id                      String   @id @default("default")
+  reminderEnabled         Boolean  @default(true)
+  reminderDaysBefore      Int      @default(3)
+  autoChargeEnabled       Boolean  @default(false)
+  reminderEmailSubject    String?
+  maxSubscriptionsPerUser Int      @default(10)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
 }
