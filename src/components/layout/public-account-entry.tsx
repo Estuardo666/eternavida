@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import { useClerk, useUser } from "@clerk/nextjs";
-import { LogIn, LogOut, UserRound } from "lucide-react";
+import { LogOut, UserRound } from "lucide-react";
 
 import { buttonMotion } from "@/motion/motion";
 import { cx } from "@/lib/utils";
@@ -35,11 +35,10 @@ export function PublicAccountEntry() {
       <motion.div {...(reduceMotion ? {} : buttonMotion)}>
         <Link
           href={`/login${redirectSuffix}`}
-          className="inline-flex min-h-10 items-center gap-2 rounded-pill border border-border-soft bg-surface-canvas px-4 py-2 text-label-md text-text-primary transition hover:border-border-strong hover:bg-surface-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
+          className="inline-flex min-h-10 items-center gap-2 rounded-pill border border-border-soft bg-surface-canvas px-3 py-2 text-label-md text-text-primary transition hover:border-border-strong hover:bg-surface-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas sm:px-4"
         >
-          <LogIn className="h-4 w-4" aria-hidden="true" />
+          <UserRound className="h-4 w-4" aria-hidden="true" />
           <span className="hidden sm:inline">Ingresar</span>
-          <span className="sm:hidden">Cuenta</span>
         </Link>
       </motion.div>
     );

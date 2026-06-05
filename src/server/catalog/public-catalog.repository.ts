@@ -433,9 +433,52 @@ export async function searchPublicCategoryRecordsByName(query: string) {
       id: true,
       slug: true,
       name: true,
+      mediaAsset: {
+        select: {
+          publicUrl: true,
+          altText: true,
+        },
+      },
     },
     orderBy: [{ name: "asc" }],
-    take: 3,
+    take: 6,
+  });
+}
+
+export async function searchPublicBrandRecordsByName(query: string) {
+  const trimmedQuery = query.trim();
+
+  if (trimmedQuery.length < 2) {
+    return [];
+  }
+
+  return prisma.brand.findMany({
+    where: {
+      AND: [
+        {
+          products: {
+            some: buildPublicProductVisibilityFilter(),
+          },
+        },
+        {
+          name: {
+            contains: trimmedQuery,
+            mode: "insensitive",
+          },
+        },
+      ],
+    },
+    select: {
+      id: true,
+      name: true,
+      mediaAsset: {
+        select: {
+          publicUrl: true,
+        },
+      },
+    },
+    orderBy: [{ name: "asc" }],
+    take: 6,
   });
 }
 

@@ -1,21 +1,21 @@
-import type { LiveSearchCategoryResult } from "@/features/search/types";
+import type { LiveSearchBrandResult } from "@/features/search/types";
 import { cx } from "@/lib/utils";
 
-interface LiveSearchCategoryItemProps {
+interface LiveSearchBrandItemProps {
   id: string;
-  category: LiveSearchCategoryResult;
+  brand: LiveSearchBrandResult;
   isActive: boolean;
   onInteract: () => void;
   onSelect: () => void;
 }
 
-export function LiveSearchCategoryItem({
+export function LiveSearchBrandItem({
   id,
-  category,
+  brand,
   isActive,
   onInteract,
   onSelect,
-}: LiveSearchCategoryItemProps) {
+}: LiveSearchBrandItemProps) {
   return (
     <button
       id={id}
@@ -31,22 +31,22 @@ export function LiveSearchCategoryItem({
         isActive && "border-brand-primary/35 bg-brand-primary/[0.1]",
       )}
     >
-      <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border-soft bg-surface-subtle text-label-sm font-semibold text-text-primary">
-        {category.mediaUrl ? (
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border-soft bg-surface-subtle text-label-sm font-semibold text-text-primary">
+        {brand.mediaUrl ? (
           // eslint-disable-next-line @next/next/no-img-element -- live search suggestions render remote asset URLs
           <img
-            src={category.mediaUrl}
-            alt={category.mediaAlt ?? category.name}
+            src={brand.mediaUrl}
+            alt={brand.name}
             className="h-full w-full object-cover"
             loading="lazy"
           />
         ) : (
-          category.fallbackLetter
+          brand.name.slice(0, 1).toUpperCase()
         )}
-      </span>
+      </div>
 
       <div className="min-w-0">
-        <p className="truncate text-label-md text-text-primary">{category.name}</p>
+        <p className="truncate text-label-md text-text-primary">{brand.name}</p>
       </div>
     </button>
   );

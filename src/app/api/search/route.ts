@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 
+import { slugifyCatalogName } from "@/lib/catalog-slugs";
+
 import {
+  searchPublicBrandRecordsByName,
   searchPublicCategoryRecordsByName,
   searchPublicProductRecordsByName,
 } from "@/server/catalog/public-catalog.repository";
@@ -17,6 +20,7 @@ function createEmptySearchResponse() {
   return {
     products: [],
     categories: [],
+    brands: [],
   };
 }
 
@@ -29,9 +33,10 @@ export async function GET(request: Request) {
   }
 
   try {
-    const [products, categories] = await Promise.all([
+    const [products, categories, brands] = await Promise.all([
       searchPublicProductRecordsByName(query),
       searchPublicCategoryRecordsByName(query),
+      searchPublicBrandRecordsByName(query),
     ]);
 
     return NextResponse.json(
@@ -50,7 +55,16 @@ export async function GET(request: Request) {
           id: category.id,
           slug: category.slug,
           name: category.name,
+          mediaUrl: category.mediaAsset?.publicUrl ?? null,
+          mediaAlt: category.mediaAsset?.altText ?? null,
+          fallbackLetter: category.name.slice(0, 1).toUpperCase(),
           href: `/categorias/${category.slug}`,
+        })),
+        brands: brands.map((brand) => ({
+          id: brand.id,
+          name: brand.name,
+          mediaUrl: brand.mediaAsset?.publicUrl ?? null,
+          href: `/productos?marcas=${encodeURIComponent(slugifyCatalogName(brand.name))}`,
         })),
       },
       jsonOptions,

@@ -1,9 +1,15 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
+import { LiveSearchBrandItem } from "@/features/search/components/live-search-brand-item";
 import { LiveSearchCategoryItem } from "@/features/search/components/live-search-category-item";
 import { LiveSearchProductItem } from "@/features/search/components/live-search-product-item";
-import type { LiveSearchCategoryResult, LiveSearchProductResult, LiveSearchResults } from "@/features/search/types";
+import type {
+  LiveSearchBrandResult,
+  LiveSearchCategoryResult,
+  LiveSearchProductResult,
+  LiveSearchResults,
+} from "@/features/search/types";
 import { cx } from "@/lib/utils";
 
 interface LiveSearchDropdownProps {
@@ -15,9 +21,11 @@ interface LiveSearchDropdownProps {
   error: string | null;
   activeIndex: number;
   onCategoryHover: (index: number) => void;
+  onBrandHover: (index: number) => void;
   onProductHover: (index: number) => void;
   onViewAllHover: () => void;
   onCategorySelect: (category: LiveSearchCategoryResult) => void;
+  onBrandSelect: (brand: LiveSearchBrandResult) => void;
   onProductSelect: (product: LiveSearchProductResult) => void;
   onViewAllSelect: () => void;
 }
@@ -65,19 +73,23 @@ export function LiveSearchDropdown({
   error,
   activeIndex,
   onCategoryHover,
+  onBrandHover,
   onProductHover,
   onViewAllHover,
   onCategorySelect,
+  onBrandSelect,
   onProductSelect,
   onViewAllSelect,
 }: LiveSearchDropdownProps) {
   const reduceMotion = useReducedMotion() ?? false;
   const trimmedQuery = query.trim();
   const categoryCount = results.categories.length;
+  const brandCount = results.brands.length;
   const productCount = results.products.length;
-  const productOffset = categoryCount;
-  const viewAllIndex = categoryCount + productCount;
-  const hasResults = categoryCount > 0 || productCount > 0;
+  const brandOffset = categoryCount;
+  const productOffset = categoryCount + brandCount;
+  const viewAllIndex = categoryCount + brandCount + productCount;
+  const hasResults = categoryCount > 0 || brandCount > 0 || productCount > 0;
   const showPrompt = trimmedQuery.length > 0 && trimmedQuery.length < 2;
   const showViewAll = trimmedQuery.length >= 2;
   const showEmptyState = !isLoading && !error && !hasResults && showViewAll;
@@ -104,7 +116,7 @@ export function LiveSearchDropdown({
     <motion.div
       {...dropdownMotionProps}
       className={cx(
-        "rounded-[28px] border border-border-soft bg-surface-canvas/98 p-3 backdrop-blur md:p-4",
+        "rounded-[28px] border border-brand-primary/40 bg-surface-canvas/98 p-3 backdrop-blur md:p-4",
         className,
       )}
     >
@@ -140,6 +152,29 @@ export function LiveSearchDropdown({
                       />
                     </motion.div>
                   ))}
+                </motion.div>
+              </section>
+            ) : null}
+
+            {brandCount > 0 ? (
+              <section className="space-y-2">
+                <p className="px-1 text-label-sm uppercase tracking-[0.12em] text-text-muted">Marcas</p>
+                <motion.div className="space-y-1" {...listAnimationProps}>
+                  {results.brands.map((brand, index) => {
+                    const optionIndex = brandOffset + index;
+
+                    return (
+                      <motion.div key={brand.id} {...itemAnimationProps}>
+                        <LiveSearchBrandItem
+                          id={`${listId}-option-${optionIndex}`}
+                          brand={brand}
+                          isActive={activeIndex === optionIndex}
+                          onInteract={() => onBrandHover(optionIndex)}
+                          onSelect={() => onBrandSelect(brand)}
+                        />
+                      </motion.div>
+                    );
+                  })}
                 </motion.div>
               </section>
             ) : null}
@@ -192,8 +227,8 @@ export function LiveSearchDropdown({
                 onFocus={onViewAllHover}
                 onClick={onViewAllSelect}
                 className={cx(
-                  "flex w-full items-center justify-between gap-3 rounded-[22px] border border-transparent px-3.5 py-3 text-left transition-[background-color,border-color] duration-[180ms] ease-soft hover:bg-surface-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
-                  activeIndex === viewAllIndex && "border-border-default bg-surface-soft",
+                  "flex w-full items-center justify-between gap-3 rounded-[22px] border border-transparent px-3.5 py-3 text-left transition-[background-color,border-color] duration-[180ms] ease-soft hover:border-brand-primary/30 hover:bg-brand-primary/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
+                  activeIndex === viewAllIndex && "border-brand-primary/35 bg-brand-primary/[0.1]",
                 )}
               >
                 <div>

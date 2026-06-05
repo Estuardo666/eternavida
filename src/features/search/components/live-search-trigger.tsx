@@ -1,6 +1,6 @@
 import type { KeyboardEventHandler, RefObject } from "react";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Loader2, Search, X } from "lucide-react";
 
 import { cx } from "@/lib/utils";
@@ -22,11 +22,6 @@ interface LiveSearchTriggerProps {
   onKeyDown: KeyboardEventHandler<HTMLInputElement>;
 }
 
-const triggerTransition = {
-  duration: 0.2,
-  ease: [0.25, 0.46, 0.45, 0.94] as const,
-};
-
 export function LiveSearchTrigger({
   className,
   query,
@@ -43,16 +38,6 @@ export function LiveSearchTrigger({
   onClose,
   onKeyDown,
 }: LiveSearchTriggerProps) {
-  const reduceMotion = useReducedMotion() ?? false;
-  const triggerMotionProps = reduceMotion
-    ? {
-        transition: { duration: 0 },
-      }
-    : {
-        animate: { scale: isOpen ? 1 : 0.995 },
-        transition: triggerTransition,
-      };
-
   if (mobile && !isOpen) {
     return (
       <button
@@ -69,21 +54,17 @@ export function LiveSearchTrigger({
 
   return (
     <motion.div
-      layout
-      transition={reduceMotion ? { duration: 0 } : triggerTransition}
-      className={cx("w-full", className)}
+      className={cx("w-full transition-[max-width] duration-[360ms] ease-soft", className)}
     >
       <motion.div
-        layout
-        {...triggerMotionProps}
         className={cx(
-          "flex min-h-11 items-center gap-3 rounded-pill border border-border-soft bg-surface-canvas px-4 py-3 text-text-secondary transition-[background-color,border-color,color] duration-[180ms] ease-soft",
-          isOpen && "border-border-default bg-white text-text-primary",
-          mobile && "rounded-[24px] px-4 py-3.5",
+          "flex min-h-10 items-center gap-2.5 rounded-pill border border-border-soft bg-surface-canvas px-3.5 py-2.5 text-text-secondary transition-[background-color,border-color,color,max-width] duration-[180ms] ease-soft",
+          isOpen && "border-brand-primary/40 bg-white text-text-primary",
+          mobile && "rounded-[24px] px-3.5 py-2.5",
         )}
         onClick={() => inputRef.current?.focus()}
       >
-        <Search className="h-4 w-4 shrink-0" aria-hidden="true" />
+        <Search className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
 
         <input
           ref={inputRef}
@@ -105,7 +86,7 @@ export function LiveSearchTrigger({
             onChange(event.target.value);
           }}
           onKeyDown={onKeyDown}
-          className="w-full bg-transparent text-body-md text-text-primary placeholder:text-text-muted focus:outline-none"
+          className="w-full bg-transparent text-[15px] font-semibold text-text-primary placeholder:font-medium placeholder:text-text-muted focus:outline-none"
         />
 
         <div className="flex items-center gap-2">

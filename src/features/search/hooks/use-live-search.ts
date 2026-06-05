@@ -7,6 +7,7 @@ import type { LiveSearchResults } from "@/features/search/types";
 const EMPTY_RESULTS: LiveSearchResults = {
   products: [],
   categories: [],
+  brands: [],
 };
 
 const LIVE_SEARCH_ERROR_MESSAGE = "No se pudieron cargar resultados. Intenta de nuevo.";
@@ -21,6 +22,7 @@ function normalizeLiveSearchResults(payload: unknown): LiveSearchResults {
   return {
     products: Array.isArray(candidate.products) ? candidate.products : [],
     categories: Array.isArray(candidate.categories) ? candidate.categories : [],
+    brands: Array.isArray(candidate.brands) ? candidate.brands : [],
   };
 }
 

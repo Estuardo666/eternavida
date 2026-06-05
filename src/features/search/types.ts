@@ -13,10 +13,21 @@ export interface LiveSearchCategoryResult {
   id: string;
   slug: string;
   name: string;
+  mediaUrl: string | null;
+  mediaAlt: string | null;
+  fallbackLetter: string;
+  href: string;
+}
+
+export interface LiveSearchBrandResult {
+  id: string;
+  name: string;
+  mediaUrl: string | null;
   href: string;
 }
 
 export interface LiveSearchResults {
   products: LiveSearchProductResult[];
   categories: LiveSearchCategoryResult[];
+  brands: LiveSearchBrandResult[];
 }

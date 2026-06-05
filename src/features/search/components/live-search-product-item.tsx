@@ -36,8 +36,8 @@ export function LiveSearchProductItem({
       onFocus={onInteract}
       onClick={onSelect}
       className={cx(
-        "flex w-full items-center gap-3 rounded-[22px] border border-transparent px-3.5 py-3 text-left transition-[background-color,border-color] duration-[180ms] ease-soft hover:bg-surface-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
-        isActive && "border-border-default bg-surface-soft",
+        "flex w-full items-center gap-3 rounded-[22px] border border-transparent px-3.5 py-3 text-left transition-[background-color,border-color] duration-[180ms] ease-soft hover:border-brand-primary/30 hover:bg-brand-primary/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
+        isActive && "border-brand-primary/35 bg-brand-primary/[0.1]",
       )}
     >
       <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border-soft bg-surface-subtle text-label-sm font-semibold text-text-primary">
