@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
+import { esMX } from "@clerk/localizations";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import dynamic from "next/dynamic";
 
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <ClerkProvider
           signInUrl="/login"
           signUpUrl="/register"
+          localization={esMX}
         >
           <CartProvider>
             {children}

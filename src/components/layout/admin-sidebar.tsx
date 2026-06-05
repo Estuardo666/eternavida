@@ -439,7 +439,7 @@ export function AdminSidebar({ userEmail, userRole, userImageUrl }: AdminSidebar
               animate="animate"
               exit="exit"
               variants={mobileDrawerReveal}
-              className="fixed inset-y-3 left-3 z-50 flex w-[min(22rem,calc(100vw-1.5rem))] flex-col overflow-y-auto overflow-x-hidden rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(246,250,245,0.98))] shadow-[0_28px_60px_-32px_rgba(28,56,41,0.38)] sm:inset-y-4 sm:left-4 sm:w-[min(22rem,calc(100vw-2rem))] sm:rounded-[30px] lg:hidden"
+              className="fixed inset-y-3 left-3 z-50 flex w-[min(22rem,calc(100vw-1.5rem))] flex-col overflow-y-auto overflow-x-hidden rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(246,250,245,0.98))] sm:inset-y-4 sm:left-4 sm:w-[min(22rem,calc(100vw-2rem))] sm:rounded-[30px] lg:hidden"
             >
               <SidebarPanel
                 pathname={pathname}
@@ -485,7 +485,7 @@ export function AdminSidebar({ userEmail, userRole, userImageUrl }: AdminSidebar
                     duration: sidebarContentDuration,
                     ease: sidebarEaseEnter,
                   }}
-              className="flex w-full flex-col items-center gap-3 rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,250,246,0.98))] px-3 py-3 shadow-[0_20px_44px_-34px_rgba(28,56,41,0.34)] max-h-[calc(100vh-3rem)] overflow-y-auto overflow-x-hidden"
+              className="flex w-full flex-col items-center gap-3 rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,250,246,0.98))] px-3 py-3 max-h-[calc(100vh-3rem)] overflow-y-auto overflow-x-hidden"
             >
               <button
                 type="button"
@@ -591,7 +591,7 @@ function SidebarPanel(props: {
   collapseLabel: string;
 }) {
   return (
-    <div className="flex h-full w-full flex-col rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,250,246,0.98))] p-3 shadow-[0_24px_52px_-36px_rgba(28,56,41,0.36)] sm:rounded-[30px] sm:p-3.5">
+    <div className="flex h-full w-full flex-col rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,250,246,0.98))] p-3 sm:rounded-[30px] sm:p-3.5">
       <div className="flex items-start justify-between gap-3 border-b border-border-soft pb-3 sm:pb-3.5">
         <div className="space-y-3">
           <Image

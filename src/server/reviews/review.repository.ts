@@ -10,6 +10,7 @@ export const reviewRepository = {
     title?: string | null | undefined;
     body?: string | null | undefined;
     isVerifiedPurchase: boolean;
+    imageUrls?: string[];
   }) {
     try {
       return await prisma.review.create({
@@ -20,6 +21,7 @@ export const reviewRepository = {
           title: input.title ?? null,
           body: input.body ?? null,
           isVerifiedPurchase: input.isVerifiedPurchase,
+          imageUrls: input.imageUrls ?? [],
           status: "pending",
         },
       });

@@ -562,12 +562,9 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
         </section>
 
         {/* ── Reviews ──────────────────────────────────────────────────────── */}
-        <section id="reviews" className="space-y-8">
-          <div className="space-y-2">
+        <section id="reviews" className="border-b border-emerald-200/50 pb-10">
+          <div className="mb-6">
             <h2 className="text-section-xl text-text-primary">Reseñas de clientes</h2>
-            <p className="text-body-md text-text-secondary">
-              Opiniones verificadas de quienes han probado este producto.
-            </p>
           </div>
 
           <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">

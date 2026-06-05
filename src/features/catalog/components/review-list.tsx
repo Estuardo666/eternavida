@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
 import { StarRating } from "./star-rating";
 import type { PublicReviewAggregate } from "@/types/public-catalog";
 
@@ -15,6 +15,7 @@ interface ReviewItem {
   createdAt: string;
   adminResponse: string | null;
   adminRespondedAt: string | null;
+  imageUrls: string[];
 }
 
 interface ReviewListProps {
@@ -29,6 +30,7 @@ export function ReviewList({ productSlug, aggregate }: ReviewListProps) {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
   const [initialLoaded, setInitialLoaded] = useState(false);
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
 
   const fetchReviews = useCallback(async (pageNum: number) => {
     setLoading(true);
@@ -164,6 +166,28 @@ export function ReviewList({ productSlug, aggregate }: ReviewListProps) {
               </p>
             ) : null}
 
+            {review.imageUrls && review.imageUrls.length > 0 ? (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {review.imageUrls.map((url, idx) => (
+                  <button
+                    key={`${review.id}-img-${idx}`}
+                    type="button"
+                    onClick={() => setLightboxUrl(url)}
+                    className="h-16 w-16 overflow-hidden rounded-lg border border-border-soft bg-neutral-50 transition hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+                    aria-label={`Ver imagen ${idx + 1} de la reseña`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={url}
+                      alt={`Imagen ${idx + 1} de la reseña`}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </button>
+                ))}
+              </div>
+            ) : null}
+
             {review.adminResponse ? (
               <div className="mt-3 rounded-lg border border-neutral-200 bg-neutral-50 p-3">
                 <p className="text-body-xs font-semibold text-text-primary">
@@ -202,6 +226,46 @@ export function ReviewList({ productSlug, aggregate }: ReviewListProps) {
           </button>
         </div>
       ) : null}
+
+      <AnimatePresence>
+        {lightboxUrl ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4"
+            onClick={() => setLightboxUrl(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Vista de imagen"
+          >
+            <motion.div
+              initial={reduceMotion ? {} : { scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={reduceMotion ? {} : { scale: 0.92, opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="relative max-h-[85vh] max-w-[85vw] overflow-hidden rounded-xl bg-white shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={lightboxUrl}
+                alt="Imagen de reseña"
+                className="max-h-[85vh] max-w-[85vw] object-contain"
+              />
+              <button
+                type="button"
+                onClick={() => setLightboxUrl(null)}
+                className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white transition hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                aria-label="Cerrar imagen"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+              </button>
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 }

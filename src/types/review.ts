@@ -13,6 +13,7 @@ export type Review = {
   status: ReviewStatus;
   adminResponse: string | null;
   adminRespondedAt: Date | null;
+  imageUrls: string[];
   createdAt: Date;
   updatedAt: Date;
 };
@@ -24,6 +25,7 @@ export type ReviewCreateInput = {
   title?: string | null;
   body?: string | null;
   isVerifiedPurchase: boolean;
+  imageUrls?: string[];
 };
 
 export type ReviewUpdateInput = {
@@ -65,6 +67,7 @@ export type ReviewListItem = {
   status: ReviewStatus;
   adminResponse: string | null;
   createdAt: string;
+  imageUrls: string[];
 };
 
 export type ReviewPublicItem = {
@@ -77,4 +80,5 @@ export type ReviewPublicItem = {
   createdAt: string;
   adminResponse: string | null;
   adminRespondedAt: string | null;
+  imageUrls: string[];
 };

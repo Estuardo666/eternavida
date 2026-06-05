@@ -22,7 +22,7 @@ const pillButton =
 export function PublicSignUpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTarget = useMemo(() => searchParams.get("redirectTo") || "/", [searchParams]);
+  const redirectTarget = useMemo(() => searchParams.get("redirectTo") || "/tienda", [searchParams]);
   const { signUp, fetchStatus } = useSignUp();
   const { isLoaded, isSignedIn } = useUser();
   const isAuthReady = fetchStatus === "idle" && signUp !== null;

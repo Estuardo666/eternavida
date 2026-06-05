@@ -25,6 +25,7 @@ export async function listAdminReviewsService(
     status: r.status,
     adminResponse: r.adminResponse,
     createdAt: r.createdAt.toISOString(),
+    imageUrls: r.imageUrls ?? [],
   }));
 
   return {

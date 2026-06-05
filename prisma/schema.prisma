@@ -674,6 +674,7 @@ model Review {
   status             ReviewStatus @default(pending)
   adminResponse      String?
   adminRespondedAt   DateTime?
+  imageUrls          String[]     @default([])
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
 

@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 
-import { useClerk } from "@clerk/nextjs";
 import { AnimatePresence, motion, useReducedMotion, type Variants } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { cx } from "@/lib/utils";
 import { motionTokens } from "@/motion/tokens";
@@ -26,6 +25,9 @@ type NavigationItem = {
 const accountNavigation: ReadonlyArray<NavigationItem> = [
   { href: "/cuenta/perfil", label: "Mi perfil", icon: UserIcon },
   { href: "/cuenta/pedidos", label: "Mis pedidos", icon: ShoppingBagIcon },
+  { href: "/cuenta/favoritos", label: "Favoritos", icon: HeartIcon },
+  { href: "/cuenta/suscripciones", label: "Suscripciones", icon: SubscriptionIcon },
+  { href: "/cuenta/referidos", label: "Referidos", icon: ReferralIcon },
   { href: "/cuenta/privacidad", label: "Privacidad", icon: ShieldIcon },
 ] as const;
 
@@ -98,20 +100,16 @@ function isActivePath(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function isSectionActive(pathname: string, items: ReadonlyArray<NavigationItem>): boolean {
-  return items.some((item) => isActivePath(pathname, item.href));
-}
-
 function NavigationLink(props: NavigationItem & { pathname: string; compact?: boolean }) {
   const isActive = isActivePath(props.pathname, props.href);
   const Icon = props.icon;
   const linkClasses = cx(
     props.compact
       ? "group flex h-12 w-12 items-center justify-center rounded-2xl border transition-[background-color,border-color,color,transform] duration-[200ms] ease-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
-      : "group flex min-h-[3.25rem] items-center gap-3 rounded-2xl border px-3.5 py-3 text-left transition-[background-color,border-color,color,transform] duration-[200ms] ease-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas sm:min-h-14 sm:px-4",
+      : "group flex min-h-9 items-center gap-2.5 rounded-lg px-3 py-2 text-left transition-[background-color,color] duration-[200ms] ease-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
     isActive
-      ? "border-border-brand bg-surface-brandTint text-text-primary shadow-sm"
-      : "border-border-soft bg-surface-canvas text-text-secondary hover:border-border-default hover:bg-surface-subtle hover:text-text-primary",
+      ? "bg-surface-brandTint text-text-primary"
+      : "text-text-secondary hover:bg-surface-subtle hover:text-text-primary",
   );
 
   if (props.compact) {
@@ -139,100 +137,19 @@ function NavigationLink(props: NavigationItem & { pathname: string; compact?: bo
   );
 }
 
-function DeleteConfirmDialog(props: { onClose: () => void }) {
-  const { signOut } = useClerk();
-  const router = useRouter();
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleConfirm() {
-    setSending(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/client/account/delete-request", { method: "POST" });
-      if (!res.ok) throw new Error("Error al enviar la solicitud");
-      setSent(true);
-      setTimeout(async () => {
-        await signOut();
-        router.push("/");
-      }, 2500);
-    } catch {
-      setError("No se pudo enviar la solicitud. Intenta de nuevo.");
-    } finally {
-      setSending(false);
-    }
-  }
-
-  return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-      <button
-        type="button"
-        aria-label="Cerrar"
-        className="absolute inset-0 bg-black/30"
-        onClick={props.onClose}
-      />
-      <div className="relative z-10 w-full max-w-sm rounded-[24px] border border-border-soft bg-surface-canvas p-6 shadow-[0_24px_52px_-20px_rgba(0,0,0,0.22)]">
-        {sent ? (
-          <div className="text-center">
-            <p className="text-label-md text-text-primary">Solicitud enviada</p>
-            <p className="mt-2 text-body-sm text-text-secondary">Te contactaremos pronto. Cerrando sesión...</p>
-          </div>
-        ) : (
-          <>
-            <p className="text-label-md text-text-primary">¿Solicitar eliminación de cuenta?</p>
-            <p className="mt-2 text-body-sm text-text-secondary">
-              Enviaremos tu solicitud al equipo de Dermatologika. Tu cuenta no se eliminará de inmediato.
-            </p>
-            {error ? <p className="mt-3 text-body-sm text-red-600">{error}</p> : null}
-            <div className="mt-5 flex gap-3">
-              <button
-                type="button"
-                onClick={props.onClose}
-                disabled={sending}
-                className="flex-1 rounded-2xl border border-border-soft bg-surface-subtle px-4 py-2.5 text-label-sm text-text-secondary transition-[background-color,border-color] duration-[200ms] ease-soft hover:border-border-default hover:bg-surface-canvas disabled:opacity-50"
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirm}
-                disabled={sending}
-                className="flex-1 rounded-2xl border border-red-200 bg-red-50 px-4 py-2.5 text-label-sm text-red-700 transition-[background-color,border-color] duration-[200ms] ease-soft hover:border-red-300 hover:bg-red-100 disabled:opacity-50"
-              >
-                {sending ? "Enviando..." : "Confirmar"}
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
-
 export function ClientSidebar({ userEmail, userName, userImageUrl }: ClientSidebarProps) {
   const pathname = usePathname();
-  const { signOut } = useClerk();
-  const router = useRouter();
   const reduceMotion = useReducedMotion() ?? false;
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({ cuenta: true });
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const activeItem = accountNavigation.find((item) => isActivePath(pathname, item.href));
 
-  async function handleSignOut() {
-    await signOut();
-    router.push("/");
-  }
-
   return (
     <>
-      {showDeleteDialog ? <DeleteConfirmDialog onClose={() => setShowDeleteDialog(false)} /> : null}
-
       <aside className="w-full shrink-0 lg:hidden">
-        <div className="flex items-center justify-between gap-3 rounded-xl border border-border-soft bg-white/90 px-3 py-2.5 shadow-sm sm:px-4 sm:py-3">
+        <div className="flex items-center justify-between gap-3 px-3 py-2.5 sm:px-4 sm:py-3">
           <div className="min-w-0">
             <p className="truncate text-label-md text-text-primary">{activeItem?.label ?? "Mi cuenta"}</p>
           </div>
@@ -268,7 +185,7 @@ export function ClientSidebar({ userEmail, userName, userImageUrl }: ClientSideb
               animate="animate"
               exit="exit"
               variants={mobileDrawerReveal}
-              className="fixed inset-y-3 left-3 z-50 flex w-[min(22rem,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(246,250,245,0.98))] shadow-[0_28px_60px_-32px_rgba(28,56,41,0.38)] sm:inset-y-4 sm:left-4 sm:w-[min(22rem,calc(100vw-2rem))] sm:rounded-[30px] lg:hidden"
+              className="fixed inset-y-3 left-3 z-50 flex w-[min(22rem,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(246,250,245,0.98))] sm:inset-y-4 sm:left-4 sm:w-[min(22rem,calc(100vw-2rem))] sm:rounded-[30px] lg:hidden"
             >
               <SidebarPanel
                 pathname={pathname}
@@ -280,8 +197,6 @@ export function ClientSidebar({ userEmail, userName, userImageUrl }: ClientSideb
                 userImageUrl={userImageUrl}
                 reduceMotion={reduceMotion}
                 collapseLabel="Cerrar"
-                onSignOut={handleSignOut}
-                onDeleteRequest={() => setShowDeleteDialog(true)}
               />
             </motion.aside>
           </>
@@ -301,7 +216,7 @@ export function ClientSidebar({ userEmail, userName, userImageUrl }: ClientSideb
               initial={reduceMotion ? false : { opacity: 0, scale: 0.985 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={reduceMotion ? { duration: 0 } : { duration: sidebarContentDuration, ease: sidebarEaseEnter }}
-              className="flex w-full flex-col items-center gap-3 rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,250,246,0.98))] px-3 py-3 shadow-[0_20px_44px_-34px_rgba(28,56,41,0.34)]"
+              className="flex w-full flex-col items-center gap-3 rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,250,246,0.98))] px-3 py-3"
             >
               <button
                 type="button"
@@ -369,8 +284,6 @@ export function ClientSidebar({ userEmail, userName, userImageUrl }: ClientSideb
                 userImageUrl={userImageUrl}
                 reduceMotion={reduceMotion}
                 collapseLabel="Ocultar"
-                onSignOut={handleSignOut}
-                onDeleteRequest={() => setShowDeleteDialog(true)}
               />
             </motion.div>
           )}
@@ -390,12 +303,10 @@ function SidebarPanel(props: {
   userImageUrl?: string | undefined;
   reduceMotion: boolean;
   collapseLabel: string;
-  onSignOut: () => void;
-  onDeleteRequest: () => void;
 }) {
   return (
-    <div className="flex h-full w-full flex-col rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,250,246,0.98))] p-3.5 shadow-[0_24px_52px_-36px_rgba(28,56,41,0.36)] sm:rounded-[30px] sm:p-4">
-      <div className="flex items-start justify-between gap-3 border-b border-border-soft pb-3.5 sm:pb-4">
+    <div className="flex h-full w-full flex-col rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,250,246,0.98))] p-3 sm:rounded-[30px] sm:p-3.5">
+      <div className="flex items-start justify-between gap-3 border-b border-border-soft pb-3 sm:pb-3.5">
         <Image src="/logotipo.png" alt="Dermatologika" width={144} height={40} className="h-8 w-auto object-contain" priority />
         <button
           type="button"
@@ -412,34 +323,28 @@ function SidebarPanel(props: {
         initial={props.reduceMotion ? false : "initial"}
         animate="animate"
         variants={navListReveal}
-        className="mt-4 flex-1 space-y-3.5 sm:mt-5 sm:space-y-4"
+        className="mt-3 flex-1 space-y-1 sm:mt-4 sm:space-y-2"
       >
         {navigationSections.map((section) => {
-          const sectionActive = isSectionActive(props.pathname, section.items);
           const isOpen = props.openSections[section.id] ?? true;
 
           return (
             <motion.section
               key={section.id}
               variants={navItemReveal}
-              className={cx(
-                "rounded-[22px] border p-2.5 transition-[background-color,border-color,box-shadow] duration-[200ms] ease-soft sm:rounded-[24px] sm:p-3",
-                sectionActive
-                  ? "border-border-brand bg-surface-brandTint/60 shadow-[0_16px_34px_-28px_rgba(32,92,76,0.4)]"
-                  : "border-border-soft bg-surface-subtle",
-              )}
+              className="py-0.5"
             >
               <button
                 type="button"
                 aria-expanded={isOpen}
                 onClick={() => props.onSectionToggle(section.id, !isOpen)}
-                className="flex w-full items-center justify-between gap-3 rounded-2xl px-1 py-1 text-left transition-[color] duration-[200ms] ease-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-subtle"
+                className="flex w-full items-center justify-between gap-3 rounded-lg px-1 py-1 text-left transition-[color] duration-[200ms] ease-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-subtle"
               >
                 <span className="text-label-sm uppercase tracking-[0.16em] text-ink-900">{section.label}</span>
                 <span
                   aria-hidden="true"
                   className={cx(
-                    "inline-flex h-8 w-8 items-center justify-center rounded-full border border-border-soft bg-surface-canvas text-text-secondary transition-[transform,background-color,border-color,color] duration-[200ms] ease-soft",
+                    "inline-flex h-6 w-6 items-center justify-center text-text-secondary transition-[transform,color] duration-[200ms] ease-soft",
                     isOpen ? "rotate-0" : "-rotate-90",
                   )}
                 >
@@ -456,7 +361,7 @@ function SidebarPanel(props: {
                     variants={sectionAccordionReveal}
                     className="overflow-hidden"
                   >
-                    <div className="mt-3 space-y-2">
+                    <div className="mt-1.5 space-y-0.5">
                       {section.items.map((item) => (
                         <NavigationLink key={item.href} {...item} pathname={props.pathname} />
                       ))}
@@ -469,47 +374,27 @@ function SidebarPanel(props: {
         })}
       </motion.nav>
 
-      <div className="mt-4 space-y-2 border-t border-border-soft pt-4 sm:mt-5">
-        <Link
-          href="/cuenta/perfil"
-          className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-surface-subtle p-3 transition-[background-color,border-color] duration-[200ms] ease-soft hover:border-border-brand hover:bg-surface-brandTint sm:rounded-[24px]"
-        >
-          <div className="flex h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-border-soft bg-surface-canvas text-label-md text-text-primary">
-            {props.userImageUrl ? (
-              <Image src={props.userImageUrl} alt={props.userEmail} width={44} height={44} className="h-full w-full object-cover" />
-            ) : (
-              <span className="flex h-full w-full items-center justify-center">
-                {props.userEmail.slice(0, 1).toUpperCase()}
-              </span>
-            )}
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-label-sm text-text-primary">{props.userName || props.userEmail}</p>
-            <p className="truncate text-body-sm text-text-secondary">{props.userEmail}</p>
-          </div>
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-4 w-4 shrink-0 text-text-muted">
-            <path d="M9 6L15 12L9 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </Link>
-
-        <button
-          type="button"
-          onClick={props.onSignOut}
-          className="flex w-full items-center gap-3 rounded-[22px] border border-border-soft bg-surface-subtle px-3.5 py-3 text-left text-label-sm text-text-secondary transition-[background-color,border-color,color] duration-[200ms] ease-soft hover:border-border-default hover:bg-surface-canvas hover:text-text-primary sm:rounded-[24px]"
-        >
-          <SignOutIcon className="h-4 w-4 shrink-0" />
-          Cerrar sesión
-        </button>
-
-        <button
-          type="button"
-          onClick={props.onDeleteRequest}
-          className="flex w-full items-center gap-3 rounded-[22px] border border-red-100 bg-red-50/50 px-3.5 py-3 text-left text-label-sm text-red-600 transition-[background-color,border-color,color] duration-[200ms] ease-soft hover:border-red-200 hover:bg-red-50 sm:rounded-[24px]"
-        >
-          <TrashIcon className="h-4 w-4 shrink-0" />
-          Solicitar eliminación de cuenta
-        </button>
-      </div>
+      <Link
+        href="/cuenta/perfil"
+        className="mt-3 flex items-center gap-2.5 rounded-lg px-2 py-2 transition-[background-color] duration-[200ms] ease-soft hover:bg-surface-brandTint sm:mt-4"
+      >
+        <div className="flex h-9 w-9 shrink-0 overflow-hidden rounded-lg border border-border-soft bg-surface-canvas text-label-md text-text-primary">
+          {props.userImageUrl ? (
+            <Image src={props.userImageUrl} alt={props.userEmail} width={44} height={44} className="h-full w-full object-cover" />
+          ) : (
+            <span className="flex h-full w-full items-center justify-center">
+              {props.userEmail.slice(0, 1).toUpperCase()}
+            </span>
+          )}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-label-sm text-text-primary">{props.userName || props.userEmail}</p>
+          <p className="truncate text-body-sm text-text-secondary">{props.userEmail}</p>
+        </div>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-4 w-4 shrink-0 text-text-muted">
+          <path d="M9 6L15 12L9 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </Link>
     </div>
   );
 }
@@ -567,21 +452,29 @@ function ShieldIcon(props: { className?: string }) {
   );
 }
 
-function SignOutIcon(props: { className?: string }) {
+function HeartIcon(props: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={props.className}>
-      <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M16 17l5-5-5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M21 12H9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-function TrashIcon(props: { className?: string }) {
+function SubscriptionIcon(props: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={props.className}>
-      <polyline points="3 6 5 6 21 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.66 0 3-4.03 3-9s-1.34-9-3-9m0 18c-1.66 0-3-4.03-3-9s1.34-9 3-9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ReferralIcon(props: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={props.className}>
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

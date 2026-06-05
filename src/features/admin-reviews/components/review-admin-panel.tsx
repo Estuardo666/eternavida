@@ -21,6 +21,7 @@ interface ReviewItem {
   status: ReviewStatus;
   adminResponse: string | null;
   createdAt: string;
+  imageUrls: string[];
 }
 
 interface ReviewsResponse {
@@ -206,6 +207,21 @@ export function ReviewAdminPanel() {
                     ) : null}
                     {review.body ? (
                       <p className="text-body-sm text-text-secondary">{review.body}</p>
+                    ) : null}
+                    {review.imageUrls && review.imageUrls.length > 0 ? (
+                      <div className="mt-1.5 flex flex-wrap gap-1.5">
+                        {review.imageUrls.map((url, idx) => (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <a key={idx} href={url} target="_blank" rel="noopener noreferrer">
+                            <img
+                              src={url}
+                              alt={`Imagen ${idx + 1}`}
+                              className="h-14 w-14 rounded-lg border border-border-soft object-cover transition hover:opacity-80"
+                              loading="lazy"
+                            />
+                          </a>
+                        ))}
+                      </div>
                     ) : null}
                     {review.adminResponse ? (
                       <div className="mt-2 rounded-lg border border-neutral-200 bg-neutral-50 p-2.5">

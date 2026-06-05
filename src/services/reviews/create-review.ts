@@ -27,6 +27,7 @@ export async function createReviewService(
     title: input.title,
     body: input.body,
     isVerifiedPurchase: isVerified,
+    imageUrls: input.imageUrls,
   });
 
   return review;
@@ -59,6 +60,7 @@ export async function getProductReviewsService(
     createdAt: r.createdAt.toISOString(),
     adminResponse: r.adminResponse,
     adminRespondedAt: r.adminRespondedAt?.toISOString() ?? null,
+    imageUrls: r.imageUrls ?? [],
   }));
 
   return {

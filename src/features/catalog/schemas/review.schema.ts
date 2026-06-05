@@ -22,6 +22,11 @@ export const createReviewInputSchema = z.object({
     .optional()
     .nullable()
     .transform((v) => v || null),
+  imageUrls: z
+    .array(z.string().url("Each image URL must be a valid URL"))
+    .max(5, "Maximum 5 images per review")
+    .optional()
+    .default([]),
 });
 
 export type CreateReviewInput = z.infer<typeof createReviewInputSchema>;
