@@ -3,6 +3,9 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 
+import { PublicProductCard } from "@/features/catalog/components/public-product-card";
+import type { MediaAsset } from "@/types/media";
+
 interface WishlistProduct {
   id: string;
   slug: string;
@@ -27,11 +30,16 @@ interface WishlistItemData {
   product: WishlistProduct;
 }
 
-const priceFormatter = new Intl.NumberFormat("es-MX", {
-  style: "currency",
-  currency: "MXN",
-  minimumFractionDigits: 2,
-});
+function toMediaAsset(product: WishlistProduct): MediaAsset | null {
+  if (!product.mediaAsset?.publicUrl || !product.mediaAssetId) return null;
+  return {
+    id: product.mediaAssetId,
+    kind: "image",
+    url: product.mediaAsset.publicUrl,
+    storageKey: null,
+    altText: product.mediaAsset.altText || product.name,
+  };
+}
 
 export function WishlistView() {
   const [items, setItems] = useState<WishlistItemData[]>([]);
@@ -116,59 +124,26 @@ export function WishlistView() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => {
           const product = item.product;
-          const hasDiscount = product.discountPrice !== null && product.discountPrice < product.price;
-          const displayPrice = hasDiscount ? product.discountPrice! : product.price;
 
           return (
-            <div key={item.id} className="group relative overflow-hidden rounded-2xl border border-border-soft bg-white">
-              <Link href={product.href} className="block">
-                <div className="aspect-square overflow-hidden bg-neutral-50 p-4">
-                  {product.mediaAsset?.publicUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element -- R2 assets use native img
-                    <img
-                      src={product.mediaAsset.publicUrl}
-                      alt={product.mediaAsset.altText || product.name}
-                      className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.03]"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center">
-                      <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 text-label-lg text-text-muted">
-                        {product.name.slice(0, 1).toUpperCase()}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </Link>
-
-              <div className="space-y-2 p-4">
-                <div>
-                  <p className="text-body-xs text-text-muted">{product.brand}</p>
-                  <Link href={product.href} className="text-body-md font-medium text-text-primary hover:underline">
-                    {product.name}
-                  </Link>
-                </div>
-
-                <div className="flex items-baseline gap-2">
-                  <span className="text-body-lg font-semibold text-text-primary">
-                    {priceFormatter.format(displayPrice)}
-                  </span>
-                  {hasDiscount ? (
-                    <span className="text-body-sm text-neutral-400 line-through">
-                      {priceFormatter.format(product.price)}
-                    </span>
-                  ) : null}
-                </div>
-
-                {product.stock === 0 ? (
-                  <span className="text-body-xs font-medium text-[#cc5533]">Sin stock</span>
-                ) : null}
-              </div>
-
+            <div key={item.id} className="relative">
+              <PublicProductCard
+                product={{
+                  id: product.id,
+                  name: product.name,
+                  brand: product.brand,
+                  href: product.href,
+                  price: product.price,
+                  discountPrice: product.discountPrice,
+                  stock: product.stock,
+                  media: toMediaAsset(product),
+                  category: null,
+                }}
+              />
               <button
                 type="button"
                 onClick={() => handleRemove(item.productId)}
-                className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full border border-border-soft bg-white/90 text-text-muted transition hover:bg-red-50 hover:text-red-500"
+                className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-border-soft bg-white/90 text-text-muted transition hover:bg-red-50 hover:text-red-500"
                 aria-label="Quitar de favoritos"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4" aria-hidden="true">
