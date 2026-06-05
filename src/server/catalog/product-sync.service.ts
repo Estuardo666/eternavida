@@ -14,6 +14,15 @@
 import { PrismaClient } from "@prisma/client";
 
 import { computeDiscountPercent } from "@/lib/product-pricing";
+import type {
+  ExternalProduct,
+  ExternalProductApiConfig,
+  ExternalProductListResponse,
+  IExternalProductAdapter,
+  SyncOperationResult,
+  SyncProductResult,
+} from "@/types/external-product-api";
+import { SyncConflictStrategy, SyncDeduplicationStrategy } from "@/types/external-product-api";
 import {
   ProductSyncError,
   ValidationError,
