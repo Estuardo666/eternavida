@@ -15,10 +15,10 @@ export default async function AdminDashboardLayout({ children }: AdminDashboardL
   const userImageUrl = clerkUser?.imageUrl ?? "";
 
   return (
-    <div className="min-h-screen overflow-x-clip bg-surface-subtle px-3 py-4 sm:px-5 sm:py-6 lg:px-8">
-      <div className="mx-auto flex max-w-[1600px] flex-col gap-4 sm:gap-6 lg:flex-row lg:items-start">
+    <div className="min-h-screen bg-surface-subtle">
+      <div className="mx-auto flex max-w-[1600px] flex-col gap-0 lg:flex-row lg:items-start">
         <AdminSidebar userEmail={user.email} userRole={user.role} userImageUrl={userImageUrl} />
-        <main className="min-w-0 flex-1 overflow-x-clip">
+        <main className="min-w-0 flex-1 overflow-x-clip px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-6">
           <AdminContentShell>{children}</AdminContentShell>
         </main>
       </div>

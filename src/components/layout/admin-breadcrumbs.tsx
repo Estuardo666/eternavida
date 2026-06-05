@@ -14,22 +14,31 @@ interface AdminBreadcrumbsProps {
 
 export function AdminBreadcrumbs({ items, className }: AdminBreadcrumbsProps) {
   return (
-    <nav aria-label="Breadcrumb" className={cx("overflow-x-auto pb-1 text-body-sm text-text-secondary", className)}>
-      <ol className="flex min-w-max items-center gap-2 whitespace-nowrap">
+    <nav aria-label="Breadcrumb" className={cx("overflow-x-auto pb-1", className)}>
+      <ol className="flex min-w-max items-center gap-1.5 whitespace-nowrap">
         {items.map((item, index) => {
           const isCurrent = index === items.length - 1;
 
           return (
-            <li key={`${item.label}-${index}`} className="flex shrink-0 items-center gap-2">
+            <li key={`${item.label}-${index}`} className="flex shrink-0 items-center gap-1.5">
               {item.href && !isCurrent ? (
-                <Link href={item.href} className="rounded-lg px-1 py-0.5 transition-[color,background-color,border-color] duration-[200ms] ease-soft hover:bg-surface-subtle hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas">
+                <Link
+                  href={item.href}
+                  className="rounded-md px-1 py-0.5 text-label-sm text-text-muted transition-colors duration-150 hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-1 focus-visible:ring-offset-surface-canvas"
+                >
                   {item.label}
                 </Link>
               ) : (
-                <span className={isCurrent ? "text-text-primary" : undefined}>{item.label}</span>
+                <span className={cx("text-label-sm", isCurrent ? "text-text-primary font-medium" : "text-text-muted")}>
+                  {item.label}
+                </span>
               )}
 
-              {!isCurrent ? <span aria-hidden="true" className="text-text-muted">/</span> : null}
+              {!isCurrent ? (
+                <span aria-hidden="true" className="text-text-muted/50 text-[10px]">
+                  /
+                </span>
+              ) : null}
             </li>
           );
         })}

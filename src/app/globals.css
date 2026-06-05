@@ -20,6 +20,35 @@ body {
   background-color: #ffffff;
 }
 
+/* Supabase-inspired admin utilities */
+::selection {
+  background-color: rgba(114, 178, 85, 0.15);
+  color: inherit;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 146, 127, 0.25) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(155, 146, 127, 0.25);
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(155, 146, 127, 0.4);
+}
+
 @keyframes promo-in {
   from {
     opacity: 0;

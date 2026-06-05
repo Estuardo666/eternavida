@@ -6,6 +6,19 @@ import { AnimatePresence, motion, useReducedMotion, type Variants } from "framer
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  User,
+  ShoppingBag,
+  MapPin,
+  Heart,
+  Globe,
+  UserPlus,
+  Shield,
+  Menu,
+  ChevronLeft,
+  ChevronDown,
+  Settings,
+} from "lucide-react";
 
 import { cx } from "@/lib/utils";
 import { motionTokens } from "@/motion/tokens";
@@ -19,17 +32,17 @@ interface ClientSidebarProps {
 type NavigationItem = {
   href: string;
   label: string;
-  icon: (props: { className?: string }) => React.JSX.Element;
+  icon: React.ComponentType<{ className?: string }>;
 };
 
 const accountNavigation: ReadonlyArray<NavigationItem> = [
-  { href: "/cuenta/perfil", label: "Mi perfil", icon: UserIcon },
-  { href: "/cuenta/pedidos", label: "Mis pedidos", icon: ShoppingBagIcon },
-  { href: "/cuenta/direcciones", label: "Mis direcciones", icon: MapPinIcon },
-  { href: "/cuenta/favoritos", label: "Favoritos", icon: HeartIcon },
-  { href: "/cuenta/suscripciones", label: "Suscripciones", icon: SubscriptionIcon },
-  { href: "/cuenta/referidos", label: "Referidos", icon: ReferralIcon },
-  { href: "/cuenta/privacidad", label: "Privacidad", icon: ShieldIcon },
+  { href: "/cuenta/perfil", label: "Mi perfil", icon: User },
+  { href: "/cuenta/pedidos", label: "Mis pedidos", icon: ShoppingBag },
+  { href: "/cuenta/direcciones", label: "Mis direcciones", icon: MapPin },
+  { href: "/cuenta/favoritos", label: "Favoritos", icon: Heart },
+  { href: "/cuenta/suscripciones", label: "Suscripciones", icon: Globe },
+  { href: "/cuenta/referidos", label: "Referidos", icon: UserPlus },
+  { href: "/cuenta/privacidad", label: "Privacidad", icon: Shield },
 ] as const;
 
 const navigationSections: ReadonlyArray<{
@@ -106,10 +119,12 @@ function NavigationLink(props: NavigationItem & { pathname: string; compact?: bo
   const Icon = props.icon;
   const linkClasses = cx(
     props.compact
-      ? "group flex h-12 w-12 items-center justify-center rounded-2xl border transition-[background-color,border-color,color,transform] duration-[200ms] ease-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
-      : "group flex min-h-9 items-center gap-2.5 rounded-lg px-3 py-2 text-left transition-[background-color,color] duration-[200ms] ease-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
+      ? "group flex h-10 w-10 items-center justify-center rounded-lg transition-[background-color,color] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
+      : "group relative flex min-h-[2.125rem] items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left transition-[background-color,color] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
     isActive
-      ? "bg-surface-brandTint text-text-primary"
+      ? props.compact
+        ? "bg-brand-primary/10 text-brand-primary"
+        : "bg-brand-primary/8 text-brand-primary"
       : "text-text-secondary hover:bg-surface-subtle hover:text-text-primary",
   );
 
@@ -117,12 +132,12 @@ function NavigationLink(props: NavigationItem & { pathname: string; compact?: bo
     return (
       <div className="group/tooltip relative">
         <Link href={props.href} aria-current={isActive ? "page" : undefined} aria-label={props.label} className={linkClasses}>
-          <Icon className={cx("h-5 w-5", isActive ? "text-text-brand" : "text-current")} />
+          <Icon className="h-[18px] w-[18px]" />
           <span className="sr-only">{props.label}</span>
         </Link>
         <span
           role="tooltip"
-          className="pointer-events-none absolute left-[calc(100%+12px)] top-1/2 z-20 -translate-y-1/2 rounded-full border border-border-soft bg-surface-canvas px-3 py-1.5 text-label-sm text-text-primary opacity-0 shadow-sm transition-[opacity,transform] duration-[180ms] ease-soft group-hover/tooltip:opacity-100 group-focus-within/tooltip:opacity-100"
+          className="pointer-events-none absolute left-[calc(100%+8px)] top-1/2 z-tooltip -translate-y-1/2 whitespace-nowrap rounded-md border border-border-soft bg-surface-canvas px-2 py-1 text-label-sm text-text-primary opacity-0 shadow-sm transition-[opacity,transform] duration-150 group-hover/tooltip:opacity-100 group-focus-within/tooltip:opacity-100"
         >
           {props.label}
         </span>
@@ -132,8 +147,11 @@ function NavigationLink(props: NavigationItem & { pathname: string; compact?: bo
 
   return (
     <Link href={props.href} aria-current={isActive ? "page" : undefined} className={linkClasses}>
-      <Icon className={cx("h-5 w-5 shrink-0", isActive ? "text-text-brand" : "text-current")} />
-      <span className="min-w-0 flex-1 text-label-md text-current">{props.label}</span>
+      {isActive ? (
+        <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-full bg-brand-primary" />
+      ) : null}
+      <Icon className="h-[18px] w-[18px] shrink-0" />
+      <span className="min-w-0 flex-1 text-label-md">{props.label}</span>
     </Link>
   );
 }
@@ -149,8 +167,9 @@ export function ClientSidebar({ userEmail, userName, userImageUrl }: ClientSideb
 
   return (
     <>
+      {/* Mobile trigger */}
       <aside className="w-full shrink-0 lg:hidden">
-        <div className="flex items-center justify-between gap-3 px-3 py-2.5 sm:px-4 sm:py-3">
+        <div className="flex items-center justify-between gap-3 border-b border-border-soft bg-surface-canvas px-4 py-3">
           <div className="min-w-0">
             <p className="truncate text-label-md text-text-primary">{activeItem?.label ?? "Mi cuenta"}</p>
           </div>
@@ -159,21 +178,22 @@ export function ClientSidebar({ userEmail, userName, userImageUrl }: ClientSideb
             aria-expanded={isMobileOpen}
             aria-controls="client-sidebar-mobile-drawer"
             onClick={() => setIsMobileOpen((c) => !c)}
-            className="flex h-11 w-11 items-center justify-center rounded-2xl border border-border-soft bg-surface-subtle text-text-primary transition-[background-color,border-color,color] duration-[200ms] ease-soft hover:border-border-default hover:bg-surface-brandTint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-soft bg-surface-canvas text-text-secondary transition-colors duration-150 hover:bg-surface-subtle hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
           >
-            <MenuIcon className="h-5 w-5" />
+            <Menu className="h-4 w-4" />
             <span className="sr-only">Abrir navegación</span>
           </button>
         </div>
       </aside>
 
+      {/* Mobile drawer */}
       <AnimatePresence>
         {isMobileOpen ? (
           <>
             <motion.button
               type="button"
               aria-label="Cerrar navegación"
-              className="fixed inset-0 z-40 bg-black/20 lg:hidden"
+              className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm lg:hidden"
               initial={reduceMotion ? false : "initial"}
               animate="animate"
               exit="exit"
@@ -186,7 +206,7 @@ export function ClientSidebar({ userEmail, userName, userImageUrl }: ClientSideb
               animate="animate"
               exit="exit"
               variants={mobileDrawerReveal}
-              className="fixed inset-y-3 left-3 z-50 flex w-[min(22rem,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(246,250,245,0.98))] sm:inset-y-4 sm:left-4 sm:w-[min(22rem,calc(100vw-2rem))] sm:rounded-[30px] lg:hidden"
+              className="fixed inset-y-0 left-0 z-50 flex w-[min(17rem,calc(100vw-2rem))] flex-col overflow-y-auto overflow-x-hidden border-r border-border-soft bg-surface-canvas lg:hidden"
             >
               <SidebarPanel
                 pathname={pathname}
@@ -204,10 +224,11 @@ export function ClientSidebar({ userEmail, userName, userImageUrl }: ClientSideb
         ) : null}
       </AnimatePresence>
 
+      {/* Desktop sidebar */}
       <aside className="hidden shrink-0 lg:sticky lg:top-6 lg:block lg:self-start">
         <motion.div
           initial={false}
-          animate={{ width: isCollapsed ? 84 : 296 }}
+          animate={{ width: isCollapsed ? 60 : 256 }}
           transition={reduceMotion ? { duration: 0 } : { duration: sidebarWidthDuration, ease: sidebarEaseEnter }}
           className="overflow-visible"
         >
@@ -217,24 +238,26 @@ export function ClientSidebar({ userEmail, userName, userImageUrl }: ClientSideb
               initial={reduceMotion ? false : { opacity: 0, scale: 0.985 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={reduceMotion ? { duration: 0 } : { duration: sidebarContentDuration, ease: sidebarEaseEnter }}
-              className="flex w-full flex-col items-center gap-3 rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,250,246,0.98))] px-3 py-3"
+              className="flex w-full flex-col items-center gap-1 rounded-xl border border-border-soft bg-surface-canvas px-2 py-3"
             >
               <button
                 type="button"
                 onClick={() => setIsCollapsed(false)}
-                className="flex h-12 w-12 items-center justify-center rounded-2xl border border-border-brand bg-surface-brandTint text-text-brand transition-[transform,background-color,border-color,color] duration-[200ms] ease-soft hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
+                className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-primary text-white transition-transform duration-150 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
                 title="Expandir sidebar"
                 aria-label="Expandir sidebar"
               >
-                <Image src="/logotipo.png" alt="Dermatologika" width={24} height={24} className="h-6 w-6 object-contain" priority />
+                <Image src="/logotipo.png" alt="Dermatologika" width={20} height={20} className="h-5 w-5 object-contain brightness-0 invert" priority />
               </button>
+
+              <div className="my-2 h-px w-6 bg-border-soft" />
 
               <motion.nav
                 aria-label="Accesos rápidos de mi cuenta"
                 initial={reduceMotion ? false : "initial"}
                 animate="animate"
                 variants={navListReveal}
-                className="flex w-full flex-1 flex-col items-center gap-3"
+                className="flex w-full flex-1 flex-col items-center gap-0.5"
               >
                 {accountNavigation.map((item) => (
                   <motion.div key={item.href} variants={navItemReveal}>
@@ -243,26 +266,26 @@ export function ClientSidebar({ userEmail, userName, userImageUrl }: ClientSideb
                 ))}
               </motion.nav>
 
-              <div className="mt-auto flex w-full flex-col items-center gap-3 border-t border-border-soft pt-4">
+              <div className="mt-auto flex w-full flex-col items-center gap-1 border-t border-border-soft pt-3">
                 <button
                   type="button"
                   onClick={() => setIsCollapsed(false)}
-                  className="flex h-11 w-11 items-center justify-center rounded-2xl border border-border-soft bg-surface-subtle text-text-secondary transition-[background-color,border-color,color] duration-[200ms] ease-soft hover:border-border-default hover:bg-surface-canvas hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-text-muted transition-colors duration-150 hover:bg-surface-subtle hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
                   title="Expandir panel"
                   aria-label="Expandir panel"
                 >
-                  <PanelToggleIcon className={cx("h-5 w-5 transition-transform duration-[200ms] ease-soft", "rotate-180")} />
+                  <ChevronLeft className="h-4 w-4 rotate-180" />
                 </button>
 
                 <Link
                   href="/cuenta/perfil"
                   aria-label="Mi perfil"
-                  className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl border border-border-soft bg-surface-subtle text-label-md text-text-primary transition-[background-color,border-color] duration-[200ms] ease-soft hover:border-border-brand hover:bg-surface-brandTint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
+                  className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg border border-border-soft bg-surface-subtle text-label-sm text-text-primary transition-colors duration-150 hover:border-border-brand hover:bg-brand-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
                 >
                   {userImageUrl ? (
-                    <Image src={userImageUrl} alt={userEmail} width={44} height={44} className="h-full w-full object-cover" />
+                    <Image src={userImageUrl} alt={userEmail} width={36} height={36} className="h-full w-full object-cover" />
                   ) : (
-                    userEmail.slice(0, 1).toUpperCase()
+                    <Settings className="h-4 w-4 text-text-muted" />
                   )}
                 </Link>
               </div>
@@ -306,15 +329,15 @@ function SidebarPanel(props: {
   collapseLabel: string;
 }) {
   return (
-    <div className="flex h-full w-full flex-col rounded-[28px] border border-[#d9e5d5] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,250,246,0.98))] p-3 sm:rounded-[30px] sm:p-3.5">
-      <div className="flex items-start justify-between gap-3 border-b border-border-soft pb-3 sm:pb-3.5">
-        <Image src="/logotipo.png" alt="Dermatologika" width={144} height={40} className="h-8 w-auto object-contain" priority />
+    <div className="flex h-full w-full flex-col border-r border-border-soft bg-surface-canvas p-3">
+      <div className="flex items-center justify-between gap-2 pb-3 border-b border-border-soft">
+        <Image src="/logotipo.png" alt="Dermatologika" width={120} height={28} className="h-7 w-auto object-contain" priority />
         <button
           type="button"
           onClick={props.onCollapseToggle}
-          className="flex h-11 w-11 items-center justify-center rounded-2xl border border-border-soft bg-surface-subtle text-text-secondary transition-[background-color,border-color,color] duration-[200ms] ease-soft hover:border-border-default hover:bg-surface-canvas hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
+          className="hidden lg:flex h-8 w-8 items-center justify-center rounded-lg text-text-muted transition-colors duration-150 hover:bg-surface-subtle hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
         >
-          <PanelToggleIcon className="h-5 w-5" />
+          <ChevronLeft className="h-4 w-4" />
           <span className="sr-only">{props.collapseLabel}</span>
         </button>
       </div>
@@ -324,7 +347,7 @@ function SidebarPanel(props: {
         initial={props.reduceMotion ? false : "initial"}
         animate="animate"
         variants={navListReveal}
-        className="mt-3 flex-1 space-y-1 sm:mt-4 sm:space-y-2"
+        className="mt-3 flex-1 space-y-4"
       >
         {navigationSections.map((section) => {
           const isOpen = props.openSections[section.id] ?? true;
@@ -333,24 +356,21 @@ function SidebarPanel(props: {
             <motion.section
               key={section.id}
               variants={navItemReveal}
-              className="py-0.5"
             >
               <button
                 type="button"
                 aria-expanded={isOpen}
                 onClick={() => props.onSectionToggle(section.id, !isOpen)}
-                className="flex w-full items-center justify-between gap-3 rounded-lg px-1 py-1 text-left transition-[color] duration-[200ms] ease-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-subtle"
+                className="flex w-full items-center justify-between gap-2 rounded-md px-2 py-1 text-left transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-subtle"
               >
-                <span className="text-label-sm uppercase tracking-[0.16em] text-ink-900">{section.label}</span>
-                <span
+                <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-text-muted">{section.label}</span>
+                <ChevronDown
                   aria-hidden="true"
                   className={cx(
-                    "inline-flex h-6 w-6 items-center justify-center text-text-secondary transition-[transform,color] duration-[200ms] ease-soft",
+                    "h-3.5 w-3.5 text-text-muted transition-transform duration-200",
                     isOpen ? "rotate-0" : "-rotate-90",
                   )}
-                >
-                  <ChevronIcon className="h-4 w-4" />
-                </span>
+                />
               </button>
 
               <AnimatePresence initial={false}>
@@ -362,7 +382,7 @@ function SidebarPanel(props: {
                     variants={sectionAccordionReveal}
                     className="overflow-hidden"
                   >
-                    <div className="mt-1.5 space-y-0.5">
+                    <div className="mt-0.5 space-y-px">
                       {section.items.map((item) => (
                         <NavigationLink key={item.href} {...item} pathname={props.pathname} />
                       ))}
@@ -377,114 +397,23 @@ function SidebarPanel(props: {
 
       <Link
         href="/cuenta/perfil"
-        className="mt-3 flex items-center gap-2.5 rounded-lg px-2 py-2 transition-[background-color] duration-[200ms] ease-soft hover:bg-surface-brandTint sm:mt-4"
+        className="mt-3 flex items-center gap-2.5 rounded-lg px-2.5 py-2 transition-colors duration-150 hover:bg-surface-subtle border-t border-border-soft pt-3"
       >
-        <div className="flex h-9 w-9 shrink-0 overflow-hidden rounded-lg border border-border-soft bg-surface-canvas text-label-md text-text-primary">
+        <div className="flex h-8 w-8 shrink-0 overflow-hidden rounded-lg border border-border-soft bg-surface-subtle text-label-sm text-text-primary">
           {props.userImageUrl ? (
-            <Image src={props.userImageUrl} alt={props.userEmail} width={44} height={44} className="h-full w-full object-cover" />
+            <Image src={props.userImageUrl} alt={props.userEmail} width={32} height={32} className="h-full w-full object-cover" />
           ) : (
-            <span className="flex h-full w-full items-center justify-center">
+            <span className="flex h-full w-full items-center justify-center text-[11px] font-medium text-text-muted">
               {props.userEmail.slice(0, 1).toUpperCase()}
             </span>
           )}
         </div>
         <div className="min-w-0 flex-1">
           <p className="truncate text-label-sm text-text-primary">{props.userName || props.userEmail}</p>
-          <p className="truncate text-body-sm text-text-secondary">{props.userEmail}</p>
+          <p className="truncate text-[11px] text-text-muted">{props.userEmail}</p>
         </div>
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-4 w-4 shrink-0 text-text-muted">
-          <path d="M9 6L15 12L9 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <Settings className="h-3.5 w-3.5 shrink-0 text-text-muted" />
       </Link>
     </div>
-  );
-}
-
-function MenuIcon(props: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={props.className}>
-      <path d="M5 7H19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-      <path d="M5 12H19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-      <path d="M5 17H19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function PanelToggleIcon(props: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={props.className}>
-      <path d="M9 6L15 12L9 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function ChevronIcon(props: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={props.className}>
-      <path d="M7 10L12 15L17 10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function UserIcon(props: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={props.className}>
-      <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function ShoppingBagIcon(props: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={props.className}>
-      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M3 6h18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-      <path d="M16 10a4 4 0 01-8 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function ShieldIcon(props: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={props.className}>
-      <path d="M12 3L4 7v5c0 5 4 9 8 10 4-1 8-5 8-10V7l-8-4z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function HeartIcon(props: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={props.className}>
-      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function SubscriptionIcon(props: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={props.className}>
-      <path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.66 0 3-4.03 3-9s-1.34-9-3-9m0 18c-1.66 0-3-4.03-3-9s1.34-9 3-9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function ReferralIcon(props: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={props.className}>
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M22 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function MapPinIcon(props: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={props.className}>
-      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="12" cy="10" r="3" stroke="currentColor" strokeWidth="1.8" />
-    </svg>
   );
 }

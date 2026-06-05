@@ -14,13 +14,11 @@ export default async function CuentaLayout({ children }: CuentaLayoutProps) {
   return (
     <div className="relative min-h-screen bg-surface-subtle">
       <PublicHeader />
-      <div className="px-3 py-4 sm:px-5 sm:py-6 lg:px-8">
-        <div className="mx-auto flex max-w-[1600px] flex-col gap-4 sm:gap-6 lg:flex-row lg:items-start">
-          <ClientSidebar userEmail={user.email} userName={userName} userImageUrl={user.imageUrl} />
-          <main className="min-w-0 flex-1 overflow-x-clip">
-            <AdminContentShell>{children}</AdminContentShell>
-          </main>
-        </div>
+      <div className="mx-auto flex max-w-[1600px] flex-col gap-0 lg:flex-row lg:items-start">
+        <ClientSidebar userEmail={user.email} userName={userName} userImageUrl={user.imageUrl} />
+        <main className="min-w-0 flex-1 overflow-x-clip px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-6">
+          <AdminContentShell>{children}</AdminContentShell>
+        </main>
       </div>
     </div>
   );
