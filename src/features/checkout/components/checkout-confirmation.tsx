@@ -332,7 +332,7 @@ export function CheckoutConfirmation() {
           </Link>
 
           <Link
-            href="/mi-cuenta"
+            href="/cuenta/perfil"
             onClick={clearStoredOrder}
             className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-primary px-5 py-3 text-label-md font-semibold text-white transition-colors hover:bg-brand-primaryHover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
           >
@@ -406,7 +406,7 @@ export function CheckoutConfirmation() {
                   >
                     <InlineSignUpForm
                       onBack={() => setShowSignUp(false)}
-                      onSuccess={() => router.replace("/mi-cuenta")}
+                      onSuccess={() => router.replace("/cuenta/perfil")}
                       backLabel="Cancelar"
                     />
                   </motion.div>

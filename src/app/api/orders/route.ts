@@ -11,8 +11,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
   const page = parseInt(searchParams.get("page") ?? "1");
   const pageSize = parseInt(searchParams.get("pageSize") ?? "20");
+  const archived = searchParams.get("archived") === "true";
 
-  const result = await orderRepository.getOrdersByUserId(userId, { page, pageSize });
+  const result = await orderRepository.getOrdersByUserId(userId, { page, pageSize, archived });
 
   return NextResponse.json({ success: true, data: result });
 }

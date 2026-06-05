@@ -28,6 +28,8 @@ export async function GET(): Promise<NextResponse> {
       return NextResponse.json({ success: false, error: { code: "NOT_FOUND", message: "User not found." }, timestamp }, { status: 404 });
     }
 
+    const unsafeMeta = user.unsafeMetadata as Record<string, unknown>;
+
     return NextResponse.json({
       success: true,
       data: {
@@ -37,6 +39,7 @@ export async function GET(): Promise<NextResponse> {
         lastName: user.lastName ?? "",
         username: user.username ?? "",
         imageUrl: user.imageUrl ?? "",
+        ruc: typeof unsafeMeta.ruc === "string" ? unsafeMeta.ruc : "",
       },
       timestamp,
     });
@@ -53,7 +56,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
     const authResult = await requireClientAuth();
     if (!authResult.success) return authResult.response;
 
-    const body = await request.json() as { firstName?: string; lastName?: string; username?: string };
+    const body = await request.json() as { firstName?: string; lastName?: string; username?: string; ruc?: string };
 
     const updatePayload: Record<string, string> = {};
     if (typeof body.firstName === "string") updatePayload.firstName = body.firstName.trim();
@@ -62,6 +65,15 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
 
     const client = await clerkClient();
     const updated = await client.users.updateUser(authResult.userId, updatePayload);
+
+    // Save RUC to unsafeMetadata if provided
+    if (typeof body.ruc === "string") {
+      await client.users.updateUser(authResult.userId, {
+        unsafeMetadata: { ruc: body.ruc.trim() },
+      });
+    }
+
+    const unsafeMeta = updated.unsafeMetadata as Record<string, unknown>;
 
     return NextResponse.json({
       success: true,
@@ -72,6 +84,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
         lastName: updated.lastName ?? "",
         username: updated.username ?? "",
         imageUrl: updated.imageUrl ?? "",
+        ruc: typeof unsafeMeta.ruc === "string" ? unsafeMeta.ruc : "",
       },
       timestamp,
     });

@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { Package, Archive, RotateCcw } from "lucide-react";
 
-const STATUS_LABELS = {
+const STATUS_LABELS: Record<string, string> = {
   pending: "Pendiente",
   confirmed: "Confirmado",
   processing: "En proceso",
@@ -12,9 +13,9 @@ const STATUS_LABELS = {
   delivered: "Entregado",
   cancelled: "Cancelado",
   refunded: "Reembolsado",
-} as const;
+};
 
-const STATUS_CLASS_NAMES = {
+const STATUS_CLASS_NAMES: Record<string, string> = {
   pending: "border-[#d9d0a3] bg-[#faf7e8] text-[#7a6830]",
   confirmed: "border-[#c8dcbf] bg-[#eef8ea] text-[#2f6d44]",
   processing: "border-[#ead6bb] bg-[#fcf4ea] text-[#8b5a1e]",
@@ -22,37 +23,35 @@ const STATUS_CLASS_NAMES = {
   delivered: "border-[#bdd9ca] bg-[#e9f5ee] text-[#1f6a4d]",
   cancelled: "border-[#efc4c4] bg-[#fff3f3] text-status-error",
   refunded: "border-[#d8cdee] bg-[#f7f2fd] text-[#6f46b6]",
-} as const;
+};
 
-const PAYMENT_STATUS_LABELS = {
+const PAYMENT_STATUS_LABELS: Record<string, string> = {
   pending: "Pendiente",
   paid: "Pagado",
   failed: "Fallido",
   refunded: "Reembolsado",
   partially_refunded: "Reembolso parcial",
-} as const;
+};
 
-const PAYMENT_STATUS_CLASS_NAMES = {
+const PAYMENT_STATUS_CLASS_NAMES: Record<string, string> = {
   pending: "border-[#d9d0a3] bg-[#faf7e8] text-[#7a6830]",
   paid: "border-[#c8dcbf] bg-[#eef8ea] text-[#2f6d44]",
   failed: "border-[#efc4c4] bg-[#fff3f3] text-status-error",
   refunded: "border-[#c8d7ef] bg-[#eef4fc] text-[#2d5fa7]",
   partially_refunded: "border-[#ead6bb] bg-[#fcf4ea] text-[#8b5a1e]",
-} as const;
-
-type OrderStatus = keyof typeof STATUS_LABELS;
-type PaymentStatus = keyof typeof PAYMENT_STATUS_LABELS;
+};
 
 type UserOrder = {
   id: string;
   orderNumber: string;
-  status: OrderStatus;
-  paymentStatus: PaymentStatus;
+  status: string;
+  paymentStatus: string;
   total: string;
   trackingNumber: string | null;
   trackingUrl: string | null;
   paymentMethodName: string;
   createdAt: string;
+  archived: boolean;
   items: Array<{
     id: string;
     name: string;
@@ -79,9 +78,9 @@ function formatDate(value: string): string {
 
 export default function CuentaPedidosPage() {
   const [orders, setOrders] = useState<UserOrder[]>([]);
-  const [expandedOrders, setExpandedOrders] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"active" | "archived">("active");
 
   useEffect(() => {
     let ignore = false;
@@ -91,7 +90,8 @@ export default function CuentaPedidosPage() {
       setError(null);
 
       try {
-        const response = await fetch("/api/orders?page=1&pageSize=20");
+        const archivedParam = activeTab === "archived" ? "true" : "false";
+        const response = await fetch(`/api/orders?page=1&pageSize=50&archived=${archivedParam}`);
         const payload = (await response.json()) as {
           success?: boolean;
           error?: string;
@@ -118,7 +118,7 @@ export default function CuentaPedidosPage() {
     return () => {
       ignore = true;
     };
-  }, []);
+  }, [activeTab]);
 
   return (
     <div className="space-y-6">
@@ -130,6 +130,39 @@ export default function CuentaPedidosPage() {
       >
         <p className="text-caption uppercase tracking-[0.14em] text-text-muted">Cuenta</p>
         <h1 className="text-headline-sm text-text-primary">Mis pedidos</h1>
+      </motion.div>
+
+      {/* Tabs */}
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.48, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.05 }}
+        className="flex gap-1 rounded-lg border border-border-soft bg-surface-subtle p-1"
+      >
+        <button
+          type="button"
+          onClick={() => setActiveTab("active")}
+          className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-label-sm font-medium transition-colors ${
+            activeTab === "active"
+              ? "bg-white text-text-primary shadow-sm"
+              : "text-text-muted hover:text-text-secondary"
+          }`}
+        >
+          <Package className="h-4 w-4" />
+          Activos
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("archived")}
+          className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-label-sm font-medium transition-colors ${
+            activeTab === "archived"
+              ? "bg-white text-text-primary shadow-sm"
+              : "text-text-muted hover:text-text-secondary"
+          }`}
+        >
+          <Archive className="h-4 w-4" />
+          Archivados
+        </button>
       </motion.div>
 
       <motion.div
@@ -153,19 +186,39 @@ export default function CuentaPedidosPage() {
           </div>
         ) : orders.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-5 py-14 text-center">
-            <ShoppingBagEmptyIcon />
+            {activeTab === "archived" ? (
+              <Archive className="h-16 w-16 text-text-muted opacity-40" />
+            ) : (
+              <ShoppingBagEmptyIcon />
+            )}
             <div className="space-y-1.5">
-              <h2 className="text-section-lg text-text-primary">Aún no tienes pedidos</h2>
+              <h2 className="text-section-lg text-text-primary">
+                {activeTab === "archived" ? "No tienes pedidos archivados" : "Aún no tienes pedidos"}
+              </h2>
               <p className="text-body-sm text-text-secondary">
-                Tus pedidos aparecerán aquí una vez que completes tu primera compra.
+                {activeTab === "archived"
+                  ? "Los pedidos archivados aparecerán aquí."
+                  : "Tus pedidos aparecerán aquí una vez que completes tu primera compra."}
               </p>
             </div>
-            <Link
-              href="/productos"
-              className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-5 py-3 text-label-md font-semibold text-white transition-colors hover:bg-brand-primaryHover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
-            >
-              Explorar productos
-            </Link>
+            {activeTab !== "archived" && (
+              <Link
+                href="/productos"
+                className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-5 py-3 text-label-md font-semibold text-white transition-colors hover:bg-brand-primaryHover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
+              >
+                Explorar productos
+              </Link>
+            )}
+            {activeTab === "archived" && (
+              <button
+                type="button"
+                onClick={() => setActiveTab("active")}
+                className="inline-flex items-center gap-2 rounded-xl border border-border-soft bg-white px-5 py-3 text-label-md font-semibold text-text-primary transition-colors hover:border-border-brand"
+              >
+                <RotateCcw className="h-4 w-4" />
+                Ver pedidos activos
+              </button>
+            )}
           </div>
         ) : (
           <div className="space-y-4">
@@ -175,11 +228,11 @@ export default function CuentaPedidosPage() {
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
                       <h2 className="text-body-lg font-semibold text-text-primary">{order.orderNumber}</h2>
-                      <span className={`inline-flex rounded-full border px-2.5 py-1 text-caption ${STATUS_CLASS_NAMES[order.status]}`}>
-                        {STATUS_LABELS[order.status]}
+                      <span className={`inline-flex rounded-full border px-2.5 py-1 text-caption ${STATUS_CLASS_NAMES[order.status] ?? ""}`}>
+                        {STATUS_LABELS[order.status] ?? order.status}
                       </span>
-                      <span className={`inline-flex rounded-full border px-2.5 py-1 text-caption ${PAYMENT_STATUS_CLASS_NAMES[order.paymentStatus]}`}>
-                        {PAYMENT_STATUS_LABELS[order.paymentStatus]}
+                      <span className={`inline-flex rounded-full border px-2.5 py-1 text-caption ${PAYMENT_STATUS_CLASS_NAMES[order.paymentStatus] ?? ""}`}>
+                        {PAYMENT_STATUS_LABELS[order.paymentStatus] ?? order.paymentStatus}
                       </span>
                     </div>
                     <p className="mt-1 text-caption text-text-muted">{formatDate(order.createdAt)}</p>
@@ -208,19 +261,12 @@ export default function CuentaPedidosPage() {
                   </div>
 
                   <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setExpandedOrders((current) =>
-                          current.includes(order.id)
-                            ? current.filter((id) => id !== order.id)
-                            : [...current, order.id],
-                        )
-                      }
+                    <Link
+                      href={`/cuenta/pedidos/${order.id}`}
                       className="inline-flex items-center gap-2 rounded-xl border border-border-soft bg-white px-4 py-2 text-label-sm font-semibold text-text-primary transition-colors hover:border-border-brand hover:text-text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
                     >
-                      {expandedOrders.includes(order.id) ? "Ocultar items" : "Ver items"}
-                    </button>
+                      Ver pedido
+                    </Link>
                     <button
                       type="button"
                       onClick={() => window.open(`/api/orders/${order.id}/export-pdf`, "_blank", "noopener,noreferrer")}
@@ -230,19 +276,6 @@ export default function CuentaPedidosPage() {
                     </button>
                   </div>
                 </div>
-
-                {expandedOrders.includes(order.id) ? (
-                  <div className="mt-4 space-y-2 border-t border-border-soft pt-4">
-                    {order.items.map((item) => (
-                      <div key={item.id} className="flex items-center justify-between gap-4 text-body-sm text-text-secondary">
-                        <span>
-                          {item.name} <span className="text-text-muted">· {item.brand} · x{item.quantity}</span>
-                        </span>
-                        <span className="font-medium text-text-primary">{formatCurrency(item.price)}</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : null}
               </article>
             ))}
           </div>

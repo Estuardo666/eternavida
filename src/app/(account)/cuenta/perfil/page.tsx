@@ -10,6 +10,8 @@ export default async function CuentaPerfilPage() {
   const user = await currentUser();
   if (!user) redirect("/login?redirectTo=/cuenta/perfil");
 
+  const unsafeMeta = user.unsafeMetadata as Record<string, unknown>;
+
   return (
     <ProfileClientForm
       initialProfile={{
@@ -19,6 +21,7 @@ export default async function CuentaPerfilPage() {
         lastName: user.lastName ?? "",
         username: user.username ?? "",
         imageUrl: user.imageUrl ?? "",
+        ruc: typeof unsafeMeta.ruc === "string" ? unsafeMeta.ruc : "",
       }}
     />
   );

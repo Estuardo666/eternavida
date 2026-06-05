@@ -447,6 +447,11 @@ enum OrderNoteVisibility {
   customer
 }
 
+enum AddressType {
+  SHIPPING
+  BILLING
+}
+
 enum WebhookEventStatus {
   pending
   delivered
@@ -495,6 +500,15 @@ model Order {
   taxAmount          Decimal         @default(0) @db.Decimal(10, 2)
   total              Decimal         @db.Decimal(10, 2)
   checkoutNotes      String?         @map("notes")
+  archived           Boolean         @default(false)
+  billingFirstName   String?
+  billingLastName    String?
+  billingAddress     String?
+  billingApartment   String?
+  billingProvince    String?
+  billingCity        String?
+  billingPhone       String?
+  billingRuc         String?
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   items              OrderItem[]
@@ -702,6 +716,29 @@ model WishlistItem {
   @@index([clerkUserId])
   @@index([productId])
   @@index([createdAt])
+}
+
+// ─── Addresses ──────────────────────────────────────────────────────────────
+
+model Address {
+  id          String      @id @default(cuid())
+  clerkUserId String
+  type        AddressType
+  firstName   String
+  lastName    String
+  address     String
+  apartment   String?
+  province    String
+  city        String
+  phone       String
+  idNumber    String?
+  isDefault   Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([clerkUserId])
+  @@index([clerkUserId, type])
+  @@index([isDefault])
 }
 
 // ─── Abandoned Cart ──────────────────────────────────────────────────────────

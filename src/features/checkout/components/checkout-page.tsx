@@ -50,33 +50,7 @@ function requiresPaymentConfirmation(initialOrderStatus?: string | null): boolea
   return initialOrderStatus !== "confirmed";
 }
 
-// ─── Ecuador provinces and major cities ─────────────────────────────────────
-
-interface Province {
-  id: string;
-  name: string;
-  cities: string[];
-}
-
-const ecuadorProvinces: Province[] = [
-  { id: "pic", name: "Pichincha", cities: ["Quito", "Machachi", "Latacunga"] },
-  { id: "gua", name: "Guayas", cities: ["Guayaquil", "Samborondón", "Durán"] },
-  { id: "azo", name: "Azuay", cities: ["Cuenca", "Gualaceo", "Sigsig"] },
-  { id: "mam", name: "Manabí", cities: ["Manta", "Portoviejo", "Junín"] },
-  { id: "sua", name: "Sucumbíos", cities: ["Nueva Loja", "El Coca", "Lago Agrio"] },
-  { id: "tur", name: "Tungurahua", cities: ["Ambato", "Latacunga", "Pelileo"] },
-  { id: "pas", name: "Pastaza", cities: ["Puyo", "Shell"] },
-  { id: "mor", name: "Morona Santiago", cities: ["Macas", "Limón"] },
-  { id: "zam", name: "Zamora Chinchipe", cities: ["Zamora", "Vilcabamba"] },
-  { id: "loj", name: "Loja", cities: ["Loja", "Catamayo"] },
-  { id: "los", name: "Los Ríos", cities: ["Babahoyo", "Quevedo"] },
-  { id: "san", name: "Santo Domingo", cities: ["Santo Domingo", "La Concordia"] },
-  { id: "car", name: "Carchi", cities: ["Tulcán", "Ipiales"] },
-  { id: "imb", name: "Imbabura", cities: ["Ibarra", "Otavalo", "Cotacachi"] },
-  { id: "ori", name: "Orellana", cities: ["Puerto Francisco de Orellana", "Coca"] },
-  { id: "gal", name: "Galápagos", cities: ["Puerto Baquerizo", "Puerto Ayora"] },
-  { id: "set", name: "Santa Elena", cities: ["Santa Elena", "Salinas", "La Libertad"] },
-];
+import { ecuadorProvinces } from "@/config/ecuador-provinces";
 
 // ─── Price formatter ──────────────────────────────────────────────────────────
 
@@ -502,6 +476,15 @@ export function CheckoutPageClient() {
   const [province, setProvince] = useState("");
   const [phone, setPhone] = useState("");
   const [idNumber, setIdNumber] = useState("");
+  const [billingDifferent, setBillingDifferent] = useState(false);
+  const [billingFirstName, setBillingFirstName] = useState("");
+  const [billingLastName, setBillingLastName] = useState("");
+  const [billingAddress, setBillingAddress] = useState("");
+  const [billingApartment, setBillingApartment] = useState("");
+  const [billingProvince, setBillingProvince] = useState("");
+  const [billingCity, setBillingCity] = useState("");
+  const [billingPhone, setBillingPhone] = useState("");
+  const [billingRuc, setBillingRuc] = useState("");
   const {
     preview: pricingPreview,
     isLoading: isPricingLoading,
@@ -629,6 +612,16 @@ export function CheckoutPageClient() {
           discountAmount,
           taxAmount: 0,
           total: totals?.total ?? summaryDisplayTotal,
+          ...(billingDifferent ? {
+            billingFirstName,
+            billingLastName,
+            billingAddress,
+            billingApartment: billingApartment || undefined,
+            billingProvince,
+            billingCity,
+            billingPhone: billingPhone || undefined,
+            billingRuc: billingRuc || undefined,
+          } : {}),
         }),
       });
 
@@ -982,6 +975,125 @@ export function CheckoutPageClient() {
               />
             </div>
           </FormSection>
+
+          {/* ── Datos de facturación diferentes ──────────────────────────── */}
+          <div className="mb-6">
+            <label className="flex items-center gap-2.5 text-body-sm text-text-secondary">
+              <input
+                type="checkbox"
+                checked={billingDifferent}
+                onChange={(e) => setBillingDifferent(e.target.checked)}
+                className="h-4 w-4 rounded border-border-strong text-brand-primary focus:ring-brand-primary"
+              />
+              <span>Usar datos de facturación diferentes</span>
+            </label>
+
+            <AnimatePresence>
+              {billingDifferent && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
+                  className="overflow-hidden"
+                >
+                  <div className="mt-4 space-y-4 rounded-xl border border-border-soft bg-surface-subtle p-5">
+                    <h3 className="text-body-md font-semibold text-text-primary">Datos de facturación</h3>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <Field
+                        label="Nombre"
+                        id="billing-first-name"
+                        required
+                        value={billingFirstName}
+                        onChange={setBillingFirstName}
+                        placeholder="Nombre"
+                      />
+                      <Field
+                        label="Apellido"
+                        id="billing-last-name"
+                        required
+                        value={billingLastName}
+                        onChange={setBillingLastName}
+                        placeholder="Apellido"
+                      />
+                    </div>
+
+                    <Field
+                      label="Dirección"
+                      id="billing-address"
+                      required
+                      value={billingAddress}
+                      onChange={setBillingAddress}
+                      placeholder="Dirección de facturación"
+                    />
+
+                    <Field
+                      label="Apartamento, suite, etc."
+                      id="billing-apartment"
+                      value={billingApartment}
+                      onChange={setBillingApartment}
+                      placeholder="Opcional"
+                      optional
+                    />
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label
+                          htmlFor="billing-province"
+                          className="mb-1.5 block text-label-sm font-medium text-text-secondary"
+                        >
+                          Provincia <span className="text-status-error" aria-hidden="true"> *</span>
+                        </label>
+                        <select
+                          id="billing-province"
+                          value={billingProvince}
+                          onChange={(e) => setBillingProvince(e.target.value)}
+                          required
+                          className="w-full rounded-md border border-border bg-white px-3 py-2 text-body-sm font-medium text-text-primary transition-[border-color,box-shadow,background-color] duration-fast hover:border-border-brand hover:bg-brand-soft/20 focus:border-brand-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
+                        >
+                          <option value="">Selecciona una provincia</option>
+                          {ecuadorProvinces.map((p) => (
+                            <option key={p.id} value={p.id}>
+                              {p.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <Field
+                        label="Ciudad"
+                        id="billing-city"
+                        required
+                        value={billingCity}
+                        onChange={setBillingCity}
+                        placeholder="Ciudad"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <Field
+                        label="Teléfono"
+                        id="billing-phone"
+                        type="tel"
+                        value={billingPhone}
+                        onChange={setBillingPhone}
+                        placeholder="+593 99 000 0000"
+                        optional
+                      />
+                      <Field
+                        label="RUC"
+                        id="billing-ruc"
+                        value={billingRuc}
+                        onChange={setBillingRuc}
+                        placeholder="0000000000"
+                        optional
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           {/* ── Método de envío ──────────────────────────────────────────── */}
           <FormSection title="Método de envío">

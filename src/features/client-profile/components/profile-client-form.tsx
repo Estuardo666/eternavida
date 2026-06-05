@@ -31,6 +31,7 @@ export interface ClientProfileData {
   lastName: string;
   username: string;
   imageUrl: string;
+  ruc?: string;
 }
 
 interface ProfileClientFormProps {
@@ -46,6 +47,7 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
   const [firstName, setFirstName] = useState(initialProfile.firstName);
   const [lastName, setLastName] = useState(initialProfile.lastName);
   const [username, setUsername] = useState(initialProfile.username);
+  const [ruc, setRuc] = useState(initialProfile.ruc ?? "");
 
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -56,17 +58,11 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
   const [infoSaveState, setInfoSaveState] = useState<SaveState>("idle");
   const [infoError, setInfoError] = useState<string | null>(null);
 
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordSaveState, setPasswordSaveState] = useState<SaveState>("idle");
-  const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const infoDirty =
     firstName !== profile.firstName ||
     lastName !== profile.lastName ||
-    username !== profile.username;
+    username !== profile.username ||
+    ruc !== (profile.ruc ?? "");
 
   function handleAvatarFileChange(file: File | null) {
     if (!file) return;
@@ -110,7 +106,7 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
       const res = await fetch("/api/client/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName, lastName, username }),
+        body: JSON.stringify({ firstName, lastName, username, ruc }),
       });
       const json = await res.json() as { success: boolean; data?: ClientProfileData; error?: { message: string } };
 
@@ -120,35 +116,12 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
       setFirstName(json.data!.firstName);
       setLastName(json.data!.lastName);
       setUsername(json.data!.username);
+      setRuc(json.data!.ruc ?? "");
       setInfoSaveState("success");
       router.refresh();
     } catch (error) {
       setInfoSaveState("error");
       setInfoError(error instanceof Error ? error.message : "Error al guardar.");
-    }
-  }
-
-  async function handlePasswordSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setPasswordSaveState("saving");
-    setPasswordError(null);
-
-    try {
-      const res = await fetch("/api/client/profile/password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ newPassword, confirmPassword }),
-      });
-      const json = await res.json() as { success: boolean; error?: { message: string } };
-
-      if (!json.success) throw new Error(json.error?.message ?? "Error al cambiar contraseña.");
-
-      setNewPassword("");
-      setConfirmPassword("");
-      setPasswordSaveState("success");
-    } catch (error) {
-      setPasswordSaveState("error");
-      setPasswordError(error instanceof Error ? error.message : "Error al cambiar contraseña.");
     }
   }
 
@@ -296,81 +269,19 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
                 </p>
               </label>
 
+              <label className="block space-y-1.5">
+                <span className="block text-label-md text-text-primary">RUC</span>
+                <input
+                  value={ruc}
+                  onChange={(e) => { setRuc(e.target.value); setInfoSaveState("idle"); }}
+                  className={FIELD_CLASS}
+                  placeholder="RUC (opcional)"
+                />
+              </label>
+
               {infoError ? <p className="text-body-sm text-status-error">{infoError}</p> : null}
               {infoSaveState === "success" ? (
                 <p className="text-body-sm text-emerald-700">Datos actualizados correctamente.</p>
-              ) : null}
-            </form>
-          </motion.section>
-
-          {/* Password */}
-          <motion.section
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.48, ease: EASE, delay: 0.26 }}
-            className={CARD_CLASS}
-          >
-            <h2 className="text-section-lg text-text-primary">Cambiar contraseña</h2>
-
-            <form id="profile-password-form" onSubmit={handlePasswordSubmit} className="mt-5 space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="block space-y-1.5">
-                  <span className="block text-label-md text-text-primary">Nueva contraseña</span>
-                  <div className="relative">
-                    <input
-                      type={showNewPassword ? "text" : "password"}
-                      value={newPassword}
-                      onChange={(e) => { setNewPassword(e.target.value); setPasswordSaveState("idle"); }}
-                      className={cx(FIELD_CLASS, "pr-10")}
-                      placeholder="Mínimo 8 caracteres"
-                      autoComplete="new-password"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowNewPassword((v) => !v)}
-                      className="absolute inset-y-0 right-0 flex items-center px-3 text-text-muted hover:text-text-secondary"
-                      tabIndex={-1}
-                      aria-label={showNewPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                    >
-                      <EyeIcon open={showNewPassword} />
-                    </button>
-                  </div>
-                </label>
-
-                <label className="block space-y-1.5">
-                  <span className="block text-label-md text-text-primary">Confirmar contraseña</span>
-                  <div className="relative">
-                    <input
-                      type={showConfirmPassword ? "text" : "password"}
-                      value={confirmPassword}
-                      onChange={(e) => { setConfirmPassword(e.target.value); setPasswordSaveState("idle"); }}
-                      className={cx(
-                        FIELD_CLASS,
-                        "pr-10",
-                        confirmPassword && newPassword !== confirmPassword ? "border-status-error" : "",
-                      )}
-                      placeholder="Repetir contraseña"
-                      autoComplete="new-password"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowConfirmPassword((v) => !v)}
-                      className="absolute inset-y-0 right-0 flex items-center px-3 text-text-muted hover:text-text-secondary"
-                      tabIndex={-1}
-                      aria-label={showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                    >
-                      <EyeIcon open={showConfirmPassword} />
-                    </button>
-                  </div>
-                  {confirmPassword && newPassword !== confirmPassword ? (
-                    <span className="text-caption text-status-error">Las contraseñas no coinciden.</span>
-                  ) : null}
-                </label>
-              </div>
-
-              {passwordError ? <p className="text-body-sm text-status-error">{passwordError}</p> : null}
-              {passwordSaveState === "success" ? (
-                <p className="text-body-sm text-emerald-700">Contraseña actualizada correctamente.</p>
               ) : null}
             </form>
           </motion.section>
@@ -412,15 +323,6 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
               >
                 {infoSaveState === "saving" ? "Guardando..." : "Guardar información"}
               </button>
-
-              <button
-                type="submit"
-                form="profile-password-form"
-                disabled={passwordSaveState === "saving" || !newPassword}
-                className={cx("w-full", BTN_SECONDARY)}
-              >
-                {passwordSaveState === "saving" ? "Actualizando..." : "Cambiar contraseña"}
-              </button>
             </div>
           </section>
         </motion.aside>
@@ -435,21 +337,6 @@ function UploadIcon(props: { className?: string }) {
       <path d="M12 16V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
       <path d="M9 11L12 8L15 11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M6 18H18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function EyeIcon({ open }: { open: boolean }) {
-  return open ? (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-4 w-4">
-      <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M3 3l18 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  ) : (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-4 w-4">
-      <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.8" />
     </svg>
   );
 }

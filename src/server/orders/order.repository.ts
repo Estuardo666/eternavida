@@ -243,6 +243,14 @@ export const orderRepository = {
         taxAmount: toDecimal(input.taxAmount ?? 0),
         total: toDecimal(input.total),
         checkoutNotes: input.notes ?? null,
+        billingFirstName: input.billingFirstName ?? null,
+        billingLastName: input.billingLastName ?? null,
+        billingAddress: input.billingAddress ?? null,
+        billingApartment: input.billingApartment ?? null,
+        billingProvince: input.billingProvince ?? null,
+        billingCity: input.billingCity ?? null,
+        billingPhone: input.billingPhone ?? null,
+        billingRuc: input.billingRuc ?? null,
         items: {
           create: input.items.map((item) => ({
             productId: item.productId ?? null,
@@ -289,10 +297,10 @@ export const orderRepository = {
 
   async getOrdersByUserId(
     userId: string,
-    params: { page?: number; pageSize?: number } = {},
+    params: { page?: number; pageSize?: number; archived?: boolean } = {},
   ) {
-    const { page = 1, pageSize = 20 } = params;
-    const where = { clerkUserId: userId };
+    const { page = 1, pageSize = 20, archived = false } = params;
+    const where = { clerkUserId: userId, archived };
     const [items, total] = await Promise.all([
       prisma.order.findMany({
         where,
@@ -407,6 +415,14 @@ export const orderRepository = {
     return prisma.order.update({
       where: { id: orderId },
       data: { paymentStatus },
+      include: orderDetailInclude,
+    });
+  },
+
+  async updateOrderArchived(orderId: string, archived: boolean) {
+    return prisma.order.update({
+      where: { id: orderId },
+      data: { archived },
       include: orderDetailInclude,
     });
   },

@@ -95,6 +95,47 @@ export const orderService = {
 
     const refreshedOrder = await refreshOrder(order.id);
 
+    // Auto-save addresses for authenticated users on first order
+    if (input.clerkUserId) {
+      try {
+        const { addressRepository } = await import("@/server/addresses/address.repository");
+        const { AddressType } = await import("@prisma/client");
+
+        const hasAddresses = await addressRepository.hasAnyAddresses(input.clerkUserId);
+        if (!hasAddresses) {
+          await addressRepository.createAddress(input.clerkUserId, {
+            type: AddressType.SHIPPING,
+            firstName: input.firstName,
+            lastName: input.lastName,
+            address: input.address,
+            apartment: input.apartment ?? null,
+            province: input.province,
+            city: input.city,
+            phone: input.phone,
+            idNumber: input.idNumber ?? null,
+            isDefault: true,
+          });
+
+          if (input.billingFirstName && input.billingAddress) {
+            await addressRepository.createAddress(input.clerkUserId, {
+              type: AddressType.BILLING,
+              firstName: input.billingFirstName,
+              lastName: input.billingLastName ?? input.lastName,
+              address: input.billingAddress,
+              apartment: input.billingApartment ?? null,
+              province: input.billingProvince ?? input.province,
+              city: input.billingCity ?? input.city,
+              phone: input.billingPhone ?? input.phone,
+              idNumber: input.billingRuc ?? null,
+              isDefault: true,
+            });
+          }
+        }
+      } catch (err) {
+        console.error("[order-service] Failed to auto-save addresses:", err);
+      }
+    }
+
     try {
       const { sendAdminOrderNotification } = await import(
         "@/services/email/send-admin-order-notification"

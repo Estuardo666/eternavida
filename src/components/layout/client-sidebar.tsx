@@ -25,6 +25,7 @@ type NavigationItem = {
 const accountNavigation: ReadonlyArray<NavigationItem> = [
   { href: "/cuenta/perfil", label: "Mi perfil", icon: UserIcon },
   { href: "/cuenta/pedidos", label: "Mis pedidos", icon: ShoppingBagIcon },
+  { href: "/cuenta/direcciones", label: "Mis direcciones", icon: MapPinIcon },
   { href: "/cuenta/favoritos", label: "Favoritos", icon: HeartIcon },
   { href: "/cuenta/suscripciones", label: "Suscripciones", icon: SubscriptionIcon },
   { href: "/cuenta/referidos", label: "Referidos", icon: ReferralIcon },
@@ -475,6 +476,15 @@ function ReferralIcon(props: { className?: string }) {
       <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.8" />
       <path d="M22 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function MapPinIcon(props: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={props.className}>
+      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="12" cy="10" r="3" stroke="currentColor" strokeWidth="1.8" />
     </svg>
   );
 }

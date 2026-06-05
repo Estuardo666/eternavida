@@ -144,6 +144,14 @@ export const createOrderSchema = z
     taxAmount: decimalValueSchema.optional().default(0),
     total: decimalValueSchema,
     notes: z.string().optional(),
+    billingFirstName: z.string().optional(),
+    billingLastName: z.string().optional(),
+    billingAddress: z.string().optional(),
+    billingApartment: z.string().optional(),
+    billingProvince: z.string().optional(),
+    billingCity: z.string().optional(),
+    billingPhone: z.string().optional(),
+    billingRuc: z.string().optional(),
   })
   .refine((data) => data.clerkUserId || data.guestEmail, {
     message: "Either clerkUserId or guestEmail is required",
