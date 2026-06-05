@@ -2,6 +2,7 @@ import "server-only";
 
 import { adminProductFormSchema } from "@/features/admin-catalog/schemas/admin-catalog.schema";
 import { normalizeBadgeColor } from "@/lib/product-badges";
+import { computeDiscountPercent } from "@/lib/product-pricing";
 import { resolveProductIdentity } from "@/lib/catalog-slugs";
 import {
   findAdminBrandRecord,
@@ -154,6 +155,7 @@ export async function createProduct(input: AdminProductFormData) {
       badgeColor: normalizeOptionalBadgeColor(parsedInput),
       price: parsedInput.price,
       discountPrice: parsedInput.discountPrice,
+      discountPercent: computeDiscountPercent(parsedInput.price, parsedInput.discountPrice),
       stock: parsedInput.stock,
       isActive: parsedInput.isActive,
       categoryId: primaryCategoryId,
@@ -224,11 +226,13 @@ export async function updateProduct(id: string, input: AdminProductFormData) {
     ? {
         price: existingProduct.price,
         discountPrice: existingProduct.discountPrice,
+        discountPercent: computeDiscountPercent(existingProduct.price, existingProduct.discountPrice),
         stock: existingProduct.stock,
       }
     : {
         price: parsedInput.price,
         discountPrice: parsedInput.discountPrice,
+        discountPercent: computeDiscountPercent(parsedInput.price, parsedInput.discountPrice),
         stock: parsedInput.stock,
       };
 

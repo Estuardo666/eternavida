@@ -5,6 +5,8 @@ import { PublicProductDetailView } from "@/features/catalog/components/public-pr
 import { buildProductMetadata } from "@/seo/catalog";
 import { getPublicProductDetailData } from "@/services/catalog/get-public-catalog-data";
 
+export const revalidate = 60;
+
 interface PublicProductDetailPageProps {
   params: Promise<{
     slug: string;

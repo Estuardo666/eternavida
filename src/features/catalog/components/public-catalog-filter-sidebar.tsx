@@ -905,25 +905,57 @@ export function PublicCatalogFilterSidebar({
     [draft.brandIds, draft.inStock, draft.onSale, draft.priceMax, draft.priceMin, filters.categorySlug, filters.query],
   );
 
+  const [debouncedDraftKey, setDebouncedDraftKey] = useState(draftFilterKey);
+  const draftDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   useEffect(() => {
     if (draftFilterKey === appliedFilterKey) {
+      if (draftDebounceRef.current) {
+        clearTimeout(draftDebounceRef.current);
+        draftDebounceRef.current = null;
+      }
+      setDebouncedDraftKey(draftFilterKey);
+      return;
+    }
+
+    if (draftDebounceRef.current) {
+      clearTimeout(draftDebounceRef.current);
+    }
+    draftDebounceRef.current = setTimeout(() => {
+      setDebouncedDraftKey(draftFilterKey);
+    }, 400);
+
+    return () => {
+      if (draftDebounceRef.current) {
+        clearTimeout(draftDebounceRef.current);
+        draftDebounceRef.current = null;
+      }
+    };
+  }, [appliedFilterKey, draftFilterKey]);
+
+  useEffect(() => {
+    if (debouncedDraftKey === appliedFilterKey) {
       setPreviewTotalItems(totalItems);
       setIsPreviewLoading(false);
       return;
     }
 
     const controller = new AbortController();
+    const [dQuery, dCategory, dPriceMin, dPriceMax, dInStock, dOnSale, dBrandIds] = debouncedDraftKey.split("|");
     const search = new URLSearchParams();
-    if (filters.query) search.set("q", filters.query);
-    if (filters.categorySlug) search.set("categoria", filters.categorySlug);
-    if (draft.priceMin !== null && draft.priceMin > 0) search.set("precioMin", String(draft.priceMin));
-    if (draft.priceMax !== null) search.set("precioMax", String(draft.priceMax));
-    if (draft.inStock) search.set("enStock", "1");
-    if (draft.onSale) search.set("enOferta", "1");
-    const draftBrandSlugs = draft.brandIds
-      .map((brandId) => brandOptions.find((brand) => brand.id === brandId)?.slug)
-      .filter((slug): slug is string => Boolean(slug));
-    if (draftBrandSlugs.length > 0) search.set("marcas", draftBrandSlugs.join(","));
+    if (dQuery) search.set("q", dQuery);
+    if (dCategory) search.set("categoria", dCategory);
+    if (dPriceMin && dPriceMin !== "null" && Number(dPriceMin) > 0) search.set("precioMin", dPriceMin);
+    if (dPriceMax && dPriceMax !== "null") search.set("precioMax", dPriceMax);
+    if (dInStock === "true") search.set("enStock", "1");
+    if (dOnSale === "true") search.set("enOferta", "1");
+    if (dBrandIds) {
+      const slugs = dBrandIds
+        .split(",")
+        .map((brandId) => brandOptions.find((brand) => brand.id === brandId)?.slug)
+        .filter((slug): slug is string => Boolean(slug));
+      if (slugs.length > 0) search.set("marcas", slugs.join(","));
+    }
 
     setIsPreviewLoading(true);
     fetch(`/api/catalog/count?${search.toString()}`, { signal: controller.signal })
@@ -942,7 +974,7 @@ export function PublicCatalogFilterSidebar({
       });
 
     return () => controller.abort();
-  }, [appliedFilterKey, draft.brandIds, draft.inStock, draft.onSale, draft.priceMax, draft.priceMin, draftFilterKey, filters.categorySlug, filters.query, totalItems]);
+  }, [debouncedDraftKey, appliedFilterKey, totalItems, brandOptions]);
 
   const updateDraft = useCallback((partial: Partial<FilterDraft>) => {
     setDraftState((prev) => ({ ...prev, ...partial }));

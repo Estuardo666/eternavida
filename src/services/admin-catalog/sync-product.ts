@@ -3,6 +3,7 @@ import "server-only";
 import type { Prisma } from "@prisma/client";
 
 import { env } from "@/config/env";
+import { computeDiscountPercent } from "@/lib/product-pricing";
 import { mapAdminProductItem } from "@/services/admin-catalog/get-catalog-admin-data";
 import { GenericRestApiAdapter } from "@/server/catalog/external-api-adapters";
 import { findAdminProductRecord } from "@/server/catalog/admin-catalog.repository";
@@ -290,6 +291,7 @@ export async function syncSingleAdminProduct(
     data: {
       price: normalizedFields.price,
       discountPrice: normalizedFields.discountPrice,
+      discountPercent: computeDiscountPercent(normalizedFields.price, normalizedFields.discountPrice),
       stock: normalizedFields.stock,
       externalId: existingProduct.externalId ?? externalProduct.externalId,
       externalSourceId: sourceSystemId,

@@ -12,16 +12,8 @@
  */
 
 import { PrismaClient } from "@prisma/client";
-import {
-  ExternalProduct,
-  ExternalProductApiConfig,
-  ExternalProductListResponse,
-  IExternalProductAdapter,
-  SyncConflictStrategy,
-  SyncDeduplicationStrategy,
-  SyncOperationResult,
-  SyncProductResult,
-} from "@/types/external-product-api";
+
+import { computeDiscountPercent } from "@/lib/product-pricing";
 import {
   ProductSyncError,
   ValidationError,
@@ -357,6 +349,7 @@ export class ProductSyncService {
       badgeColor: existingLocal?.badgeColor ?? null,
       price: syncManagedFields.price,
       discountPrice: syncManagedFields.discountPrice,
+      discountPercent: computeDiscountPercent(syncManagedFields.price ?? 0, syncManagedFields.discountPrice),
       stock: syncManagedFields.stock,
       isActive: true,
       externalId: externalProduct.externalId,

@@ -11,6 +11,8 @@ import { buildCategoryMetadata } from "@/seo/catalog";
 import { mapBrandIdsToSlugs } from "@/services/catalog/get-public-catalog-data";
 import { getPublicCategoryDetailData } from "@/services/catalog/get-public-catalog-data";
 
+export const revalidate = 60;
+
 interface PublicCategoryDetailPageProps {
   params: Promise<{
     slug: string;

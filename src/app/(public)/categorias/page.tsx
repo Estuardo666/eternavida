@@ -5,6 +5,8 @@ import { PublicCategoryCard } from "@/features/catalog/components/public-categor
 import { buildCategoryIndexMetadata } from "@/seo/catalog";
 import { getPublicCategoryCatalogData } from "@/services/catalog/get-public-catalog-data";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = buildCategoryIndexMetadata();
 
 export default async function PublicCategoriesPage() {

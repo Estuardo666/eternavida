@@ -178,24 +178,11 @@ function buildPublicProductOrderBy(
     case "price-desc": return [{ price: "desc" }, { name: "asc" }];
     case "oldest":    return [{ createdAt: "asc" }, { name: "asc" }];
     case "bestseller": return [{ stock: "desc" }, { updatedAt: "desc" }];
-    case "highest-discount": return [{ updatedAt: "desc" }, { name: "asc" }];
+    case "highest-discount": return [{ discountPercent: "desc" }, { name: "asc" }];
     case "recent":
     default:
       return [{ updatedAt: "desc" }, { name: "asc" }];
   }
-}
-
-function getProductDiscountScore(product: {
-  price: Prisma.Decimal | number;
-  discountPrice: Prisma.Decimal | number | null;
-}) {
-  const price = Number(product.price);
-  const discountPrice = product.discountPrice === null ? null : Number(product.discountPrice);
-  if (!Number.isFinite(price) || price <= 0 || discountPrice === null || !Number.isFinite(discountPrice) || discountPrice >= price) {
-    return -1;
-  }
-
-  return ((price - discountPrice) / price) * 100;
 }
 
 const publicCategoryInclude = {
@@ -322,33 +309,6 @@ export async function listPublicProductRecords(query: PublicProductListQuery) {
 
   const skip = (query.page - 1) * query.pageSize;
   const filteredCountQuery = where ? prisma.product.count({ where }) : prisma.product.count();
-
-  if (query.sortBy === "highest-discount") {
-    const [filteredCount, allItems] = await prisma.$transaction([
-      filteredCountQuery,
-      prisma.product.findMany({
-        ...(where ? { where } : {}),
-        include: publicProductInclude,
-      }),
-    ]);
-
-    const items = [...allItems]
-      .sort((left, right) => {
-        const rightScore = getProductDiscountScore(right);
-        const leftScore = getProductDiscountScore(left);
-        if (rightScore !== leftScore) {
-          return rightScore - leftScore;
-        }
-
-        return left.name.localeCompare(right.name, "es", { sensitivity: "base" });
-      })
-      .slice(skip, skip + query.pageSize);
-
-    return {
-      filteredCount,
-      items,
-    };
-  }
 
   const [filteredCount, items] = await prisma.$transaction([
     filteredCountQuery,

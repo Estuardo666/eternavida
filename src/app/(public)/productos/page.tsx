@@ -11,6 +11,8 @@ import { buildProductIndexMetadata } from "@/seo/catalog";
 import { mapBrandIdsToSlugs } from "@/services/catalog/get-public-catalog-data";
 import { getPublicProductCatalogData } from "@/services/catalog/get-public-catalog-data";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = buildProductIndexMetadata();
 
 interface PublicProductsPageProps {
