@@ -89,7 +89,7 @@ export const fallbackHomePageContent: HomePageContent = {
     eyebrow: "Productos con propósito",
     title: "Productos naturales que transforman vidas.",
     description:
-      "Cada compra genera oportunidades para madres solateras, jóvenes y personas con recursos limitados. Bienestar para ti, impacto para nuestra comunidad.",
+      "Productos naturales elaborados con propósito. Cada compra apoya la producción local y el bienestar de nuestra comunidad.",
     accentText: "Impacto social",
     primaryCta: {
       label: "Ver productos",
@@ -348,7 +348,7 @@ export const fallbackHomePageContent: HomePageContent = {
     eyebrow: "Empieza hoy",
     title: "Tu camino hacia el bienestar natural empieza aquí",
     description:
-      "Descubre productos artesanales elaborados con ingredientes naturales. Compra ahora y recibe en todo Ecuador y Estados Unidos.",
+      "Descubre productos artesanales elaborados con ingredientes naturales. Compra ahora y recibe en todo Ecuador.",
     primaryCta: {
       label: "Comprar ahora",
       href: "#featured-products",

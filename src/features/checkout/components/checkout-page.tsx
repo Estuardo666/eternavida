@@ -1192,7 +1192,7 @@ export function CheckoutPageClient() {
                     <div className="flex flex-1 items-center gap-2">
                       <Store className="h-4 w-4 shrink-0 text-text-muted" aria-hidden="true" />
                       <div>
-                        <p className="text-body-sm font-medium text-text-primary">Retiro en Tienda Dermatológika</p>
+                        <p className="text-body-sm font-medium text-text-primary">Retiro en Tienda Eterna Vida</p>
                         <p className="text-caption text-text-muted">Coordinamos por WhatsApp</p>
                       </div>
                     </div>

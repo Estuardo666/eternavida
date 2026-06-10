@@ -145,7 +145,7 @@ export function BestOffersSection({ content }: BestOffersSectionProps) {
               Las ofertas mas compradas
             </h2>
             <p className="text-body-md text-text-secondary">
-              Aprovecha, que ¡no durarán!, Las mejores ofertas en Dermatológika.
+              Aprovecha, que ¡no durarán!, Las mejores ofertas en productos naturales.
             </p>
           </div>
           <Link
