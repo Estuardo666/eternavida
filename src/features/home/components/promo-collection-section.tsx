@@ -13,8 +13,8 @@ export function PromoCollectionSection({ content }: PromoCollectionSectionProps)
       <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
         <div className="order-1 overflow-hidden rounded-[32px] border border-border-soft shadow-sm">
           <Image
-            src="/bannerpromo.jpg"
-            alt="Colección promocional"
+            src="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/promo%20card%20categoria.jpg"
+            alt="Eterna Vida - Productos con propósito"
             width={800}
             height={600}
             className="h-auto w-full object-cover"
