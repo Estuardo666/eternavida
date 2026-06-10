@@ -4,7 +4,7 @@ import { PublicUnifiedAuth } from "@/features/auth/components/public-unified-aut
 
 export const metadata: Metadata = {
   title: "Crear cuenta",
-  description: "Crea tu cuenta Dermatologika con correo y contraseña.",
+  description: "Crea tu cuenta Eterna Vida con correo y contraseña.",
   robots: {
     index: false,
     follow: false,

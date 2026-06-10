@@ -2,7 +2,7 @@ import { CategoryAdminForm } from "@/features/admin-catalog/components/category-
 import { getCatalogAdminData } from "@/services/admin-catalog/get-catalog-admin-data";
 
 export const metadata = {
-  title: "Admin New Category — Dermatologika",
+  title: "Admin New Category — Eterna Vida",
   description: "Crear categoría del catálogo local.",
 };
 

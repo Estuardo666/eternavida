@@ -20,7 +20,7 @@ interface PublicUnifiedAuthProps {
 const modeContent: Record<AuthMode, { heading: string; subtitle: string }> = {
   "sign-in": {
     heading: "Bienvenido de vuelta",
-    subtitle: "Ingresa para continuar con tu experiencia en Dermatologika.",
+    subtitle: "Ingresa para continuar con tu experiencia en Eterna Vida.",
   },
   "sign-up": {
     heading: "Crea tu cuenta",
@@ -83,7 +83,7 @@ export function PublicUnifiedAuth({ initialMode }: PublicUnifiedAuthProps) {
        * offset from the top. Logo / heading / toggle never move — only the
        * form area below the toggle grows or shrinks downward.
        */}
-      <div className="flex flex-1 flex-col items-center overflow-y-auto bg-[linear-gradient(160deg,rgba(114,178,85,0.07)_0%,rgba(230,243,209,0.12)_30%,rgba(252,251,248,0.6)_65%,rgba(255,255,255,0.95)_100%)] px-6 pb-16 pt-[max(4rem,calc(50vh-18rem))]">
+      <div className="flex flex-1 flex-col items-center overflow-y-auto bg-[linear-gradient(160deg,rgba(11,93,30,0.07)_0%,rgba(232,242,234,0.12)_30%,rgba(252,251,248,0.6)_65%,rgba(255,255,255,0.95)_100%)] px-6 pb-16 pt-[max(4rem,calc(50vh-18rem))]">
         <motion.div
           initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
@@ -93,8 +93,8 @@ export function PublicUnifiedAuth({ initialMode }: PublicUnifiedAuthProps) {
           {/* Top nav — mobile only */}
           <div className="mb-8 flex items-center justify-between lg:hidden">
             <Image
-              src="/logotipo.png"
-              alt="Dermatologika"
+              src="/media/logotipo.jpg"
+              alt="Eterna Vida"
               width={160}
               height={50}
               className="h-auto w-32 object-contain"
@@ -112,8 +112,8 @@ export function PublicUnifiedAuth({ initialMode }: PublicUnifiedAuthProps) {
           {/* Desktop logo */}
           <div className="mb-7 hidden justify-center lg:flex">
             <Image
-              src="/logotipo.png"
-              alt="Dermatologika"
+              src="/media/logotipo.jpg"
+              alt="Eterna Vida"
               width={240}
               height={74}
               className="h-auto w-52 object-contain"
@@ -158,7 +158,7 @@ export function PublicUnifiedAuth({ initialMode }: PublicUnifiedAuthProps) {
                 {mode === m && (
                   <motion.div
                     layoutId="auth-tab-indicator"
-                    className="absolute inset-0 rounded-full bg-brand-primary shadow-[0_1px_8px_rgba(114,178,85,0.4)]"
+                    className="absolute inset-0 rounded-full bg-brand-primary shadow-[0_1px_8px_rgba(11,93,30,0.4)]"
                     transition={
                       reduceMotion
                         ? { duration: 0 }

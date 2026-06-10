@@ -24,12 +24,12 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "dermatologika.com",
+        hostname: "eternavida.com.ec",
         pathname: "/cdn-cgi/image/**",
       },
       {
         protocol: "https",
-        hostname: "media.dermatologika.com",
+        hostname: "media.eternavida.com.ec",
         pathname: "/**",
       },
     ],

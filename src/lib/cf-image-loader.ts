@@ -1,4 +1,4 @@
-const CF_ZONE = "dermatologika.com";
+const CF_ZONE = "eternavida.com.ec";
 
 export function cfImageLoader({
   src,

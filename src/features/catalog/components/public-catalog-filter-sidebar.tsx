@@ -353,7 +353,7 @@ function PriceSection({ draft, sliderMax, onDraftChange }: PriceSectionProps) {
           >
             <motion.div
               className="absolute h-full rounded-full"
-              style={{ left: `${leftPct}%`, right: `${rightPct}%`, backgroundColor: "#5bb446" }}
+              style={{ left: `${leftPct}%`, right: `${rightPct}%`, backgroundColor: "#0B5D1E" }}
               layout
               transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 400, damping: 35 }}
             />
@@ -371,7 +371,7 @@ function PriceSection({ draft, sliderMax, onDraftChange }: PriceSectionProps) {
             className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-[22px] w-[22px] cursor-grab items-center justify-center rounded-full bg-white shadow-md active:cursor-grabbing touch-none select-none"
             style={{
               left: `${leftPct}%`,
-              border: "2.5px solid #5bb446",
+              border: "2.5px solid #0B5D1E",
               zIndex: activeThumb === "min" ? 4 : (leftPct >= 95 ? 3 : 2),
             }}
             whileHover={reduceMotion ? {} : { scale: 1.2 }}
@@ -402,12 +402,12 @@ function PriceSection({ draft, sliderMax, onDraftChange }: PriceSectionProps) {
                   exit="hidden"
                   transition={{ duration: 0.1 }}
                   className={minTooltipPosition.className}
-                  style={{ backgroundColor: "#5bb446" }}
+                  style={{ backgroundColor: "#0B5D1E" }}
                 >
                   {formatPrice(currentMin)}
                   <span
                     className={minTooltipPosition.arrowClassName}
-                    style={{ borderBottomColor: "#5bb446" }}
+                    style={{ borderBottomColor: "#0B5D1E" }}
                   />
                 </motion.div>
               )}
@@ -426,7 +426,7 @@ function PriceSection({ draft, sliderMax, onDraftChange }: PriceSectionProps) {
             className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-[22px] w-[22px] cursor-grab items-center justify-center rounded-full bg-white shadow-md active:cursor-grabbing touch-none select-none"
             style={{
               left: `${100 - rightPct}%`,
-              border: "2.5px solid #5bb446",
+              border: "2.5px solid #0B5D1E",
               zIndex: activeThumb === "max" ? 4 : 1,
             }}
             whileHover={reduceMotion ? {} : { scale: 1.2 }}
@@ -457,12 +457,12 @@ function PriceSection({ draft, sliderMax, onDraftChange }: PriceSectionProps) {
                   exit="hidden"
                   transition={{ duration: 0.1 }}
                   className={maxTooltipPosition.className}
-                  style={{ backgroundColor: "#5bb446" }}
+                  style={{ backgroundColor: "#0B5D1E" }}
                 >
                   {formatPrice(currentMax)}
                   <span
                     className={maxTooltipPosition.arrowClassName}
-                    style={{ borderBottomColor: "#5bb446" }}
+                    style={{ borderBottomColor: "#0B5D1E" }}
                   />
                 </motion.div>
               )}
@@ -794,7 +794,7 @@ function FilterBody({
           type="button"
           onClick={onApply}
           disabled={isApplyingFilters}
-          className="w-full rounded-pill bg-[#5bb446] py-3 text-label-md text-text-inverse transition-colors hover:bg-[#4f9e3d] disabled:cursor-wait disabled:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
+          className="w-full rounded-pill bg-brand-primary py-3 text-label-md text-text-inverse transition-colors hover:bg-brand-primaryHover disabled:cursor-wait disabled:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
         >
           {isApplyingFilters ? (
             <span className="flex items-center justify-center gap-2">
@@ -1135,7 +1135,7 @@ export function PublicCatalogFilterSidebar({
         className="hidden lg:flex lg:w-60 xl:w-64 shrink-0 self-start sticky flex-col"
         style={{ top: "108px" }}
       >
-        <div className="flex flex-col rounded-2xl border p-4 shadow-xs" style={{ background: "#5bb44608", borderColor: "#5bb44669" }}>
+        <div className="flex flex-col rounded-2xl border p-4 shadow-xs" style={{ background: "#0B5D1E08", borderColor: "#0B5D1E69" }}>
           <FilterBody {...bodyProps} />
         </div>
       </aside>

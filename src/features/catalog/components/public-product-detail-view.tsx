@@ -31,9 +31,9 @@ const priceFormatter = new Intl.NumberFormat("es-MX", {
 type StockStatus = { label: string; textColor: string; dotColor: string };
 
 function deriveStockStatus(stock: number): StockStatus {
-  if (stock === 0) return { label: "Sin stock", textColor: "text-[#cc5533]", dotColor: "bg-[#cc5533]" };
-  if (stock <= 5) return { label: "Últimas unidades", textColor: "text-[#b38b00]", dotColor: "bg-[#d4ac1a]" };
-  return { label: "En stock", textColor: "text-[#3a8c2e]", dotColor: "bg-[#4ea843]" };
+  if (stock === 0) return { label: "Sin stock", textColor: "text-status-error", dotColor: "bg-status-error" };
+  if (stock <= 5) return { label: "Últimas unidades", textColor: "text-status-warning", dotColor: "bg-status-warning" };
+  return { label: "En stock", textColor: "text-status-success", dotColor: "bg-status-success" };
 }
 
 // ─── Framer Motion variants ───────────────────────────────────────────────────
@@ -296,7 +296,7 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                         {priceFormatter.format(product.price)}
                       </span>
                       {discountPercent !== null ? (
-                        <span className="rounded-full bg-[#e35d5d] px-2.5 py-0.5 text-[0.72rem] font-medium text-white">
+                        <span className="rounded-full bg-status-error px-2.5 py-0.5 text-[0.72rem] font-medium text-white">
                           -{discountPercent}%
                         </span>
                       ) : null}
@@ -358,8 +358,8 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                     outOfStock
                       ? "cursor-not-allowed bg-neutral-400"
                       : cartState === "added"
-                        ? "cursor-default bg-[#3d9c2a]"
-                        : "cursor-pointer bg-[#5bb446] hover:bg-[#499038]",
+                        ? "cursor-default bg-brand-primary"
+                        : "cursor-pointer bg-gradient-to-br from-[#E5B85C] via-[#D6A03A] to-[#C58A1D] text-[#0B5D1E] font-bold shadow-cta hover:shadow-[0_12px_32px_rgba(197,138,29,0.35)]",
                   ].join(" ")}
                   aria-label={
                     cartState === "added"
@@ -501,13 +501,13 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
               {/* Security signals */}
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                 <span className="flex items-center gap-1.5 text-[0.72rem] text-text-muted">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 shrink-0 text-[#4ea843]" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 shrink-0 text-brand-primary" aria-hidden="true">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                   </svg>
                   Pago seguro
                 </span>
                 <span className="flex items-center gap-1.5 text-[0.72rem] text-text-muted">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 shrink-0 text-[#4ea843]" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 shrink-0 text-brand-primary" aria-hidden="true">
                     <rect x="1" y="3" width="15" height="13" rx="2" />
                     <path d="M16 8h4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-4" />
                     <circle cx="12" cy="16" r="1" />
@@ -515,7 +515,7 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                   Envío protegido
                 </span>
                 <span className="flex items-center gap-1.5 text-[0.72rem] text-text-muted">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 shrink-0 text-[#4ea843]" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 shrink-0 text-brand-primary" aria-hidden="true">
                     <polyline points="23 4 23 10 17 10" />
                     <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
                   </svg>

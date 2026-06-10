@@ -338,7 +338,7 @@ export function EmailSettingsAdminPanel({ initialSettings }: Props) {
                   value={form.fromName}
                   onChange={(event) => updateField("fromName", event.target.value)}
                   className={ADMIN_COMPACT_FIELD_CLASS_NAME}
-                  placeholder="Dermatologika"
+                  placeholder="Eterna Vida"
                   autoComplete="off"
                   autoCapitalize="words"
                   autoCorrect="off"
@@ -366,7 +366,7 @@ export function EmailSettingsAdminPanel({ initialSettings }: Props) {
                   name="reply-to-address"
                   value={form.replyTo}
                   onChange={(value) => updateField("replyTo", value)}
-                  placeholder="soporte@dermatologika.com"
+                  placeholder="soporte@eternavida.com.ec"
                 />
               </div>
             </div>

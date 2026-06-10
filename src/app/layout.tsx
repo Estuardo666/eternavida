@@ -20,10 +20,10 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "Dermatologika",
-    template: "%s | Dermatologika",
+    default: "Eterna Vida",
+    template: "%s | Eterna Vida",
   },
-  description: "Dermatologika public storefront and internal operations platform.",
+  description: "Eterna Vida — Productos naturales y artesanales para la salud, el bienestar y la alimentación consciente. Desde Vilcabamba, Ecuador.",
 };
 
 type RootLayoutProps = Readonly<{
@@ -45,7 +45,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         >
           <CartProvider>
             {children}
-            <WhatsAppFloatDeferred phone="0982740049" />
+            <WhatsAppFloatDeferred phone="0988158964" />
           </CartProvider>
         </ClerkProvider>
       </body>

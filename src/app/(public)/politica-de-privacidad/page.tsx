@@ -5,7 +5,7 @@ import { LegalPageLayout, LegalSection, LegalList } from "@/components/layout/le
 export const metadata: Metadata = {
   title: "Política de Privacidad",
   description:
-    "Conoce cómo Dermatologika recopila, trata y protege tus datos personales, conforme a la Ley Orgánica de Protección de Datos Personales del Ecuador (LOPDP).",
+    "Conoce cómo Eterna Vida recopila, trata y protege tus datos personales, conforme a la Ley Orgánica de Protección de Datos Personales del Ecuador (LOPDP).",
 };
 
 export default function PoliticaDePrivacidadPage() {
@@ -15,7 +15,7 @@ export default function PoliticaDePrivacidadPage() {
         <p>
           Esta Política de Privacidad se rige por la <strong>Ley Orgánica de Protección de
           Datos Personales del Ecuador (LOPDP)</strong>, publicada el 26 de mayo de 2021 en el
-          Registro Oficial, y sus reglamentos de aplicación. Dermatologika actúa como
+          Registro Oficial, y sus reglamentos de aplicación. Eterna Vida actúa como
           <strong> responsable del tratamiento</strong> de los datos personales de sus clientes y
           usuarios.
         </p>
@@ -23,14 +23,14 @@ export default function PoliticaDePrivacidadPage() {
 
       <LegalSection title="2. Responsable del tratamiento">
         <p>
-          El responsable del tratamiento de tus datos personales es <strong>Dermatologika</strong>,
-          con domicilio en <strong>Loja, Ecuador</strong>. Para cualquier consulta relacionada con el
+          El responsable del tratamiento de tus datos personales es <strong>Eterna Vida</strong>,
+          con domicilio en <strong>Vilcabamba, Loja, Ecuador</strong>. Para cualquier consulta relacionada con el
           tratamiento de tus datos personales, puedes contactarnos en:
-          <strong> privacidad@dermatologika.ec</strong>
+          <strong> privacidad@eternavida.com.ec</strong>
         </p>
         <p>
-          También puedes contactarnos al teléfono <strong>098 274 0049</strong> o visitarnos en
-          <strong> Av. Jose Maria Vivar, Castro, Loja, Ecuador</strong>.
+          También puedes contactarnos al teléfono <strong>098 815 8964</strong> o visitarnos en
+          <strong> Vilcabamba, Loja, Ecuador</strong>.
         </p>
       </LegalSection>
 
@@ -80,7 +80,7 @@ export default function PoliticaDePrivacidadPage() {
 
       <LegalSection title="6. Transferencia y comunicación de datos">
         <p>
-          Dermatologika podrá compartir tus datos personales únicamente con los siguientes
+          Eterna Vida podrá compartir tus datos personales únicamente con los siguientes
           terceros y en la medida estrictamente necesaria:
         </p>
         <LegalList
@@ -92,7 +92,7 @@ export default function PoliticaDePrivacidadPage() {
           ]}
         />
         <p>
-          <strong>Dermatologika no vende, alquila ni cede tus datos personales a terceros con
+          <strong>Eterna Vida no vende, alquila ni cede tus datos personales a terceros con
           fines comerciales propios.</strong>
         </p>
       </LegalSection>
@@ -113,7 +113,7 @@ export default function PoliticaDePrivacidadPage() {
         />
         <p>
           Para ejercer cualquiera de estos derechos, envía tu solicitud a
-          <strong> privacidad@dermatologika.ec</strong> indicando tu nombre completo, el derecho
+          <strong> privacidad@eternavida.com.ec</strong> indicando tu nombre completo, el derecho
           que deseas ejercer y cualquier información que facilite la localización de tus datos.
           Responderemos en un plazo máximo de <strong>15 días hábiles</strong>.
         </p>
@@ -162,7 +162,7 @@ export default function PoliticaDePrivacidadPage() {
 
       <LegalSection title="11. Menores de edad">
         <p>
-          El sitio web de Dermatologika no está dirigido a personas menores de 18 años.
+          El sitio web de Eterna Vida no está dirigido a personas menores de 18 años.
           No recopilamos intencionalmente datos personales de menores de edad. Si tienes
           conocimiento de que un menor ha proporcionado datos personales sin autorización del
           representante legal, comunícate con nosotros para proceder a su eliminación inmediata.
@@ -171,7 +171,7 @@ export default function PoliticaDePrivacidadPage() {
 
       <LegalSection title="12. Actualizaciones de esta política">
         <p>
-          Dermatologika se reserva el derecho de actualizar esta Política de Privacidad en
+          Eterna Vida se reserva el derecho de actualizar esta Política de Privacidad en
           cualquier momento para reflejar cambios normativos, operativos o de servicio. La
           versión vigente estará siempre disponible en nuestro sitio web con la fecha de la
           última actualización. Te recomendamos revisarla periódicamente.

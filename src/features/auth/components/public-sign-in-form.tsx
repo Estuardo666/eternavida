@@ -14,7 +14,7 @@ type SignInStep = "email" | "password";
 type SignInFormState = "idle" | "submitting" | "error";
 
 const pillInput =
-  "h-10 w-full rounded-full border border-border-soft bg-surface-canvas px-5 text-body-sm text-text-primary placeholder:text-body-sm placeholder:text-text-muted transition hover:border-brand-primary/40 hover:bg-[rgba(114,178,85,0.04)] focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 disabled:cursor-not-allowed disabled:bg-surface-subtle disabled:text-text-muted";
+  "h-10 w-full rounded-full border border-border-soft bg-surface-canvas px-5 text-body-sm text-text-primary placeholder:text-body-sm placeholder:text-text-muted transition hover:border-brand-primary/40 hover:bg-[rgba(11,93,30,0.04)] focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 disabled:cursor-not-allowed disabled:bg-surface-subtle disabled:text-text-muted";
 
 const pillButton =
   "h-10 w-full rounded-full font-medium text-body-sm transition-all hover:brightness-[0.88] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/40 disabled:cursor-not-allowed disabled:opacity-50";

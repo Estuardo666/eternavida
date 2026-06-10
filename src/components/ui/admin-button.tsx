@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 import { cx } from "@/lib/utils";
 
-type AdminButtonVariant = "primary" | "secondary" | "danger" | "ghost" | "neutral";
+type AdminButtonVariant = "primary" | "secondary" | "danger" | "ghost" | "neutral" | "cta";
 type AdminButtonSize = "default" | "compact" | "icon";
 
 interface AdminButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
@@ -26,6 +26,8 @@ const variantClasses: Record<AdminButtonVariant, string> = {
     "text-text-secondary hover:text-text-primary hover:bg-surface-subtle focus-visible:ring-border-brand",
   neutral:
     "border border-border-soft bg-surface-canvas text-text-primary hover:bg-surface-subtle hover:border-border-default focus-visible:ring-border-brand",
+  cta:
+    "bg-gradient-to-br from-[#E5B85C] via-[#D6A03A] to-[#C58A1D] text-[#0B5D1E] font-bold shadow-cta hover:brightness-110 hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(197,138,29,0.35)] active:translate-y-0 active:shadow-[0_4px_12px_rgba(197,138,29,0.20)] focus-visible:ring-[#C58A1D]",
 };
 
 const sizeClasses: Record<AdminButtonSize, string> = {

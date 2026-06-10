@@ -291,7 +291,7 @@ export function AdminSidebar({ userEmail, userRole, userImageUrl }: AdminSidebar
         <div className="flex items-center justify-between gap-3 border-b border-border-soft bg-surface-canvas px-4 py-3">
           <div className="min-w-0">
             <p className="truncate text-label-md text-text-primary">
-              {activeItem?.label ?? "Dermatologika"}
+              {activeItem?.label ?? "Eterna Vida"}
             </p>
           </div>
 
@@ -386,8 +386,8 @@ export function AdminSidebar({ userEmail, userRole, userImageUrl }: AdminSidebar
                 aria-label="Expandir sidebar"
               >
                 <Image
-                  src="/logotipo.png"
-                  alt="Dermatologika"
+                  src="/media/logotipo.jpg"
+                  alt="Eterna Vida"
                   width={20}
                   height={20}
                   className="h-5 w-5 object-contain brightness-0 invert"
@@ -487,8 +487,8 @@ function SidebarPanel(props: {
     <div className="flex h-full w-full flex-col border-r border-border-soft bg-surface-canvas p-3">
       <div className="flex items-center justify-between gap-2 pb-3 border-b border-border-soft">
         <Image
-          src="/logotipo.png"
-          alt="Dermatologika"
+          src="/media/logotipo.jpg"
+          alt="Eterna Vida"
           width={120}
           height={28}
           className="h-7 w-auto object-contain"

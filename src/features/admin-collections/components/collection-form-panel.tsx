@@ -184,7 +184,7 @@ export function CollectionFormPanel({ mode, collectionId }: CollectionFormPanelP
             <button
               type="submit"
               disabled={saving || !name || !slug}
-              className="rounded-full bg-[#5bb446] px-4 py-2 text-body-sm font-medium text-white hover:bg-[#499038] disabled:opacity-50"
+              className="rounded-full bg-brand-primary px-4 py-2 text-body-sm font-medium text-white hover:bg-brand-primaryHover disabled:opacity-50"
             >
               {saving ? "Guardando..." : mode === "create" ? "Crear colección" : "Guardar cambios"}
             </button>
@@ -217,7 +217,7 @@ export function CollectionFormPanel({ mode, collectionId }: CollectionFormPanelP
               onChange={(e) => setSlug(e.target.value)}
               required
               className="w-full rounded-lg border border-border-soft px-3 py-2 text-body-md font-mono"
-              placeholder="piel-mixta"
+              placeholder="miel-pura"
             />
           </div>
 
@@ -249,7 +249,7 @@ export function CollectionFormPanel({ mode, collectionId }: CollectionFormPanelP
             <button
               type="button"
               onClick={() => setIsActive(!isActive)}
-              className={`relative h-6 w-11 rounded-full transition-colors ${isActive ? "bg-[#5bb446]" : "bg-neutral-300"}`}
+              className={`relative h-6 w-11 rounded-full transition-colors ${isActive ? "bg-brand-primary" : "bg-neutral-300"}`}
             >
               <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${isActive ? "left-[22px]" : "left-0.5"}`} />
             </button>

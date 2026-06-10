@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { MediaLibraryPanel } from "@/features/admin-media/components/media-library-panel";
 
 export const metadata: Metadata = {
-  title: "Admin Biblioteca de medios — Dermatologika",
+  title: "Admin Biblioteca de medios — Eterna Vida",
   description: "Gestionar archivos multimedia y carpetas.",
 };
 

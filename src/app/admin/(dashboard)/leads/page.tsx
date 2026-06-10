@@ -4,7 +4,7 @@ import {
 } from "@/components/admin/surface-styles";
 
 export const metadata = {
-  title: "Admin Leads — Dermatologika",
+  title: "Admin Leads — Eterna Vida",
   description: "Gestionar contactos administrativos",
 };
 

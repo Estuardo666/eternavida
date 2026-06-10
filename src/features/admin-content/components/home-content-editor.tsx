@@ -37,7 +37,7 @@ interface HomeContentEditorProps {
 
 type OrderedSelectionField = "featuredCategoryIds" | "featuredProductIds";
 
-const DEFAULT_UPLOAD_STORAGE_PREFIX = "Dermatologika/Uploads";
+const DEFAULT_UPLOAD_STORAGE_PREFIX = "Eterna Vida/Uploads";
 const adminFieldClassName = ADMIN_COMPACT_FIELD_CLASS_NAME;
 
 function sortMediaAssets(mediaAssets: AdminMediaAssetSummary[]) {
@@ -779,7 +779,7 @@ export function HomeContentEditor({ initialData }: HomeContentEditorProps) {
                   value={uploadInput.storageKey}
                   onChange={(event) => updateUploadField("storageKey", event.target.value)}
                   className={adminFieldClassName}
-                  placeholder="Dermatologika/Uploads/banner_hero_4.webp"
+                  placeholder="Eterna Vida/Uploads/banner_hero_4.webp"
                 />
               </label>
 
@@ -901,7 +901,7 @@ export function HomeContentEditor({ initialData }: HomeContentEditorProps) {
             <form onSubmit={handleRegisterMediaAsset} className="mt-6 space-y-4">
               <label className="space-y-2 block">
                 <span className="block text-label-md text-text-primary">Storage key</span>
-                <input value={mediaInput.storageKey} onChange={(event) => updateMediaField("storageKey", event.target.value)} className={adminFieldClassName} placeholder="Dermatologika/Banners/banner_hero (1).webp" />
+                <input value={mediaInput.storageKey} onChange={(event) => updateMediaField("storageKey", event.target.value)} className={adminFieldClassName} placeholder="Eterna Vida/Banners/banner_hero (1).webp" />
               </label>
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="space-y-2">

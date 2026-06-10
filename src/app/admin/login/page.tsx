@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "Admin Sign In — Dermatologika",
-  description: "Ingrese a la administración de Dermatologika",
+  title: "Admin Sign In — Eterna Vida",
+  description: "Ingrese a la administración de Eterna Vida",
 };
 
 export default function AdminLoginPage() {

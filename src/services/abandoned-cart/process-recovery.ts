@@ -48,7 +48,7 @@ export async function processAbandonedCartRecovery() {
         const cartItems = cart.cartData as unknown as CartDataItem[];
         const html = abandonedCartReminderTemplate({
           items: cartItems,
-          cartUrl: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://dermatologika.com"}/checkout`,
+          cartUrl: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://eternavida.com.ec"}/checkout`,
           step: i + 1,
         });
 

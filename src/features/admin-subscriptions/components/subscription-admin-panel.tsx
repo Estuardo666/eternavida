@@ -129,7 +129,7 @@ export function SubscriptionAdminPanel() {
             <div className="flex items-center justify-between">
               <label className="text-body-md font-medium text-text-primary">Recordatorios habilitados</label>
               <button type="button" onClick={() => setSettings({ ...settings, reminderEnabled: !settings.reminderEnabled })}
-                className={`relative h-6 w-11 rounded-full transition-colors ${settings.reminderEnabled ? "bg-[#5bb446]" : "bg-neutral-300"}`}>
+                className={`relative h-6 w-11 rounded-full transition-colors ${settings.reminderEnabled ? "bg-brand-primary" : "bg-neutral-300"}`}>
                 <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${settings.reminderEnabled ? "left-[22px]" : "left-0.5"}`} />
               </button>
             </div>
@@ -146,7 +146,7 @@ export function SubscriptionAdminPanel() {
                 className="w-full rounded-lg border border-border-soft px-3 py-2 text-body-md" />
             </div>
             <button type="button" onClick={handleSaveSettings}
-              className="rounded-full bg-[#5bb446] px-5 py-2.5 text-body-md font-medium text-white hover:bg-[#499038]">
+              className="rounded-full bg-brand-primary px-5 py-2.5 text-body-md font-medium text-white hover:bg-brand-primaryHover">
               Guardar configuración
             </button>
           </div>

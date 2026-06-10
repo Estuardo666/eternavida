@@ -2,7 +2,7 @@ import { EmailSettingsAdminPanel } from "@/features/admin-emails/components/emai
 import { getEmailSettings } from "@/services/email/get-email-settings";
 
 export const metadata = {
-  title: "Admin Correos — Dermatologika",
+  title: "Admin Correos — Eterna Vida",
   description: "Gestionar remitentes, destinatarios de prueba y pruebas de correos transaccionales.",
 };
 

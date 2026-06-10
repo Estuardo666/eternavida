@@ -15,10 +15,9 @@ const navigationLinks = [
 ] as const;
 
 const categoryLinks = [
-  { href: "/categorias/cleansers", label: "Limpieza" },
-  { href: "/categorias/barrier-support", label: "Barrera" },
-  { href: "/categorias/daily-protection", label: "Protección" },
-  { href: "/categorias/post-procedure", label: "Post" },
+  { href: "/categorias/productos-apicolas", label: "Apícolas" },
+  { href: "/categorias/aceites-naturales", label: "Aceites" },
+  { href: "/categorias/bienestar-natural", label: "Bienestar" },
 ] as const;
 
 export function PublicHeader() {
@@ -30,7 +29,7 @@ export function PublicHeader() {
         <div className="border-b border-brand-primary/35 bg-brand-soft transition-all duration-200 ease-out animate-[promo-in_200ms_ease-out]">
           <div className="container flex min-h-9 items-center justify-between gap-2 py-1.5">
             <p className="truncate text-body-sm font-semibold text-text-brand">
-              Promociones activas hoy: descuentos especiales en dermocosmética seleccionada.
+              Promociones activas hoy: descuentos especiales en productos naturales artesanales.
             </p>
             <button
               type="button"
@@ -51,8 +50,8 @@ export function PublicHeader() {
             className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
           >
             <Image
-              src="/logotipo.png"
-              alt="Dermatologika"
+              src="/media/logotipo.jpg"
+              alt="Eterna Vida"
               width={192}
               height={48}
               className="h-9 w-auto md:h-11"
@@ -105,10 +104,10 @@ export function PublicHeader() {
                 </Link>
               ))}
               <span className="inline-flex min-h-8 items-center rounded-pill bg-brand-primary px-3 text-[11px] font-semibold uppercase tracking-[0.02em] text-text-inverse">
-                Promociones
+                Naturales
               </span>
               <span className="inline-flex min-h-8 items-center rounded-pill bg-[#F59E0B] px-3 text-[11px] font-semibold uppercase tracking-[0.02em] text-ink-900">
-                Liquidación
+                Artesanales
               </span>
             </li>
 

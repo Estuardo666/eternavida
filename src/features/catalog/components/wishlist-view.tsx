@@ -103,7 +103,7 @@ export function WishlistView() {
           </div>
           <Link
             href="/productos"
-            className="rounded-full bg-[#5bb446] px-5 py-2.5 text-body-md font-medium text-white transition hover:bg-[#499038]"
+            className="rounded-full bg-brand-primary px-5 py-2.5 text-body-md font-medium text-white transition hover:bg-brand-primaryHover"
           >
             Ver productos
           </Link>

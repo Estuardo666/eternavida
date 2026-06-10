@@ -1,30 +1,30 @@
-import { Headset, ShieldCheck, ShoppingCart, Tag, Truck } from "lucide-react";
+import { Leaf, Factory, Truck, Heart, Recycle } from "lucide-react";
 
 const benefits = [
   {
-    id: "secure-payments",
-    label: "Pagos 100% seguros",
-    icon: ShieldCheck,
+    id: "natural",
+    label: "100% natural",
+    icon: Leaf,
   },
   {
-    id: "safe-shipping",
-    label: "Envíos 100% seguros",
+    id: "artisan",
+    label: "Producción artesanal",
+    icon: Factory,
+  },
+  {
+    id: "shipping",
+    label: "Envíos a todo Ecuador",
     icon: Truck,
   },
   {
-    id: "special-discounts",
-    label: "Descuentos especiales",
-    icon: Tag,
+    id: "social",
+    label: "Impacto social",
+    icon: Heart,
   },
   {
-    id: "online-shopping",
-    label: "Compras online 24/7",
-    icon: ShoppingCart,
-  },
-  {
-    id: "online-support",
-    label: "Asesoría online",
-    icon: Headset,
+    id: "environment",
+    label: "Compromiso ambiental",
+    icon: Recycle,
   },
 ] as const;
 

@@ -17,7 +17,7 @@ export default function PoliticaDevolucionesPage() {
       <LegalSection title="1. Marco legal">
         <p>
           Esta política se rige por la <strong>Ley Orgánica de Defensa del Consumidor del Ecuador
-          (LODC)</strong> y el Reglamento de Comercio Electrónico vigente. Dermatologika garantiza
+          (LODC)</strong> y el Reglamento de Comercio Electrónico vigente. Eterna Vida garantiza
           los derechos del consumidor establecidos en dicha normativa.
         </p>
       </LegalSection>
@@ -37,7 +37,7 @@ export default function PoliticaDevolucionesPage() {
         <p>
           Dispones de <strong>15 días hábiles</strong> contados desde la fecha de recepción del
           pedido para reportar el inconveniente. El costo del envío de retorno en estos casos
-          es asumido íntegramente por Dermatologika.
+          es asumido íntegramente por Eterna Vida.
         </p>
       </LegalSection>
 
@@ -62,7 +62,7 @@ export default function PoliticaDevolucionesPage() {
         </p>
         <LegalList
           items={[
-            "Productos de higiene personal o dermocosméticos que hayan sido abiertos o utilizados.",
+            "Productos de higiene personal o productos naturales que hayan sido abiertos o utilizados.",
             "Productos con envase roto o sin sello de seguridad original.",
             "Productos adquiridos en promociones especiales o liquidaciones, salvo defecto de fabricación.",
             "Muestras gratuitas o productos de regalo.",
@@ -87,7 +87,7 @@ export default function PoliticaDevolucionesPage() {
         <p>Para iniciar una devolución o cancelación, sigue estos pasos:</p>
         <LegalList
           items={[
-            "Contacta a nuestro equipo en devoluciones@dermatologika.ec indicando: número de pedido, motivo de la devolución y fotografías del producto (si aplica).",
+            "Contacta a nuestro equipo en devoluciones@eternavida.com.ec indicando: número de pedido, motivo de la devolución y fotografías del producto (si aplica).",
             "Nuestro equipo revisará tu solicitud y te responderá en un máximo de 2 días hábiles con las instrucciones de retorno.",
             "Envía el producto según las instrucciones recibidas. Conserva el comprobante de envío.",
             "Una vez recibido e inspeccionado el producto, se procesará el reembolso o cambio.",
@@ -103,15 +103,34 @@ export default function PoliticaDevolucionesPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="8. Contacto">
+      <LegalSection title="8. Devoluciones internacionales (Estados Unidos)">
+        <p>
+          Para pedidos enviados a Estados Unidos, aplican las siguientes condiciones especiales:
+        </p>
+        <LegalList
+          items={[
+            "Plazo para reportar: 20 días hábiles desde la recepción del producto.",
+            "Costo de envío de retorno: responsabilidad del comprador internacional.",
+            "Reembolso: no incluye aranceles, impuestos de importación o costos aduaneros pagados en destino.",
+            "Proceso: contacta a devoluciones@eternavida.com.ec con tu número de pedido y motivo de la devolución.",
+            "Tiempo de procesamiento: el reembolso se procesará una vez recibido e inspeccionado el producto en nuestras instalaciones en Ecuador.",
+          ]}
+        />
+        <p>
+          Recomendamos verificar las regulaciones de importación de tu país antes de realizar la compra.
+          Eterna Vida no se hace responsable por productos retenidos en aduanas por restricciones de importación.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="9. Contacto">
         <p>
           Para cualquier consulta relacionada con devoluciones o cancelaciones, comunícate con nosotros:
         </p>
         <LegalList
           items={[
-            "Correo electrónico: devoluciones@dermatologika.ec",
-            "Teléfono: 098 274 0049",
-            "Dirección: Av. Jose Maria Vivar, Castro, Loja, Ecuador.",
+            "Correo electrónico: devoluciones@eternavida.com.ec",
+            "Teléfono: 098 815 8964",
+            "Dirección: Vilcabamba, Loja, Ecuador.",
             "WhatsApp: disponible en nuestro sitio web.",
             "Horario de atención: lunes a viernes, 09h00 a 17h00 (hora Ecuador).",
           ]}

@@ -139,7 +139,7 @@ export function ReferralAdminPanel() {
               <button
                 type="button"
                 onClick={() => setProgram({ ...program, isEnabled: !program.isEnabled })}
-                className={`relative h-6 w-11 rounded-full transition-colors ${program.isEnabled ? "bg-[#5bb446]" : "bg-neutral-300"}`}
+                className={`relative h-6 w-11 rounded-full transition-colors ${program.isEnabled ? "bg-brand-primary" : "bg-neutral-300"}`}
               >
                 <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${program.isEnabled ? "left-[22px]" : "left-0.5"}`} />
               </button>
@@ -201,7 +201,7 @@ export function ReferralAdminPanel() {
             <button
               type="button"
               onClick={handleSaveProgram}
-              className="rounded-full bg-[#5bb446] px-5 py-2.5 text-body-md font-medium text-white hover:bg-[#499038]"
+              className="rounded-full bg-brand-primary px-5 py-2.5 text-body-md font-medium text-white hover:bg-brand-primaryHover"
             >
               Guardar configuración
             </button>

@@ -9,7 +9,7 @@ export function buildCategoryIndexMetadata(): Metadata {
   return {
     title: "Categorías",
     description:
-      "Explora todas las categorías de productos dermatológicos en Dermatologika. Encuentra los productos ideales para tu piel.",
+      "Explora todas las categorías de productos naturales y artesanales en Eterna Vida. Miel, aceites y bienestar natural.",
   };
 }
 
@@ -17,7 +17,7 @@ export function buildProductIndexMetadata(): Metadata {
   return {
     title: "Tienda",
     description:
-      "Descubre la tienda Dermatologika. Productos dermatológicos para el cuidado de la piel respaldados por especialistas.",
+      "Descubre la tienda Eterna Vida. Productos naturales y artesanales para la salud, el bienestar y la alimentación consciente.",
   };
 }
 

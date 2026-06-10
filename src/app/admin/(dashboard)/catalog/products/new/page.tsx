@@ -3,7 +3,7 @@ import { getCatalogAdminData } from "@/services/admin-catalog/get-catalog-admin-
 import { getAdminProductSyncCapabilities } from "@/services/admin-catalog/sync-product";
 
 export const metadata = {
-  title: "Admin New Product — Dermatologika",
+  title: "Admin New Product — Eterna Vida",
   description: "Crear producto del catálogo local.",
 };
 

@@ -2,7 +2,7 @@ import { BrandAdminList } from "@/features/admin-catalog/components/brand-admin-
 import { getCatalogAdminData } from "@/services/admin-catalog/get-catalog-admin-data";
 
 export const metadata = {
-  title: "Admin Brands — Dermatologika",
+  title: "Admin Brands — Eterna Vida",
   description: "Gestionar marcas del catálogo local.",
 };
 

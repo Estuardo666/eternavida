@@ -1,7 +1,7 @@
 import { CollectionFormPanel } from "@/features/admin-collections/components/collection-form-panel";
 
 export const metadata = {
-  title: "Editar Colección — Dermatologika",
+  title: "Editar Colección — Eterna Vida",
   description: "Editar colección existente.",
 };
 

@@ -1,7 +1,7 @@
 import { SubscriptionAdminPanel } from "@/features/admin-subscriptions/components/subscription-admin-panel";
 
 export const metadata = {
-  title: "Admin Suscripciones — Dermatologika",
+  title: "Admin Suscripciones — Eterna Vida",
   description: "Gestionar suscripciones de reposición automática.",
 };
 

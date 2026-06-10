@@ -1,12 +1,12 @@
 const HEX_COLOR_PATTERN = /^#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})$/;
 
 export const PRODUCT_BADGE_PRESETS = [
-  { label: "Nuevo", color: "#1f8f6b" },
-  { label: "Oferta", color: "#d94f4f" },
-  { label: "Destacado", color: "#b7791f" },
+  { label: "Nuevo", color: "#0B5D1E" },
+  { label: "Oferta", color: "#C94A4A" },
+  { label: "Destacado", color: "#C58A1D" },
 ] as const;
 
-export const DEFAULT_PRODUCT_BADGE_COLOR = "#205c4c";
+export const DEFAULT_PRODUCT_BADGE_COLOR = "#0B5D1E";
 
 function expandShortHex(hexColor: string): string {
   if (hexColor.length !== 4) {
@@ -46,7 +46,7 @@ function hexToRgb(color: string) {
 function rgbToRgba(color: string, alpha: number): string {
   const rgb = hexToRgb(color) ?? hexToRgb(DEFAULT_PRODUCT_BADGE_COLOR);
   if (!rgb) {
-    return `rgba(32, 92, 76, ${alpha})`;
+    return `rgba(11, 93, 30, ${alpha})`;
   }
 
   return `rgba(${rgb.red}, ${rgb.green}, ${rgb.blue}, ${alpha})`;

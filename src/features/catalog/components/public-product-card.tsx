@@ -196,7 +196,7 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
           ) : null}
 
           {discountPercentage !== null ? (
-            <span className="rounded-full bg-[#e35d5d] px-3 py-1 text-[0.74rem] font-medium leading-none text-white">
+            <span className="rounded-full bg-status-error px-3 py-1 text-[0.74rem] font-medium leading-none text-white">
               -{discountPercentage}%
             </span>
           ) : null}
@@ -222,8 +222,8 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
                     isOutOfStock
                       ? "cursor-not-allowed bg-neutral-400"
                       : cardState === "added"
-                        ? "cursor-default bg-[#3d9c2a]"
-                        : "cursor-pointer bg-[#5bb446] hover:bg-[#499038]",
+                        ? "cursor-default bg-brand-primary"
+                        : "cursor-pointer bg-gradient-to-br from-[#E5B85C] via-[#D6A03A] to-[#C58A1D] text-[#0B5D1E] font-bold shadow-cta hover:shadow-[0_12px_32px_rgba(197,138,29,0.35)]",
                   ].join(" ")}
                   aria-label={
                     isOutOfStock
@@ -307,8 +307,8 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
                     isOutOfStock
                       ? "cursor-not-allowed bg-neutral-400"
                       : cardState === "added"
-                        ? "cursor-default bg-[#3d9c2a]"
-                        : "cursor-pointer bg-[#5bb446] hover:bg-[#499038]",
+                        ? "cursor-default bg-brand-primary"
+                        : "cursor-pointer bg-gradient-to-br from-[#E5B85C] via-[#D6A03A] to-[#C58A1D] text-[#0B5D1E] font-bold shadow-cta hover:shadow-[0_12px_32px_rgba(197,138,29,0.35)]",
                   ].join(" ")}
                   aria-label={
                     isOutOfStock
@@ -379,7 +379,7 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
       </div>
 
       {/* Info area */}
-      <div className="flex flex-1 flex-col bg-[#f1f1f1] p-[6px] pb-4 pt-4 sm:p-4">
+      <div className="flex flex-1 flex-col bg-surface-soft p-[6px] pb-4 pt-4 sm:p-4">
         <div className="flex items-baseline justify-between gap-3">
           {product.category ? (
             <p className="min-w-0 text-[0.74rem] font-normal leading-[1.1] tracking-[-0.015em] text-text-primary sm:text-body-sm sm:tracking-normal">
@@ -426,8 +426,8 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
               isOutOfStock
                 ? "cursor-not-allowed bg-neutral-400"
                 : cardState === "added"
-                  ? "cursor-default bg-[#3d9c2a]"
-                  : "cursor-pointer bg-[#5bb446] hover:bg-[#499038]",
+                  ? "cursor-default bg-brand-primary"
+                  : "cursor-pointer bg-gradient-to-br from-[#E5B85C] via-[#D6A03A] to-[#C58A1D] text-[#0B5D1E] font-bold shadow-cta hover:shadow-[0_12px_32px_rgba(197,138,29,0.35)]",
             ].join(" ")}
             aria-label={
               isOutOfStock

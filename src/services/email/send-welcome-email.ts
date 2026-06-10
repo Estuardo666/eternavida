@@ -11,7 +11,7 @@ export async function sendWelcomeEmail(user: {
   return sendTransactionalEmail({
     to: user.email,
     templateKey: "welcome_user",
-    subject: "¡Bienvenida a Dermatologika!",
+    subject: "¡Bienvenida a Eterna Vida!",
     html,
     metadata: { email: user.email },
   });

@@ -8,7 +8,7 @@ export async function sendTestEmail(to: string, _templateKey?: string) {
   return sendTransactionalEmail({
     to,
     templateKey: "test_email",
-    subject: "Correo de prueba — Dermatologika",
+    subject: "Correo de prueba — Eterna Vida",
     html,
     metadata: { sentTo: to },
   });

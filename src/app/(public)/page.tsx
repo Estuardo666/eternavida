@@ -6,7 +6,7 @@ import { getHomePageContent } from "@/services/content/get-home-page-content";
 
 export const metadata: Metadata = {
   title: "Home",
-  description: "Dermatologika — Skincare clínico respaldado por dermatólogos. Descubre productos y rutinas para cada tipo de piel.",
+  description: "Eterna Vida — Productos naturales y artesanales para la salud, el bienestar y la alimentación consciente. Desde Vilcabamba, Ecuador.",
 };
 
 export default async function HomePage() {
@@ -23,7 +23,7 @@ export default async function HomePage() {
       {heroImageSrc && (
         <link rel="preload" as="image" href={heroImageSrc} />
       )}
-      <div className="bg-gradient-to-b from-[#72b25514] via-white to-white [&_h2]:tracking-[-0.03em]">
+      <div className="bg-gradient-to-b from-[#0B5D1E08] via-white to-white [&_h2]:tracking-[-0.03em]">
         {firstHeroSlide ? <HeroFirstSlide slide={firstHeroSlide} /> : null}
         <HomePageView contentResult={contentResult} />
       </div>

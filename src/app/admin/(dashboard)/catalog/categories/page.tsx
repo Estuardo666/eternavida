@@ -2,7 +2,7 @@ import { CatalogAdminList } from "@/features/admin-catalog/components/catalog-ad
 import { getCategoryLibraryData } from "@/services/admin-catalog/get-catalog-admin-data";
 
 export const metadata = {
-  title: "Admin Categories — Dermatologika",
+  title: "Admin Categories — Eterna Vida",
   description: "Gestionar categorías del catálogo local.",
 };
 

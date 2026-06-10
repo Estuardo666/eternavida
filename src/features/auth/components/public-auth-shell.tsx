@@ -20,13 +20,13 @@ const shellContent: Record<AuthMode, { title: string; description: string; accen
   "sign-in": {
     title: "Bienvenida de vuelta",
     description:
-      "Ingresa con tu correo para retomar tu compra, revisar favoritos y mantener tu experiencia conectada en Dermatologika.",
+      "Ingresa con tu correo para retomar tu compra, revisar favoritos y mantener tu experiencia conectada en Eterna Vida.",
     accent: "Acceso seguro por email",
   },
   "sign-up": {
     title: "Crea tu cuenta",
     description:
-      "Activa una cuenta Dermatologika para guardar tu carrito, acelerar el checkout y seguir tus compras desde un mismo lugar.",
+      "Activa una cuenta Eterna Vida para guardar tu carrito, acelerar el checkout y seguir tus compras desde un mismo lugar.",
     accent: "Registro privado sin proveedores externos",
   },
 };
@@ -50,7 +50,7 @@ export function PublicAuthShell({ mode, children }: PublicAuthShellProps) {
           transition={{ duration: motionTokens.duration.moderate, ease: motionTokens.ease.soft }}
           className="overflow-hidden rounded-[32px] border border-border-soft/70 bg-surface-canvas shadow-[0_28px_70px_rgba(18,18,18,0.08)] lg:grid lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[minmax(0,1fr)_minmax(430px,0.82fr)]"
         >
-          <section className="relative hidden overflow-hidden bg-[linear-gradient(160deg,#edf6e3_0%,#f7f4ef_48%,#ffffff_100%)] lg:flex lg:flex-col lg:justify-between lg:px-10 lg:py-10 xl:px-14 xl:py-12">
+          <section className="relative hidden overflow-hidden bg-[linear-gradient(160deg,#E8F2EA_0%,#f7f4ef_48%,#ffffff_100%)] lg:flex lg:flex-col lg:justify-between lg:px-10 lg:py-10 xl:px-14 xl:py-12">
             <div className="pointer-events-none absolute inset-0">
               <motion.div
                 initial={reduceMotion ? { opacity: 0.5 } : { opacity: 0, scale: 0.92 }}
@@ -62,7 +62,7 @@ export function PublicAuthShell({ mode, children }: PublicAuthShellProps) {
                 initial={reduceMotion ? { opacity: 0.45 } : { opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: motionTokens.duration.page, delay: 0.08, ease: motionTokens.ease.soft }}
-                className="absolute bottom-8 right-0 h-80 w-80 rounded-full bg-[#f0eadb] blur-3xl"
+                className="absolute bottom-8 right-0 h-80 w-80 rounded-full bg-[#F3EFE7] blur-3xl"
               />
             </div>
 
@@ -73,8 +73,8 @@ export function PublicAuthShell({ mode, children }: PublicAuthShellProps) {
               className="relative z-10 flex items-center justify-between gap-4"
             >
               <Image
-                src="/logotipo.png"
-                alt="Dermatologika"
+                src="/media/logotipo.jpg"
+                alt="Eterna Vida"
                 width={220}
                 height={72}
                 className="h-auto w-44 object-contain"
@@ -115,7 +115,7 @@ export function PublicAuthShell({ mode, children }: PublicAuthShellProps) {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-label-md text-text-secondary">Resumen Dermatologika</p>
+                    <p className="text-label-md text-text-secondary">Resumen Eterna Vida</p>
                     <p className="mt-2 text-section-md font-semibold text-text-primary">
                       Una cuenta para mantener tu compra ordenada.
                     </p>
@@ -176,8 +176,8 @@ export function PublicAuthShell({ mode, children }: PublicAuthShellProps) {
                 Volver
               </Link>
               <Image
-                src="/logotipo.png"
-                alt="Dermatologika"
+                src="/media/logotipo.jpg"
+                alt="Eterna Vida"
                 width={184}
                 height={60}
                 className="h-auto w-36 object-contain sm:w-40"
@@ -194,7 +194,7 @@ export function PublicAuthShell({ mode, children }: PublicAuthShellProps) {
               <div className="space-y-5">
                 <div className="space-y-3">
                   <span className="inline-flex rounded-pill bg-brand-soft/60 px-4 py-2 text-label-sm uppercase tracking-[0.16em] text-text-secondary">
-                    Cuenta Dermatologika
+                    Cuenta Eterna Vida
                   </span>
 
                   <div className="inline-flex rounded-pill border border-border-soft bg-surface-soft p-1.5">

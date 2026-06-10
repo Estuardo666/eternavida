@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     paddingBottom: 34,
     paddingHorizontal: 30,
     fontSize: 10,
-    color: "#243126",
+    color: "#2D2D2D",
     backgroundColor: "#ffffff",
   },
   header: {
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     borderBottomWidth: 1,
-    borderBottomColor: "#d8e3d4",
+    borderBottomColor: "#D9D2C5",
     paddingBottom: 16,
     marginBottom: 18,
   },
@@ -79,10 +79,10 @@ const styles = StyleSheet.create({
   companyName: {
     fontSize: 16,
     fontWeight: 700,
-    color: "#1b2a1d",
+    color: "#2D2D2D",
   },
   muted: {
-    color: "#5f6d60",
+    color: "#6B6B6B",
   },
   sectionGrid: {
     flexDirection: "row",
@@ -92,16 +92,16 @@ const styles = StyleSheet.create({
   panel: {
     flexGrow: 1,
     borderWidth: 1,
-    borderColor: "#d8e3d4",
+    borderColor: "#D9D2C5",
     borderRadius: 10,
     padding: 12,
-    backgroundColor: "#f8fbf7",
+    backgroundColor: "#FAF8F3",
   },
   panelTitle: {
     fontSize: 11,
     fontWeight: 700,
     marginBottom: 8,
-    color: "#1b2a1d",
+    color: "#2D2D2D",
   },
   row: {
     flexDirection: "row",
@@ -110,13 +110,13 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   rowLabel: {
-    color: "#5f6d60",
+    color: "#6B6B6B",
     width: "42%",
   },
   rowValue: {
     flexGrow: 1,
     textAlign: "right",
-    color: "#243126",
+    color: "#2D2D2D",
   },
   statusPill: {
     alignSelf: "flex-start",
@@ -129,16 +129,16 @@ const styles = StyleSheet.create({
   },
   table: {
     borderWidth: 1,
-    borderColor: "#d8e3d4",
+    borderColor: "#D9D2C5",
     borderRadius: 10,
     overflow: "hidden",
     marginBottom: 14,
   },
   tableHeader: {
     flexDirection: "row",
-    backgroundColor: "#edf5ea",
+    backgroundColor: "#E8F2EA",
     borderBottomWidth: 1,
-    borderBottomColor: "#d8e3d4",
+    borderBottomColor: "#D9D2C5",
     paddingVertical: 8,
     paddingHorizontal: 10,
   },
@@ -147,10 +147,10 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#edf2eb",
+    borderBottomColor: "#D9D2C5",
   },
   tableRowAlt: {
-    backgroundColor: "#fbfcfa",
+    backgroundColor: "#FAF8F3",
   },
   colProduct: {
     width: "34%",
@@ -174,10 +174,10 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     width: 220,
     borderWidth: 1,
-    borderColor: "#d8e3d4",
+    borderColor: "#D9D2C5",
     borderRadius: 10,
     padding: 12,
-    backgroundColor: "#f8fbf7",
+    backgroundColor: "#FAF8F3",
     marginBottom: 14,
   },
   totalRow: {
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   },
   totalStrong: {
     fontWeight: 700,
-    color: "#1b2a1d",
+    color: "#2D2D2D",
   },
   footer: {
     position: "absolute",
@@ -195,11 +195,11 @@ const styles = StyleSheet.create({
     right: 30,
     bottom: 16,
     borderTopWidth: 1,
-    borderTopColor: "#d8e3d4",
+    borderTopColor: "#D9D2C5",
     paddingTop: 10,
     flexDirection: "row",
     justifyContent: "space-between",
-    color: "#5f6d60",
+    color: "#6B6B6B",
     fontSize: 9,
   },
 });
@@ -226,18 +226,18 @@ export function OrderPdfDocument(props: OrderPdfDocumentProps) {
   const statusPill = buildStatusPill(order);
 
   return (
-    <Document title={`Pedido ${order.orderNumber}`} author="Dermatologika">
+    <Document title={`Pedido ${order.orderNumber}`} author="Eterna Vida">
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <View>
             <Image src={logoUrl} style={styles.logo} />
           </View>
           <View style={styles.companyBlock}>
-            <Text style={styles.companyName}>Dermatologika</Text>
+            <Text style={styles.companyName}>Eterna Vida</Text>
             <Text style={styles.muted}>Dermocosmetica y cuidado especializado</Text>
             <Text style={styles.muted}>Quito, Ecuador</Text>
             <Text style={styles.muted}>+593 0 000 0000</Text>
-            <Text style={styles.muted}>dermatologika.com</Text>
+            <Text style={styles.muted}>eternavida.com.ec</Text>
           </View>
         </View>
 
@@ -339,7 +339,7 @@ export function OrderPdfDocument(props: OrderPdfDocumentProps) {
             <Text>Impuestos</Text>
             <Text>{formatCurrency(order.taxAmount.toString())}</Text>
           </View>
-          <View style={{ ...styles.totalRow, paddingTop: 6, borderTopWidth: 1, borderTopColor: "#d8e3d4" }}>
+          <View style={{ ...styles.totalRow, paddingTop: 6, borderTopWidth: 1, borderTopColor: "#D9D2C5" }}>
             <Text style={styles.totalStrong}>Total</Text>
             <Text style={styles.totalStrong}>{formatCurrency(order.total.toString())}</Text>
           </View>
@@ -386,7 +386,7 @@ export function OrderPdfDocument(props: OrderPdfDocumentProps) {
         </View>
 
         <View style={styles.footer} fixed>
-          <Text>Gracias por tu compra - Dermatologika</Text>
+          <Text>Gracias por tu compra - Eterna Vida</Text>
           <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
         </View>
       </Page>

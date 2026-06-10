@@ -1,7 +1,7 @@
 import { RestockAlertAdminPanel } from "@/features/admin-restock-alerts/components/restock-alert-admin-panel";
 
 export const metadata = {
-  title: "Admin Alertas de Restock — Dermatologika",
+  title: "Admin Alertas de Restock — Eterna Vida",
   description: "Gestionar alertas de reposición de productos.",
 };
 

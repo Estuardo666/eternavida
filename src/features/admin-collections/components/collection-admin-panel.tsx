@@ -66,7 +66,7 @@ export function CollectionAdminPanel() {
           </div>
           <Link
             href="/admin/collections/new"
-            className="rounded-full bg-[#5bb446] px-4 py-2 text-body-sm font-medium text-white hover:bg-[#499038]"
+            className="rounded-full bg-brand-primary px-4 py-2 text-body-sm font-medium text-white hover:bg-brand-primaryHover"
           >
             + Nueva colección
           </Link>

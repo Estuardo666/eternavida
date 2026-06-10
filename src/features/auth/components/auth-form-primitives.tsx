@@ -140,7 +140,7 @@ export function AuthSubmitButton({
       disabled={disabled || isLoading}
       {...(reduceMotion || disabled || isLoading ? {} : buttonMotion)}
       className={cx(
-        "inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-pill px-6 py-3 text-label-md font-semibold text-text-inverse shadow-[0_12px_30px_rgba(114,178,85,0.20)] transition-[background-color,box-shadow,opacity] duration-base",
+        "inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-pill px-6 py-3 text-label-md font-semibold text-text-inverse shadow-[0_12px_30px_rgba(11,93,30,0.20)] transition-[background-color,box-shadow,opacity] duration-base",
         disabled || isLoading
           ? "cursor-not-allowed bg-brand-primary/55 opacity-80 shadow-none"
           : "bg-brand-primary hover:bg-brand-primaryHover",

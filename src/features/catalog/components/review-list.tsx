@@ -96,12 +96,12 @@ export function ReviewList({ productSlug, aggregate }: ReviewListProps) {
             return (
               <div key={star} className="flex items-center gap-2">
                 <span className="w-3 text-right text-body-xs text-text-muted">{star}</span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3 text-[#f5a623]" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3 text-[#C58A1D]" aria-hidden="true">
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                 </svg>
                 <div className="h-2 flex-1 overflow-hidden rounded-full bg-neutral-100">
                   <div
-                    className="h-full rounded-full bg-[#f5a623] transition-all duration-500"
+                    className="h-full rounded-full bg-[#C58A1D] transition-all duration-500"
                     style={{ width: `${percent}%` }}
                   />
                 </div>
@@ -191,7 +191,7 @@ export function ReviewList({ productSlug, aggregate }: ReviewListProps) {
             {review.adminResponse ? (
               <div className="mt-3 rounded-lg border border-neutral-200 bg-neutral-50 p-3">
                 <p className="text-body-xs font-semibold text-text-primary">
-                  Respuesta de Dermatologika
+                  Respuesta de Eterna Vida
                 </p>
                 <p className="mt-1 text-body-sm text-text-secondary">
                   {review.adminResponse}

@@ -1,7 +1,7 @@
 import { WebhookEventsPanel } from "@/features/admin-webhooks/components/webhook-events-panel";
 
 export const metadata = {
-  title: "Admin Eventos Webhook — Dermatologika",
+  title: "Admin Eventos Webhook — Eterna Vida",
   description: "Revisar, filtrar y reintentar eventos de webhook enviados desde el panel de pedidos.",
 };
 

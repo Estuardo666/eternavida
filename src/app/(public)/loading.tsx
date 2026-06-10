@@ -1,6 +1,6 @@
 export default function PublicLoading() {
   return (
-    <div className="bg-gradient-to-b from-[#72b25514] via-white to-white">
+    <div className="bg-gradient-to-b from-[#0B5D1E08] via-white to-white">
       <section className="w-full py-4 sm:py-6 lg:py-8">
         <div className="space-y-5 lg:space-y-0">
           <div className="relative w-full overflow-hidden border-y border-border-soft bg-surface-canvas shadow-sm sm:border">

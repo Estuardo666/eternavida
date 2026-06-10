@@ -11,7 +11,7 @@ interface WhatsAppFloatProps {
 
 export function WhatsAppFloat({
   phone,
-  message = "Hola, tengo una consulta sobre Dermatologika.",
+  message = "Hola, tengo una consulta sobre Eterna Vida.",
 }: WhatsAppFloatProps) {
   const pathname = usePathname();
   const isCheckoutRoute = pathname?.startsWith("/checkout") ?? false;

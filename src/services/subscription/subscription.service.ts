@@ -53,7 +53,7 @@ export async function processSubscriptionReminders() {
       );
 
       const price = Number(sub.product.discountPrice ?? sub.product.price);
-      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dermatologika.com";
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://eternavida.com.ec";
 
       const html = subscriptionReminderTemplate({
         productName: sub.product.name,

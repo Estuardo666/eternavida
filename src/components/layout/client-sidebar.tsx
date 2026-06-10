@@ -247,7 +247,7 @@ export function ClientSidebar({ userEmail, userName, userImageUrl }: ClientSideb
                 title="Expandir sidebar"
                 aria-label="Expandir sidebar"
               >
-                <Image src="/logotipo.png" alt="Dermatologika" width={20} height={20} className="h-5 w-5 object-contain brightness-0 invert" priority />
+                <Image src="/media/logotipo.jpg" alt="Eterna Vida" width={20} height={20} className="h-5 w-5 object-contain brightness-0 invert" priority />
               </button>
 
               <div className="my-2 h-px w-6 bg-border-soft" />
@@ -331,7 +331,7 @@ function SidebarPanel(props: {
   return (
     <div className="flex h-full w-full flex-col border-r border-border-soft bg-surface-canvas p-3">
       <div className="flex items-center justify-between gap-2 pb-3 border-b border-border-soft">
-        <Image src="/logotipo.png" alt="Dermatologika" width={120} height={28} className="h-7 w-auto object-contain" priority />
+        <Image src="/media/logotipo.jpg" alt="Eterna Vida" width={120} height={28} className="h-7 w-auto object-contain" priority />
         <button
           type="button"
           onClick={props.onCollapseToggle}

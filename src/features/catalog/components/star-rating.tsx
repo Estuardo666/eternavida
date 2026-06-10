@@ -61,7 +61,7 @@ export function StarRating({
               fill={filled ? "currentColor" : "none"}
               stroke="currentColor"
               strokeWidth={filled ? "0" : "1.5"}
-              className={`${iconSize} transition-colors duration-150 ${filled ? "text-[#f5a623]" : "text-neutral-300"}`}
+              className={`${iconSize} transition-colors duration-150 ${filled ? "text-[#C58A1D]" : "text-neutral-300"}`}
               aria-hidden="true"
             >
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />

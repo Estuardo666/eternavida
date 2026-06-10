@@ -5,7 +5,7 @@ import { LegalPageLayout, LegalSection, LegalList } from "@/components/layout/le
 export const metadata: Metadata = {
   title: "Política de Envíos",
   description:
-    "Conoce nuestras condiciones de envío, tiempos de entrega y operadores logísticos para entregas en todo el Ecuador.",
+    "Conoce nuestras condiciones de envío, tiempos de entrega y operadores logísticos para entregas en Ecuador e internacional.",
 };
 
 export default function PoliticaDeEnviosPage() {
@@ -14,8 +14,8 @@ export default function PoliticaDeEnviosPage() {
       <LegalSection title="1. Cobertura de envíos">
         <p>
           Realizamos envíos a todo el territorio ecuatoriano, incluyendo la región Sierra, Costa,
-          Amazonía y las Islas Galápagos. La disponibilidad y los tiempos de entrega pueden variar
-          según la ubicación de destino.
+          Amazonía y las Islas Galápagos. También realizamos envíos internacionales a Estados Unidos.
+          La disponibilidad y los tiempos de entrega pueden variar según la ubicación de destino.
         </p>
       </LegalSection>
 
@@ -70,9 +70,9 @@ export default function PoliticaDeEnviosPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="6. Manejo especial de dermocosméticos">
+      <LegalSection title="6. Manejo especial de productos naturales">
         <p>
-          Nuestros productos dermocosméticos requieren condiciones especiales de almacenamiento
+          Nuestros productos naturales y artesanales requieren condiciones especiales de almacenamiento
           y transporte. Empacamos todos los pedidos con materiales de protección adecuados para
           preservar la integridad del producto durante el trayecto. Si recibes un producto dañado
           debido al transporte, contáctanos de inmediato para gestionar su reposición.
@@ -82,23 +82,43 @@ export default function PoliticaDeEnviosPage() {
       <LegalSection title="7. Dirección de entrega">
         <p>
           El cliente es responsable de proporcionar una dirección de entrega correcta y completa.
-          Dermatologika no se hace responsable por demoras o entregas fallidas causadas por
+          Eterna Vida no se hace responsable por demoras o entregas fallidas causadas por
           información incorrecta proporcionada por el comprador. En caso de entrega fallida por
           ausencia del destinatario, el operador logístico intentará una segunda entrega o
           dejará aviso para retiro en la agencia más cercana.
         </p>
       </LegalSection>
 
-      <LegalSection title="8. Contacto">
+      <LegalSection title="8. Envíos internacionales (Estados Unidos)">
+        <p>
+          Ofrecemos envíos a Estados Unidos a través de servicios de courier internacional.
+          Las condiciones son las siguientes:
+        </p>
+        <LegalList
+          items={[
+            "Tiempo de entrega estimado: 7 a 15 días hábiles desde la confirmación del pago.",
+            "Costos de envío: calculados según peso y destino al momento de la compra.",
+            "Tracking internacional: recibirás un número de guía para rastrear tu pedido.",
+            "Aduanas e importación: el comprador es responsable de los aranceles, impuestos de importación y trámites aduaneros en Estados Unidos.",
+            "Devoluciones internacionales: aplican condiciones especiales (ver Política de Devoluciones).",
+          ]}
+        />
+        <p>
+          Los precios mostrados en el sitio están en USD. Los impuestos de importación en Estados Unidos
+          no están incluidos en el precio y son responsabilidad del comprador.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="9. Contacto">
         <p>
           Para consultas relacionadas con el estado de tu pedido o cualquier inconveniente en
           la entrega, comunícate con nosotros a través de:
         </p>
         <LegalList
           items={[
-            "Correo electrónico: envios@dermatologika.ec",
-            "Teléfono: 098 274 0049",
-            "Dirección: Av. Jose Maria Vivar, Castro, Loja, Ecuador.",
+            "Correo electrónico: envios@eternavida.com.ec",
+            "Teléfono: 098 815 8964",
+            "Dirección: Vilcabamba, Loja, Ecuador.",
             "WhatsApp: disponible en nuestro sitio web.",
           ]}
         />

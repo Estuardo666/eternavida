@@ -2,7 +2,7 @@ import { HomeContentEditor } from "@/features/admin-content/components/home-cont
 import { getHomeContentEditorData } from "@/services/admin-content/get-home-content-editor-data";
 
 export const metadata = {
-  title: "Admin Home Content — Dermatologika",
+  title: "Admin Home Content — Eterna Vida",
   description: "Editar contenido persistido y media de la Home pública.",
 };
 

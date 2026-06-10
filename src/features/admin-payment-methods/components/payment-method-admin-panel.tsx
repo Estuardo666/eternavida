@@ -336,7 +336,7 @@ export function PaymentMethodAdminPanel({ initialMethods }: Props) {
                   value={form.instructions}
                   onChange={(e) => updateField("instructions", e.target.value)}
                   className={cx(ADMIN_COMPACT_FIELD_CLASS_NAME, "min-h-[120px] resize-y")}
-                  placeholder={"Banco: ...\nCuenta: ...\nBeneficiario: Dermatologika\nEnvía tu comprobante por WhatsApp"}
+                  placeholder={"Banco: ...\nCuenta: ...\nBeneficiario: Eterna Vida\nEnvía tu comprobante por WhatsApp"}
                   maxLength={2000}
                 />
                 <p className="mt-1 text-caption text-text-secondary">

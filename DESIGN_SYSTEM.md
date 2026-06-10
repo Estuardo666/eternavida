@@ -1,8 +1,8 @@
 # DESIGN_SYSTEM.md
 
-# Dermatologika — Design System
+# Eterna Vida — Design System
 
-This document defines the visual system, design tokens, motion principles, component rules, and implementation standards for the Dermatologika project.
+This document defines the visual system, design tokens, motion principles, component rules, and implementation standards for the Eterna Vida project.
 
 This system is built from the supplied brand and store references, with the following interpretation:
 
@@ -12,7 +12,7 @@ This system is built from the supplied brand and store references, with the foll
 * **Typography:** Google Sans as the primary voice.
 * **Motion:** Framer Motion for subtle, premium, non-disruptive transitions.
 
-This is not a copy of those systems. It is a Dermatologika-specific design language.
+This is not a copy of those systems. It is an Eterna Vida-specific design language.
 
 ---
 
@@ -20,23 +20,23 @@ This is not a copy of those systems. It is a Dermatologika-specific design langu
 
 ## 1.1 Core Visual Personality
 
-Dermatologika is not a dark luxury brand and not a cold hospital brand.
+Eterna Vida is not a dark luxury brand and not a cold clinical brand.
 
 It sits in a refined position between:
 
-* clinical trust
-* premium skincare retail
-* clean contemporary wellness
-* architectural elegance
-* high-end but approachable simplicity
+* natural wellness
+* premium botanical retail
+* clean contemporary elegance
+* architectural sophistication
+* high-end but warm approachability
 
 ## 1.2 What the provided references communicate
 
 From the supplied references, the brand language is clearly built around:
 
 * luminous whites and warm light neutrals
-* fresh green as the primary brand energy
-* controlled gold or champagne metallic accents
+* deep forest green as the primary brand energy
+* rich gold or champagne metallic accents
 * rounded architectural forms
 * circular and arched framing devices
 * soft premium retail display behavior
@@ -116,45 +116,37 @@ The palette below is derived from the submitted visual references and normalized
 ### Brand Green Scale
 
 ```txt
-brand-green-50   #F2F9E8
-brand-green-100  #E6F3D1
-brand-green-200  #CFEBA7
-brand-green-300  #B7DE74
-brand-green-400  #9BCD5F
-brand-green-500  #8BC34A
-brand-green-600  #72B255
-brand-green-700  #58A24E
-brand-green-800  #2D8D5F
-brand-green-900  #226F51
+brand-green-50   #E8F2EA
+brand-green-100  #C5DCC9
+brand-green-200  #9EC5A4
+brand-green-300  #6FAA7A
+brand-green-400  #3D8F50
+brand-green-500  #0B5D1E
+brand-green-600  #0A521A
+brand-green-700  #084616
+brand-green-800  #063A12
+brand-green-900  #042E0E
 ```
 
-### Accent Lime
+### Signature Gold
 
 ```txt
-accent-lime-300  #C8E45D
-accent-lime-400  #B7D94B
-accent-lime-500  #A7CF3F
-```
-
-### Warm Metallic / Champagne Gold
-
-```txt
-gold-100  #F6EFE0
-gold-200  #E6D6AF
-gold-300  #D9C48C
-gold-400  #C7B06B
-gold-500  #B89A54
+gold-100  #F7EFD9
+gold-200  #EFDBA6
+gold-300  #E5B85C
+gold-400  #D6A03A
+gold-500  #C58A1D
 ```
 
 ### Warm Neutrals
 
 ```txt
 neutral-0    #FFFFFF
-neutral-25   #FCFBF8
-neutral-50   #F6F4EF
-neutral-100  #EFEBE3
-neutral-200  #E3DDD2
-neutral-300  #D4CCBE
+neutral-25   #FAF8F3
+neutral-50   #F5F2EA
+neutral-100  #EFEADF
+neutral-200  #E3DBCC
+neutral-300  #D9D2C5
 neutral-400  #BFB5A3
 neutral-500  #9B927F
 neutral-600  #6F675C
@@ -166,9 +158,9 @@ neutral-900  #171614
 ### Functional Dark Text
 
 ```txt
-ink-900  #121212
-ink-800  #1E1E1E
-ink-700  #2A2A2A
+ink-900  #2D2D2D
+ink-800  #363636
+ink-700  #404040
 ```
 
 ## 3.2 Color Roles
@@ -178,46 +170,46 @@ Use semantic roles rather than raw palette values directly.
 ### Brand Roles
 
 ```txt
-color.brand.primary        = brand-green-600
-color.brand.primaryHover   = brand-green-700
-color.brand.primarySoft    = brand-green-100
-color.brand.secondary      = gold-400
-color.brand.accent         = accent-lime-400
+color.brand.primary        = brand-green-500   #0B5D1E
+color.brand.primaryHover   = brand-green-600   #0A521A
+color.brand.primarySoft    = brand-green-50    #E8F2EA
+color.brand.gold           = gold-500          #C58A1D
+color.brand.goldLight      = gold-300          #E5B85C
 ```
 
 ### Surface Roles
 
 ```txt
-color.surface.canvas       = neutral-0
-color.surface.subtle       = neutral-25
-color.surface.soft         = neutral-50
+color.surface.canvas       = neutral-0         #FFFFFF
+color.surface.subtle       = neutral-25        #FAF8F3
+color.surface.soft         = neutral-50        #F5F2EA
 color.surface.elevated     = #FFFFFF
-color.surface.brandTint    = brand-green-50
+color.surface.brandTint    = brand-green-50    #E8F2EA
 ```
 
 ### Text Roles
 
 ```txt
-color.text.primary         = ink-900
-color.text.secondary       = neutral-700
-color.text.muted           = neutral-500
+color.text.primary         = ink-900           #2D2D2D
+color.text.secondary       = neutral-700       #4B463F
+color.text.muted           = neutral-500       #9B927F
 color.text.inverse         = #FFFFFF
-color.text.brand           = brand-green-700
+color.text.brand           = brand-green-500   #0B5D1E
 ```
 
 ### Border Roles
 
 ```txt
-color.border.soft          = neutral-100
-color.border.default       = neutral-200
-color.border.strong        = neutral-300
-color.border.brand         = brand-green-300
+color.border.soft          = neutral-100       #EFEADF
+color.border.default       = neutral-200       #E3DBCC
+color.border.strong        = neutral-300       #D9D2C5
+color.border.brand         = brand-green-200   #9EC5A4
 ```
 
 ### State Roles
 
 ```txt
-color.state.success        = #2E8B57
+color.state.success        = brand-green-500   #0B5D1E
 color.state.warning        = #D1A530
 color.state.error          = #C94A4A
 color.state.info           = #3D7EDB
@@ -225,10 +217,10 @@ color.state.info           = #3D7EDB
 
 ## 3.3 Usage Rules
 
-* Green is the main brand driver.
-* Lime is a highlight, not the primary reading color for large text blocks.
-* Gold is a premium accent and structural highlight, not a dominant UI fill.
-* Large surfaces should remain white or warm off-white.
+* Deep forest green (#0B5D1E) is the main brand driver.
+* Gold (#C58A1D / #E5B85C) is the premium accent: CTAs, highlights, featured badges.
+* Gold gradient is used for high-emphasis CTAs (comprar, agregar al carrito, suscribirse).
+* Large surfaces should remain white or warm off-white (#FAF8F3).
 * Heavy dark backgrounds should be avoided in the public brand experience.
 
 ---
@@ -378,10 +370,11 @@ Avoid heavy shadows or exaggerated neumorphism.
 ## 7.2 Shadow Tokens
 
 ```txt
-shadow-xs = 0 1px 2px rgba(18,18,18,0.04)
-shadow-sm = 0 4px 12px rgba(18,18,18,0.06)
-shadow-md = 0 12px 24px rgba(18,18,18,0.08)
-shadow-lg = 0 20px 40px rgba(18,18,18,0.10)
+shadow-xs = 0 1px 2px rgba(45,45,45,0.04)
+shadow-sm = 0 4px 12px rgba(45,45,45,0.06)
+shadow-md = 0 12px 24px rgba(45,45,45,0.08)
+shadow-lg = 0 20px 40px rgba(45,45,45,0.10)
+shadow-cta = 0 8px 24px rgba(197,138,29,0.25)
 ```
 
 ## 7.3 Border Rules
@@ -493,7 +486,7 @@ Images should feel:
 * bright
 * clean
 * premium
-* dermatology-aware
+* natural ingredient-aware
 * wellness-adjacent
 * calm and precise
 
@@ -753,7 +746,7 @@ Use for:
 
 ## 13.10 Section Frames
 
-A signature Dermatologika block can use:
+A signature Eterna Vida block can use:
 
 * soft green tinted background
 * large radius
@@ -823,29 +816,37 @@ tokens/
 export const tokens = {
   color: {
     brand: {
-      primary: '#72B255',
-      primaryHover: '#58A24E',
-      soft: '#E6F3D1',
-      accent: '#B7D94B',
-      gold: '#C7B06B',
+      primary: '#0B5D1E',
+      primaryHover: '#0A521A',
+      soft: '#E8F2EA',
+      gold: '#C58A1D',
+      goldLight: '#E5B85C',
     },
     surface: {
       canvas: '#FFFFFF',
-      subtle: '#FCFBF8',
-      soft: '#F6F4EF',
+      subtle: '#FAF8F3',
+      soft: '#F5F2EA',
       elevated: '#FFFFFF',
+      brandTint: '#E8F2EA',
     },
     text: {
-      primary: '#121212',
+      primary: '#2D2D2D',
       secondary: '#4B463F',
       muted: '#9B927F',
       inverse: '#FFFFFF',
+      brand: '#0B5D1E',
     },
     border: {
-      soft: '#EFEBE3',
-      default: '#E3DDD2',
-      strong: '#D4CCBE',
-      brand: '#CFEBA7',
+      soft: '#EFEADF',
+      default: '#E3DBCC',
+      strong: '#D9D2C5',
+      brand: '#9EC5A4',
+    },
+    status: {
+      success: '#0B5D1E',
+      warning: '#D1A530',
+      error: '#C94A4A',
+      info: '#3D7EDB',
     },
   },
 }
@@ -910,7 +911,7 @@ Avoid:
 Influence priority:
 
 1. Apple HIG visual clarity and hierarchy
-2. Dermatologika brand language
+2. Eterna Vida brand language
 3. Material token structure and reusable components
 
 ## Admin / Backend Interface
@@ -919,7 +920,7 @@ Influence priority:
 
 1. Atlassian and Carbon structure
 2. Material-style token consistency
-3. Dermatologika color accents used carefully
+3. Eterna Vida color accents used carefully
 
 Public and admin should feel related, but not identical.
 
@@ -931,10 +932,10 @@ The admin side prioritizes operational clarity.
 
 # 20. Final Standard
 
-A Dermatologika interface is correct only if it feels:
+An Eterna Vida interface is correct only if it feels:
 
 * premium without arrogance
-* medical without sterility
+* natural without sterility
 * fresh without childishness
 * elegant without excess
 * structured without rigidity
@@ -946,5 +947,5 @@ If a UI is technically clean but does not reflect this emotional balance, it is 
 
 # Version
 
-**DESIGN_SYSTEM.md v1.0**
-Dermatologika Visual System
+**DESIGN_SYSTEM.md v2.0**
+Eterna Vida Visual System

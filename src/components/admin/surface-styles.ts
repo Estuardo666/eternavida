@@ -26,3 +26,6 @@ export const ADMIN_BUTTON_DANGER_CLASS_NAME =
 
 export const ADMIN_BUTTON_NEUTRAL_SMALL_CLASS_NAME =
   "inline-flex min-h-9 items-center justify-center rounded-lg border border-border-soft bg-surface-canvas px-4 py-2 text-label-sm text-text-primary transition-all duration-150 hover:border-border-default hover:bg-surface-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas";
+
+export const ADMIN_BUTTON_CTA_CLASS_NAME =
+  "inline-flex min-h-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#E5B85C] via-[#D6A03A] to-[#C58A1D] px-5 py-2.5 text-label-sm font-bold text-[#0B5D1E] shadow-cta transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(197,138,29,0.35)] active:translate-y-0 active:shadow-[0_4px_12px_rgba(197,138,29,0.20)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C58A1D] focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas disabled:opacity-50";

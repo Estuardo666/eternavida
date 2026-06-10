@@ -2,8 +2,12 @@
 @config "../../tailwind.config.ts";
 
 :root {
-  --app-background: #fcfbf8;
-  --app-foreground: #171614;
+  --app-background: #FAF8F3;
+  --app-foreground: #2D2D2D;
+  --brand-primary: #0B5D1E;
+  --brand-gold: #C58A1D;
+  --brand-gold-gradient: linear-gradient(135deg, #E5B85C 0%, #D6A03A 45%, #C58A1D 100%);
+  --brand-gold-gradient-hover: linear-gradient(135deg, #F0C46D 0%, #E5B85C 50%, #D6A03A 100%);
 }
 
 html,
@@ -22,7 +26,7 @@ body {
 
 /* Supabase-inspired admin utilities */
 ::selection {
-  background-color: rgba(114, 178, 85, 0.15);
+  background-color: rgba(11, 93, 30, 0.15);
   color: inherit;
 }
 

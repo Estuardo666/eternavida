@@ -664,7 +664,7 @@ export function CheckoutPageClient() {
       };
 
       try {
-        sessionStorage.setItem("dermatologika_last_order", JSON.stringify(confirmationData));
+        sessionStorage.setItem("eterna_vida_last_order", JSON.stringify(confirmationData));
       } catch {
         // sessionStorage unavailable
       }
@@ -799,11 +799,11 @@ export function CheckoutPageClient() {
             <Link
               href="/"
               className="inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
-              aria-label="Dermatologika — Ir al inicio"
+              aria-label="Eterna Vida — Ir al inicio"
             >
               <Image
-                src="/logotipo.png"
-                alt="Dermatologika"
+                src="/media/logotipo.jpg"
+                alt="Eterna Vida"
                 width={240}
                 height={80}
                 className="h-auto w-56 object-contain"
@@ -1272,7 +1272,7 @@ export function CheckoutPageClient() {
                 className="mt-0.5 h-4 w-4 rounded border-border-strong text-brand-primary focus:ring-brand-primary"
               />
               <span>
-                Acepto los términos y condiciones y las políticas de privacidad de Dermatologika.
+                Acepto los términos y condiciones y las políticas de privacidad de Eterna Vida.
               </span>
             </label>
             <motion.button
@@ -1281,11 +1281,11 @@ export function CheckoutPageClient() {
               disabled={buttonState !== "idle" || isPricingLoading || Boolean(pricingError) || !hasAcceptedTerms}
               {...buttonMotionProps}
               className={cx(
-                "relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-pill px-8 py-3.5 text-label-md font-semibold text-white",
-                "shadow-[0_2px_12px_rgba(114,178,85,0.30)] transition-[background-color,box-shadow,opacity] duration-base",
+                "relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-pill px-8 py-3.5 text-label-md font-bold text-[#0B5D1E]",
+                "shadow-cta transition-[background,box-shadow,opacity] duration-base",
                 buttonState === "done"
                   ? "bg-status-success shadow-[0_2px_12px_rgba(46,139,87,0.28)]"
-                  : "bg-brand-primary hover:bg-brand-primaryHover",
+                  : "bg-gradient-to-br from-[#E5B85C] via-[#D6A03A] to-[#C58A1D] hover:shadow-[0_12px_32px_rgba(197,138,29,0.35)]",
                 (buttonState !== "idle" || isPricingLoading || pricingError || !hasAcceptedTerms) && "cursor-default opacity-95",
               )}
               aria-live="polite"
@@ -1378,7 +1378,7 @@ export function CheckoutPageClient() {
         {/* ── RIGHT — order summary (desktop only) ─────────────────────────── */}
         <aside
           aria-label="Resumen del pedido"
-          className="relative hidden border-l border-border-soft bg-[#f4faee] lg:block lg:min-h-screen after:pointer-events-none after:absolute after:inset-y-0 after:left-full after:w-[100vw] after:bg-[#f4faee] after:content-['']"
+          className="relative hidden border-l border-border-soft bg-surface-brandTint lg:block lg:min-h-screen after:pointer-events-none after:absolute after:inset-y-0 after:left-full after:w-[100vw] after:bg-surface-brandTint after:content-['']"
         >
           <motion.div
             initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: 16 }}

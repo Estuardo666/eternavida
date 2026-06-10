@@ -33,7 +33,7 @@ interface ConfirmationData {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const SESSION_KEY = "dermatologika_last_order";
+const SESSION_KEY = "eterna_vida_last_order";
 
 const GUEST_BENEFITS = [
   "Seguimiento de tus pedidos en tiempo real",
@@ -114,7 +114,7 @@ export function CheckoutConfirmation() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-surface-canvas px-4 py-16 sm:py-24">
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(1000px_420px_at_50%_-120px,rgba(183,217,75,0.21),transparent_62%),linear-gradient(180deg,#FAFDF2_0%,#FFFFFF_36%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(1000px_420px_at_50%_-120px,rgba(197,138,29,0.12),transparent_62%),linear-gradient(180deg,#FAF8F3_0%,#FFFFFF_36%)]"
         aria-hidden="true"
       />
       <div className="relative mx-auto max-w-lg space-y-5">
@@ -130,8 +130,8 @@ export function CheckoutConfirmation() {
           className="flex flex-col items-center pb-2 text-center"
         >
           <Image
-            src="/logotipo.png"
-            alt="Dermatologika"
+            src="/media/logotipo.jpg"
+            alt="Eterna Vida"
             width={180}
             height={44}
             className="mb-6 h-auto w-[150px] sm:w-[180px]"
@@ -157,14 +157,14 @@ export function CheckoutConfirmation() {
               xmlns="http://www.w3.org/2000/svg"
             >
               {/* Static fill */}
-              <circle cx="44" cy="44" r="40" fill="#E6F3D1" />
+              <circle cx="44" cy="44" r="40" fill="#E8F2EA" />
 
               {/* Stroke ring draws in */}
               <motion.circle
                 cx="44"
                 cy="44"
                 r="40"
-                stroke="#72B255"
+                stroke="#0B5D1E"
                 strokeWidth="2"
                 fill="none"
                 initial={{ pathLength: 0, opacity: 0 }}

@@ -63,5 +63,5 @@ export function buildCatalogMediaStorageKey(
   const extension = extensionMatch ? extensionMatch[0].toLowerCase() : "";
   const folder = entityType === "categories" ? "Categories" : entityType === "brands" ? "Brands" : "Products";
 
-  return `Dermatologika/Catalog/${folder}/${slug}-${timestamp}${extension}`;
+  return `Eterna Vida/Catalog/${folder}/${slug}-${timestamp}${extension}`;
 }

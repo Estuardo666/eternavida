@@ -2,7 +2,7 @@ import { PaymentMethodAdminPanel } from "@/features/admin-payment-methods/compon
 import { getAdminPaymentMethods } from "@/services/admin-payment-methods/get-payment-methods";
 
 export const metadata = {
-  title: "Admin Métodos de pago — Dermatologika",
+  title: "Admin Métodos de pago — Eterna Vida",
   description: "Gestionar los métodos de pago disponibles en el checkout.",
 };
 

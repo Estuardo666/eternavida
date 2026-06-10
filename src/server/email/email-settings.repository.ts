@@ -24,7 +24,7 @@ export const emailSettingsRepository = {
         adminEmails: [],
         testMode: true,
         testEmails: [],
-        fromName: env.EMAIL_FROM_NAME ?? "Dermatologika",
+        fromName: env.EMAIL_FROM_NAME ?? "Eterna Vida",
         fromEmail: env.EMAIL_FROM_ADDRESS ?? "onboarding@resend.dev",
         replyTo: env.EMAIL_REPLY_TO ?? null,
       },

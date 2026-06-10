@@ -174,7 +174,7 @@ export function ReviewForm({ productId, onSubmitted }: ReviewFormProps) {
           </label>
           <StarRating value={rating} onChange={setRating} size="lg" />
           {rating === 0 && status === "error" ? (
-            <p className="mt-1 text-body-xs text-[#cc5533]">Selecciona una calificación</p>
+            <p className="mt-1 text-body-xs text-status-error">Selecciona una calificación</p>
           ) : null}
         </div>
         <div className="min-w-0 flex-1">
@@ -248,7 +248,7 @@ export function ReviewForm({ productId, onSubmitted }: ReviewFormProps) {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="flex h-20 w-20 shrink-0 items-center justify-center rounded-lg border-2 border-dashed border-border-soft bg-neutral-50 text-text-muted transition hover:border-[#5bb446] hover:text-[#5bb446]"
+              className="flex h-20 w-20 shrink-0 items-center justify-center rounded-lg border-2 border-dashed border-border-soft bg-neutral-50 text-text-muted transition hover:border-brand-primary hover:text-brand-primary"
               aria-label="Agregar imagen"
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
@@ -267,14 +267,14 @@ export function ReviewForm({ productId, onSubmitted }: ReviewFormProps) {
       </div>
 
       {status === "error" ? (
-        <p className="text-body-sm text-[#cc5533]">{errorMessage}</p>
+        <p className="text-body-sm text-status-error">{errorMessage}</p>
       ) : null}
 
       <motion.button
         type="submit"
         disabled={rating === 0 || status === "submitting" || images.some((i) => i.status === "uploading")}
         whileTap={reduceMotion ? {} : { scale: 0.975 }}
-        className="rounded-full bg-[#5bb446] px-6 py-2.5 text-body-md font-medium text-white transition hover:bg-[#499038] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
+        className="rounded-full bg-brand-primary px-6 py-2.5 text-body-md font-medium text-white transition hover:bg-brand-primaryHover disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
       >
         {status === "submitting" ? "Enviando..." : "Enviar reseña"}
       </motion.button>

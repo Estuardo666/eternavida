@@ -2,7 +2,7 @@ import { PromotionAdminPanel } from "@/features/admin-promotions/components/prom
 import { getPromotionAdminData } from "@/services/admin-promotions/get-promotion-admin-data";
 
 export const metadata = {
-  title: "Admin Promociones — Dermatologika",
+  title: "Admin Promociones — Eterna Vida",
   description: "Gestionar promociones, descuentos y reglas de envío del catálogo.",
 };
 

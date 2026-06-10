@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!collection) return { title: "Colección no encontrada" };
   return {
     title: collection.name,
-    description: collection.description ?? collection.excerpt ?? `Colección ${collection.name} en Dermatologika`,
+    description: collection.description ?? collection.excerpt ?? `Colección ${collection.name} en Eterna Vida`,
   };
 }
 

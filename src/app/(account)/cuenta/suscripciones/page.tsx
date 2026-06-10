@@ -54,7 +54,7 @@ export default function SubscriptionsPage() {
         <h1 className="text-section-lg text-text-primary">Mis Suscripciones</h1>
         <div className="flex min-h-[200px] flex-col items-center justify-center gap-4 rounded-2xl border border-border-soft bg-white p-8 text-center">
           <p className="text-body-md text-text-secondary">No tienes suscripciones activas.</p>
-          <Link href="/productos" className="rounded-full bg-[#5bb446] px-5 py-2.5 text-body-md font-medium text-white hover:bg-[#499038]">Ver productos</Link>
+          <Link href="/productos" className="rounded-full bg-brand-primary px-5 py-2.5 text-body-md font-medium text-white hover:bg-brand-primaryHover">Ver productos</Link>
         </div>
       </div>
     );

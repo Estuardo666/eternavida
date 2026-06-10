@@ -1,7 +1,7 @@
 import { ReferralAdminPanel } from "@/features/admin-referrals/components/referral-admin-panel";
 
 export const metadata = {
-  title: "Admin Referidos — Dermatologika",
+  title: "Admin Referidos — Eterna Vida",
   description: "Gestionar programa de referidos.",
 };
 

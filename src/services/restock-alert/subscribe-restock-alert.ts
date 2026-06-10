@@ -41,7 +41,7 @@ export async function processRestockNotifications(productId: string) {
     "@/server/email/restock-notification.template"
   );
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dermatologika.com";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://eternavida.com.ec";
   let notified = 0;
   const notifiedIds: string[] = [];
 

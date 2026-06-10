@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: PublicProductDetailPageProps)
 
 function buildProductJsonLd(data: PublicProductDetailData) {
   const { product, reviewAggregate } = data;
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dermatologika.com";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://eternavida.com.ec";
 
   const jsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",

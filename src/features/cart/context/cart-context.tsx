@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react";
 
-const CART_STORAGE_KEY = "dermatologika_cart_items";
+const CART_STORAGE_KEY = "eterna_vida_cart_items";
 
 function loadItemsFromStorage(): CartItem[] {
   if (typeof window === "undefined") return [];

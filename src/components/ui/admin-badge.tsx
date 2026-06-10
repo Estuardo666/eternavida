@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { cx } from "@/lib/utils";
 
 type AdminBadgeVariant = "solid" | "soft" | "outline";
-type AdminBadgeColor = "default" | "success" | "warning" | "error" | "info" | "brand";
+type AdminBadgeColor = "default" | "success" | "warning" | "error" | "info" | "brand" | "featured";
 
 interface AdminBadgeProps {
   variant?: AdminBadgeVariant;
@@ -20,6 +20,7 @@ const colorClasses: Record<AdminBadgeVariant, Record<AdminBadgeColor, string>> =
     error: "bg-status-error text-white",
     info: "bg-status-info text-white",
     brand: "bg-brand-primary text-white",
+    featured: "bg-[#C58A1D] text-white",
   },
   soft: {
     default: "bg-neutral-100 text-text-secondary",
@@ -28,6 +29,7 @@ const colorClasses: Record<AdminBadgeVariant, Record<AdminBadgeColor, string>> =
     error: "bg-status-error/10 text-status-error",
     info: "bg-status-info/10 text-status-info",
     brand: "bg-brand-soft text-brand-primary",
+    featured: "bg-[#F8E6B8] text-[#A87112]",
   },
   outline: {
     default: "border border-border-default text-text-secondary",
@@ -36,6 +38,7 @@ const colorClasses: Record<AdminBadgeVariant, Record<AdminBadgeColor, string>> =
     error: "border border-status-error/30 text-status-error",
     info: "border border-status-info/30 text-status-info",
     brand: "border border-border-brand text-brand-primary",
+    featured: "border border-[#C58A1D]/30 text-[#A87112]",
   },
 };
 

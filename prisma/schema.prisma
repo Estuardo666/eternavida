@@ -635,7 +635,7 @@ model EmailSettings {
   adminEmails String[]
   testMode    Boolean  @default(true)
   testEmails  String[]
-  fromName    String   @default("Dermatologika")
+fromName String @default("Eterna Vida")
   fromEmail   String   @default("onboarding@resend.dev")
   replyTo     String?
   createdAt   DateTime @default(now())

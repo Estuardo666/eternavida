@@ -9,12 +9,12 @@ interface FeaturedCategoriesGridSectionProps {
 }
 
 const fallbackBottomCategories: Array<{ id: string; name: string }> = [
-  { id: "hidratacion-intensiva", name: "Hidratación intensiva" },
-  { id: "piel-sensible", name: "Piel sensible" },
-  { id: "anti-edad", name: "Anti edad" },
-  { id: "manchas-y-tono", name: "Manchas y tono" },
-  { id: "acne-y-grasa", name: "Acné y piel grasa" },
-  { id: "contorno-de-ojos", name: "Contorno de ojos" },
+  { id: "miel-pura", name: "Miel pura" },
+  { id: "aceite-coco", name: "Aceite de coco" },
+  { id: "aceite-oregano", name: "Aceite de orégano" },
+  { id: "endulzantes-naturales", name: "Endulzantes naturales" },
+  { id: "cuidado-personal", name: "Cuidado personal" },
+  { id: "alimentacion-saludable", name: "Alimentación saludable" },
 ];
 
 export function FeaturedCategoriesGridSection({
@@ -51,9 +51,9 @@ export function FeaturedCategoriesGridSection({
             <Link
               key={item.id}
               href={buildCategoryHref(item.id)}
-              className="group relative flex flex-col overflow-hidden rounded-[28px] border border-border-soft bg-surface-canvas shadow-xs transition hover:-translate-y-1 hover:bg-[#72b255] hover:border-[#72b255] hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
+              className="group relative flex flex-col overflow-hidden rounded-[28px] border border-border-soft bg-surface-canvas shadow-xs transition hover:-translate-y-1 hover:bg-brand-primary hover:border-brand-primary hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
             >
-              <div className="relative min-h-[200px] bg-[#f1f1f1] sm:min-h-[240px]">
+              <div className="relative min-h-[200px] bg-surface-soft sm:min-h-[240px]">
                 {item.media?.url ? (
                   <Image
                     src={item.media.url}
@@ -97,7 +97,7 @@ export function FeaturedCategoriesGridSection({
             <Link
               key={`pill-${item.id}`}
               href={buildCategoryHref(item.id)}
-              className="group flex items-center justify-between rounded-[20px] border border-border-soft bg-surface-canvas px-5 py-4 shadow-xs transition hover:-translate-y-0.5 hover:border-[#72b255] hover:bg-[#72b255] hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
+              className="group flex items-center justify-between rounded-[20px] border border-border-soft bg-surface-canvas px-5 py-4 shadow-xs transition hover:-translate-y-0.5 hover:border-brand-primary hover:bg-brand-primary hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
             >
               <span className="text-[1.375rem] font-bold text-text-primary transition-colors group-hover:text-white">{item.name}</span>
               <span className="text-label-md text-text-secondary transition group-hover:translate-x-0.5 group-hover:text-white">

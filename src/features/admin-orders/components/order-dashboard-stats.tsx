@@ -33,7 +33,7 @@ const STATUS_COLORS: Record<string, string> = {
   refunded: "#7b5ac7",
 };
 
-const PAYMENT_COLORS = ["#163c31", "#2f6d44", "#72b255", "#c8d7ef", "#ead6bb"];
+const PAYMENT_COLORS = ["#163c31", "#2f6d44", "#0B5D1E", "#c8d7ef", "#ead6bb"];
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("es-EC", {
@@ -152,15 +152,15 @@ export function OrderDashboardStats(props: OrderDashboardStatsProps) {
               <AreaChart data={stats.dailyRevenue}>
                 <defs>
                   <linearGradient id="ordersRevenueFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#72B255" stopOpacity={0.28} />
-                    <stop offset="95%" stopColor="#72B255" stopOpacity={0.02} />
+                    <stop offset="5%" stopColor="#0B5D1E" stopOpacity={0.28} />
+                    <stop offset="95%" stopColor="#0B5D1E" stopOpacity={0.02} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid stroke="#edf2eb" vertical={false} />
                 <XAxis dataKey="date" tick={{ fill: "#6b776d", fontSize: 11 }} axisLine={false} tickLine={false} />
                 <YAxis tickFormatter={(value) => `$${value}`} tick={{ fill: "#6b776d", fontSize: 11 }} axisLine={false} tickLine={false} width={56} />
                 <Tooltip content={<RevenueTooltip />} />
-                <Area type="monotone" dataKey="revenue" stroke="#72B255" strokeWidth={2.5} fill="url(#ordersRevenueFill)" />
+                <Area type="monotone" dataKey="revenue" stroke="#0B5D1E" strokeWidth={2.5} fill="url(#ordersRevenueFill)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -213,7 +213,7 @@ export function OrderDashboardStats(props: OrderDashboardStatsProps) {
               <Tooltip />
               <Bar dataKey="count" radius={[10, 10, 0, 0]}>
                 {statusChartData.map((entry) => (
-                  <Cell key={entry.status} fill={STATUS_COLORS[entry.status] ?? "#72B255"} />
+                  <Cell key={entry.status} fill={STATUS_COLORS[entry.status] ?? "#0B5D1E"} />
                 ))}
               </Bar>
             </BarChart>

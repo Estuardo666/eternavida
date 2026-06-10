@@ -193,7 +193,7 @@ export function ReviewAdminPanel() {
                           fill={star <= review.rating ? "currentColor" : "none"}
                           stroke="currentColor"
                           strokeWidth={star <= review.rating ? "0" : "1.5"}
-                          className={`h-3.5 w-3.5 ${star <= review.rating ? "text-[#f5a623]" : "text-neutral-300"}`}
+                          className={`h-3.5 w-3.5 ${star <= review.rating ? "text-[#C58A1D]" : "text-neutral-300"}`}
                         >
                           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                         </svg>
@@ -282,7 +282,7 @@ export function ReviewAdminPanel() {
                     <button
                       type="button"
                       onClick={() => handleRespond(review.id)}
-                      className="rounded-lg bg-[#5bb446] px-3 py-2 text-body-sm font-medium text-white hover:bg-[#499038]"
+                      className="rounded-lg bg-brand-primary px-3 py-2 text-body-sm font-medium text-white hover:bg-brand-primaryHover"
                     >
                       Enviar
                     </button>

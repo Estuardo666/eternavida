@@ -77,7 +77,7 @@ export default function ReferralAccountPage() {
           <button
             type="button"
             onClick={handleCopy}
-            className="rounded-xl bg-[#5bb446] px-4 py-3 text-body-sm font-medium text-white transition hover:bg-[#499038]"
+            className="rounded-xl bg-brand-primary px-4 py-3 text-body-sm font-medium text-white transition hover:bg-brand-primaryHover"
           >
             {copied ? "¡Copiado!" : "Copiar"}
           </button>

@@ -404,7 +404,7 @@ export function OrderDetailModal(props: OrderDetailModalProps) {
                   ) : (
                     localOrder.timeline.map((entry) => (
                       <div key={entry.id} className="relative pl-5">
-                        <span className="absolute left-0 top-1.5 h-2.5 w-2.5 rounded-full bg-[#72B255]" />
+                        <span className="absolute left-0 top-1.5 h-2.5 w-2.5 rounded-full bg-[#0B5D1E]" />
                         <div className="space-y-1 border-l border-[#d8e3d4] pl-4">
                           <p className="text-body-sm font-medium text-text-primary">{entry.description}</p>
                           <p className="text-caption text-text-muted">
@@ -630,7 +630,7 @@ export function OrderDetailModal(props: OrderDetailModalProps) {
                             isActive
                               ? "border-[#163c31] bg-[#163c31] text-white"
                               : isComplete
-                                ? "border-[#72B255] bg-[#eef8ea] text-[#2f6d44]"
+                                ? "border-[#0B5D1E] bg-[#eef8ea] text-[#2f6d44]"
                                 : "border-[#d8e3d4] bg-white text-text-muted",
                           )}
                         >

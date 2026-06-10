@@ -2,7 +2,7 @@ import { ShippingMethodAdminPanel } from "@/features/admin-shipping/components/s
 import { getAdminShippingMethods } from "@/services/admin-shipping/get-shipping-methods";
 
 export const metadata = {
-  title: "Admin Envío — Dermatologika",
+  title: "Admin Envío — Eterna Vida",
   description: "Gestionar los métodos de envío disponibles en el checkout.",
 };
 

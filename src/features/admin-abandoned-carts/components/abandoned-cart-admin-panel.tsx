@@ -146,7 +146,7 @@ export function AbandonedCartAdminPanel() {
               <button
                 type="button"
                 onClick={() => setSettings({ ...settings, isEnabled: !settings.isEnabled })}
-                className={`relative h-6 w-11 rounded-full transition-colors ${settings.isEnabled ? "bg-[#5bb446]" : "bg-neutral-300"}`}
+                className={`relative h-6 w-11 rounded-full transition-colors ${settings.isEnabled ? "bg-brand-primary" : "bg-neutral-300"}`}
               >
                 <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${settings.isEnabled ? "left-[22px]" : "left-0.5"}`} />
               </button>
@@ -157,7 +157,7 @@ export function AbandonedCartAdminPanel() {
               <button
                 type="button"
                 onClick={() => setSettings({ ...settings, includeDiscount: !settings.includeDiscount })}
-                className={`relative h-6 w-11 rounded-full transition-colors ${settings.includeDiscount ? "bg-[#5bb446]" : "bg-neutral-300"}`}
+                className={`relative h-6 w-11 rounded-full transition-colors ${settings.includeDiscount ? "bg-brand-primary" : "bg-neutral-300"}`}
               >
                 <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${settings.includeDiscount ? "left-[22px]" : "left-0.5"}`} />
               </button>
@@ -192,7 +192,7 @@ export function AbandonedCartAdminPanel() {
             <button
               type="button"
               onClick={handleSaveSettings}
-              className="rounded-full bg-[#5bb446] px-5 py-2.5 text-body-md font-medium text-white hover:bg-[#499038]"
+              className="rounded-full bg-brand-primary px-5 py-2.5 text-body-md font-medium text-white hover:bg-brand-primaryHover"
             >
               Guardar configuración
             </button>

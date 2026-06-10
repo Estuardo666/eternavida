@@ -32,10 +32,10 @@ export function ContactPageView() {
 
             <div className="space-y-3">
               <h1 className="text-headline-sm text-text-primary sm:text-headline-md">
-                Agenda tu visita en Dermatologika
+                Agenda tu visita en Eterna Vida
               </h1>
               <p className="max-w-prose text-body-md text-text-secondary">
-                Brindamos atención dermatológica especializada en Loja, Ecuador. Escríbenos o
+                Brindamos atención personalizada en Loja, Ecuador. Escríbenos o
                 llámanos para resolver tus dudas y coordinar tu visita.
               </p>
             </div>
@@ -47,7 +47,7 @@ export function ContactPageView() {
                 </h2>
                 <div className="flex items-start gap-3 text-body-sm text-text-primary">
                   <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" aria-hidden="true" />
-                  <p>Clodoveo Jaramillo y Virgilio Abarca, Loja, Ecuador</p>
+                  <p>Vilcabamba, Loja, Ecuador</p>
                 </div>
               </article>
 
@@ -61,7 +61,7 @@ export function ContactPageView() {
                     className="inline-flex items-start gap-2 rounded-md border border-border bg-surface-canvas p-3 text-body-sm text-text-primary transition hover:border-border-brand"
                   >
                     <Phone className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" aria-hidden="true" />
-                    <span>095 865 4000</span>
+                    <span>098 815 8964</span>
                   </a>
                   <a
                     href="tel:+593982740049"
@@ -71,7 +71,7 @@ export function ContactPageView() {
                       className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary"
                       aria-hidden="true"
                     />
-                    <span>098 274 0049</span>
+                    <span>098 815 8964</span>
                   </a>
                 </div>
               </article>
@@ -81,11 +81,11 @@ export function ContactPageView() {
                   Correo electrónico
                 </h2>
                 <a
-                  href="mailto:info@dermatologika.net"
+                  href="mailto:info@eternavida.com.ec"
                   className="inline-flex items-start gap-2 rounded-md border border-border bg-surface-canvas p-3 text-body-sm text-text-primary transition hover:border-border-brand"
                 >
                   <Mail className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" aria-hidden="true" />
-                  <span>info@dermatologika.net</span>
+                  <span>info@eternavida.com.ec</span>
                 </a>
               </article>
 
@@ -118,7 +118,7 @@ export function ContactPageView() {
                     href="https://www.facebook.com"
                     target="_blank"
                     rel="noreferrer"
-                    aria-label="Facebook Dermatologika"
+                    aria-label="Facebook Eterna Vida"
                     className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface-canvas text-brand-primary transition hover:border-border-brand hover:bg-surface-brandTint"
                   >
                     <ExternalLink className="h-4 w-4" aria-hidden="true" />
@@ -127,7 +127,7 @@ export function ContactPageView() {
                     href="https://www.instagram.com"
                     target="_blank"
                     rel="noreferrer"
-                    aria-label="Instagram Dermatologika"
+                    aria-label="Instagram Eterna Vida"
                     className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface-canvas text-brand-primary transition hover:border-border-brand hover:bg-surface-brandTint"
                   >
                     <ExternalLink className="h-4 w-4" aria-hidden="true" />
@@ -139,7 +139,7 @@ export function ContactPageView() {
 
           <div className="relative min-h-[420px] lg:min-h-full">
             <iframe
-              title="Ubicación Dermatologika en Loja"
+              title="Ubicación Eterna Vida en Loja"
               src={mapEmbedUrl}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"

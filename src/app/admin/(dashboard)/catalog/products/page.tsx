@@ -2,7 +2,7 @@ import { CatalogAdminList } from "@/features/admin-catalog/components/catalog-ad
 import { getProductLibraryData } from "@/services/admin-catalog/get-catalog-admin-data";
 
 export const metadata = {
-  title: "Admin Products — Dermatologika",
+  title: "Admin Products — Eterna Vida",
   description: "Gestionar productos del catálogo local.",
 };
 

@@ -10,10 +10,10 @@ export function orderConfirmationTemplate(order: OrderWithItems): string {
     .map(
       (item) => `
       <tr>
-        <td style="padding:10px 0;border-bottom:1px solid #e8f0e5;font-size:14px;color:#1a1a1a;">
-          ${escapeHtml(item.name)} <span style="color:#737373;">x${item.quantity}</span>
+        <td style="padding:10px 0;border-bottom:1px solid #D9D2C5;font-size:14px;color:#2D2D2D;">
+          ${escapeHtml(item.name)} <span style="color:#9B927F;">x${item.quantity}</span>
         </td>
-        <td style="padding:10px 0;border-bottom:1px solid #e8f0e5;font-size:14px;color:#1a1a1a;text-align:right;">
+        <td style="padding:10px 0;border-bottom:1px solid #D9D2C5;font-size:14px;color:#2D2D2D;text-align:right;">
           ${fmtPrice((item.discountPrice ?? item.price).toNumber() * item.quantity)}
         </td>
       </tr>`,
@@ -21,7 +21,7 @@ export function orderConfirmationTemplate(order: OrderWithItems): string {
     .join("");
   const pendingPaymentBlock = isPendingPayment
     ? `
-    <div style="background:#fff5e8;border:1px solid #f0d2a6;border-radius:10px;padding:16px 18px;margin-bottom:24px;">
+    <div style="background:#FAF8F3;border:1px solid #C58A1D;border-radius:10px;padding:16px 18px;margin-bottom:24px;">
       <p style="margin:0;font-size:14px;line-height:1.6;color:#7a4b11;font-weight:600;">
         Tu pedido está pendiente de pago. Por favor envía el comprobante de tu transferencia para que podamos procesarlo.
       </p>
@@ -29,34 +29,34 @@ export function orderConfirmationTemplate(order: OrderWithItems): string {
     : "";
   const emailTitle = isPendingPayment
     ? "Pedido recibido — pendiente de pago"
-    : `Pedido ${order.orderNumber} recibido — Dermatologika`;
+    : `Pedido ${order.orderNumber} recibido — Eterna Vida`;
   const previewText = isPendingPayment
     ? "Tu pedido fue recibido y está pendiente de pago."
     : `Gracias por tu compra. Total: ${fmtPrice(order.total)}`;
 
   const contentHtml = `
-    <h2 style="margin:0 0 8px;font-size:22px;font-weight:700;color:#1a1a1a;">¡Gracias por tu pedido!</h2>
-    <p style="margin:0 0 24px;color:#4a4a4a;">
+    <h2 style="margin:0 0 8px;font-size:22px;font-weight:700;color:#2D2D2D;">¡Gracias por tu pedido!</h2>
+    <p style="margin:0 0 24px;color:#6B6B6B;">
       Hola <strong>${escapeHtml(order.firstName)}</strong>, hemos recibido tu pedido con éxito.
     </p>
     ${pendingPaymentBlock}
 
-    <div style="background:#f4faee;border-radius:8px;padding:16px 20px;margin-bottom:24px;">
-      <p style="margin:0;font-size:13px;color:#737373;">Número de pedido</p>
-      <p style="margin:4px 0 0;font-size:20px;font-weight:700;color:#72B255;">${escapeHtml(order.orderNumber)}</p>
+    <div style="background:#E8F2EA;border-radius:8px;padding:16px 20px;margin-bottom:24px;">
+      <p style="margin:0;font-size:13px;color:#9B927F;">Número de pedido</p>
+      <p style="margin:4px 0 0;font-size:20px;font-weight:700;color:#0B5D1E;">${escapeHtml(order.orderNumber)}</p>
     </div>
 
-    <h3 style="margin:0 0 12px;font-size:16px;font-weight:600;color:#1a1a1a;">Productos</h3>
+    <h3 style="margin:0 0 12px;font-size:16px;font-weight:600;color:#2D2D2D;">Productos</h3>
     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
       ${itemRows}
       <tr>
-        <td style="padding:10px 0;font-size:14px;color:#4a4a4a;">Subtotal</td>
-        <td style="padding:10px 0;font-size:14px;color:#4a4a4a;text-align:right;">${fmtPrice(order.subtotal)}</td>
+        <td style="padding:10px 0;font-size:14px;color:#6B6B6B;">Subtotal</td>
+        <td style="padding:10px 0;font-size:14px;color:#6B6B6B;text-align:right;">${fmtPrice(order.subtotal)}</td>
       </tr>
       ${order.shippingCost.toNumber() > 0 ? `
       <tr>
-        <td style="padding:4px 0;font-size:14px;color:#4a4a4a;">Envío (${escapeHtml(order.shippingMethodName)})</td>
-        <td style="padding:4px 0;font-size:14px;color:#4a4a4a;text-align:right;">${fmtPrice(order.shippingCost)}</td>
+        <td style="padding:4px 0;font-size:14px;color:#6B6B6B;">Envío (${escapeHtml(order.shippingMethodName)})</td>
+        <td style="padding:4px 0;font-size:14px;color:#6B6B6B;text-align:right;">${fmtPrice(order.shippingCost)}</td>
       </tr>` : ""}
       ${order.discountAmount.toNumber() > 0 ? `
       <tr>
@@ -64,18 +64,18 @@ export function orderConfirmationTemplate(order: OrderWithItems): string {
         <td style="padding:4px 0;font-size:14px;color:#2e8b57;text-align:right;">-${fmtPrice(order.discountAmount)}</td>
       </tr>` : ""}
       <tr>
-        <td style="padding:12px 0 0;font-size:16px;font-weight:700;color:#1a1a1a;border-top:2px solid #e0ecda;">Total</td>
-        <td style="padding:12px 0 0;font-size:16px;font-weight:700;color:#1a1a1a;text-align:right;border-top:2px solid #e0ecda;">${fmtPrice(order.total)}</td>
+        <td style="padding:12px 0 0;font-size:16px;font-weight:700;color:#2D2D2D;border-top:2px solid #D9D2C5;">Total</td>
+        <td style="padding:12px 0 0;font-size:16px;font-weight:700;color:#2D2D2D;text-align:right;border-top:2px solid #D9D2C5;">${fmtPrice(order.total)}</td>
       </tr>
     </table>
 
-    <h3 style="margin:0 0 12px;font-size:16px;font-weight:600;color:#1a1a1a;">Dirección de entrega</h3>
-    <p style="margin:0 0 4px;font-size:14px;color:#4a4a4a;">${escapeHtml(order.firstName)} ${escapeHtml(order.lastName)}</p>
-    <p style="margin:0 0 4px;font-size:14px;color:#4a4a4a;">${escapeHtml(order.address)}${order.apartment ? `, ${escapeHtml(order.apartment)}` : ""}</p>
-    <p style="margin:0 0 4px;font-size:14px;color:#4a4a4a;">${escapeHtml(order.city)}, ${escapeHtml(order.province)}</p>
-    <p style="margin:0 0 24px;font-size:14px;color:#4a4a4a;">${escapeHtml(order.phone)}</p>
+    <h3 style="margin:0 0 12px;font-size:16px;font-weight:600;color:#2D2D2D;">Dirección de entrega</h3>
+    <p style="margin:0 0 4px;font-size:14px;color:#6B6B6B;">${escapeHtml(order.firstName)} ${escapeHtml(order.lastName)}</p>
+    <p style="margin:0 0 4px;font-size:14px;color:#6B6B6B;">${escapeHtml(order.address)}${order.apartment ? `, ${escapeHtml(order.apartment)}` : ""}</p>
+    <p style="margin:0 0 4px;font-size:14px;color:#6B6B6B;">${escapeHtml(order.city)}, ${escapeHtml(order.province)}</p>
+    <p style="margin:0 0 24px;font-size:14px;color:#6B6B6B;">${escapeHtml(order.phone)}</p>
 
-    <p style="margin:0;font-size:14px;color:#4a4a4a;">
+    <p style="margin:0;font-size:14px;color:#6B6B6B;">
       Método de pago: <strong>${escapeHtml(order.paymentMethodName)}</strong>
     </p>
   `;

@@ -79,13 +79,13 @@ export function RestockAlertForm({ productId, productName }: RestockAlertFormPro
           type="submit"
           disabled={status === "submitting"}
           whileTap={reduceMotion ? {} : { scale: 0.975 }}
-          className="rounded-lg bg-[#5bb446] px-4 py-2.5 text-body-sm font-medium text-white transition hover:bg-[#499038] disabled:opacity-50"
+          className="rounded-lg bg-gradient-to-br from-[#E5B85C] via-[#D6A03A] to-[#C58A1D] px-4 py-2.5 text-body-sm font-bold text-[#0B5D1E] shadow-cta transition hover:shadow-[0_12px_32px_rgba(197,138,29,0.35)] disabled:opacity-50"
         >
           {status === "submitting" ? "..." : "Avísame"}
         </motion.button>
       </div>
       {status === "error" ? (
-        <p className="text-body-xs text-[#cc5533]">{errorMessage}</p>
+        <p className="text-body-xs text-status-error">{errorMessage}</p>
       ) : null}
     </form>
   );

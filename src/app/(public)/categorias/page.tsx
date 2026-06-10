@@ -21,7 +21,7 @@ export default async function PublicCategoriesPage() {
           </span>
           <div className="max-w-3xl space-y-3">
             <h1 className="text-headline-md text-text-primary sm:text-headline-lg">
-              Categorias activas del storefront Dermatologika
+              Categorias activas del storefront Eterna Vida
             </h1>
             <p className="text-body-md text-text-secondary">
               Explora el catalogo local normalizado por lineas y rutas de navegacion preparadas para el storefront publico.

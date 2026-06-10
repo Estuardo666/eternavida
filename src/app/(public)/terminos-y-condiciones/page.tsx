@@ -5,7 +5,7 @@ import { LegalPageLayout, LegalSection, LegalList } from "@/components/layout/le
 export const metadata: Metadata = {
   title: "Términos y Condiciones",
   description:
-    "Términos y condiciones de uso del sitio web y de compra en Dermatologika, conforme a la legislación vigente en la República del Ecuador.",
+    "Términos y condiciones de uso del sitio web y de compra en Eterna Vida, conforme a la legislación vigente en la República del Ecuador.",
 };
 
 export default function TerminosYCondicionesPage() {
@@ -14,9 +14,9 @@ export default function TerminosYCondicionesPage() {
       <LegalSection title="1. Identificación de las partes">
         <p>
           Los presentes Términos y Condiciones regulan el acceso, uso y las relaciones comerciales
-          entre <strong>Dermatologika</strong> (en adelante "la Empresa"), con domicilio en
-          <strong> Loja, Ecuador</strong>, y cualquier persona natural o jurídica (en adelante "el Usuario")
-          que acceda o realice compras a través del sitio web <strong>www.dermatologika.ec</strong>.
+          entre <strong>Eterna Vida</strong> (en adelante &laquo;la Empresa&raquo;), con domicilio en
+          <strong> Vilcabamba, Loja, Ecuador</strong>, y cualquier persona natural o jurídica (en adelante &laquo;el Usuario&raquo;)
+          que acceda o realice compras a través del sitio web <strong>www.eternavida.com.ec</strong>.
         </p>
       </LegalSection>
 
@@ -27,14 +27,14 @@ export default function TerminosYCondicionesPage() {
           los términos aquí establecidos, te pedimos que te abstengas de utilizar el sitio.
         </p>
         <p>
-          Dermatologika se reserva el derecho de modificar estos términos en cualquier momento.
+          Eterna Vida se reserva el derecho de modificar estos términos en cualquier momento.
           Los cambios entrarán en vigor desde su publicación en el sitio web.
         </p>
       </LegalSection>
 
       <LegalSection title="3. Capacidad legal">
         <p>
-          Para realizar compras en Dermatologika, el Usuario debe:
+          Para realizar compras en Eterna Vida, el Usuario debe:
         </p>
         <LegalList
           items={[
@@ -58,9 +58,9 @@ export default function TerminosYCondicionesPage() {
         </p>
         <LegalList
           items={[
-            "Dermatologika se reserva el derecho de modificar precios sin previo aviso.",
+            "Eterna Vida se reserva el derecho de modificar precios sin previo aviso.",
             "El precio válido de la compra es el que se muestra en el momento de confirmar el pedido.",
-            "Los productos dermocosméticos son de uso externo y cosmético; no constituyen tratamientos médicos, diagnósticos ni terapias.",
+            "Los productos naturales y artesanales son de uso personal; no constituyen tratamientos médicos, diagnósticos ni terapias.",
             "Las descripciones e imágenes de los productos son orientativas y pueden variar levemente respecto al producto físico.",
           ]}
         />
@@ -68,7 +68,7 @@ export default function TerminosYCondicionesPage() {
 
       <LegalSection title="5. Proceso de compra y perfeccionamiento del contrato">
         <p>
-          El contrato de compraventa entre el Usuario y Dermatologika se perfecciona en el
+          El contrato de compraventa entre el Usuario y Eterna Vida se perfecciona en el
           momento en que la Empresa envía al cliente la <strong>confirmación del pedido</strong>
           por correo electrónico.
         </p>
@@ -83,7 +83,7 @@ export default function TerminosYCondicionesPage() {
         <p>
           La disponibilidad de los productos se muestra en tiempo real y está sujeta a los
           niveles de inventario existentes. En el caso excepcional de que un producto adquirido
-          no esté disponible, Dermatologika se comunicará con el cliente para ofrecer una
+          no esté disponible, Eterna Vida se comunicará con el cliente para ofrecer una
           alternativa o proceder con el reembolso íntegro del valor pagado.
         </p>
       </LegalSection>
@@ -95,7 +95,7 @@ export default function TerminosYCondicionesPage() {
         </p>
         <LegalList
           items={[
-            "Reproducir, distribuir o modificar el contenido del sitio sin autorización escrita de Dermatologika.",
+            "Reproducir, distribuir o modificar el contenido del sitio sin autorización escrita de Eterna Vida.",
             "Intentar acceder de forma no autorizada a sistemas o bases de datos de la Empresa.",
             "Utilizar el sitio para fines comerciales no autorizados o fraudulentos.",
             "Publicar contenido falso, ofensivo o que vulnere derechos de terceros.",
@@ -107,7 +107,7 @@ export default function TerminosYCondicionesPage() {
         <p>
           Todo el contenido del sitio web —incluyendo, pero no limitado a: marca, logotipo,
           imágenes, textos, diseño gráfico y código fuente— es propiedad exclusiva de
-          Dermatologika o de sus licenciantes, y se encuentra protegido por la legislación
+          Eterna Vida o de sus licenciantes, y se encuentra protegido por la legislación
           ecuatoriana de propiedad intelectual vigente (Ley Orgánica de Economía Popular y
           Solidaria y Código Orgánico de la Economía Social de los Conocimientos). Queda
           prohibida su reproducción total o parcial sin autorización expresa.
@@ -116,12 +116,12 @@ export default function TerminosYCondicionesPage() {
 
       <LegalSection title="9. Limitación de responsabilidad">
         <p>
-          Dermatologika no se responsabiliza por:
+          Eterna Vida no se responsabiliza por:
         </p>
         <LegalList
           items={[
             "El uso incorrecto de los productos adquiridos en el sitio.",
-            "Reacciones adversas derivadas del uso de productos sin previa consulta dermatológica.",
+            "Reacciones adversas derivadas del uso de productos sin previa consulta profesional.",
             "Interrupciones del servicio por causas de fuerza mayor, mantenimiento o fallas técnicas ajenas a la Empresa.",
             "Daños indirectos o consecuentes derivados del uso del sitio.",
           ]}
@@ -133,7 +133,22 @@ export default function TerminosYCondicionesPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="10. Jurisdicción y ley aplicable">
+      <LegalSection title="10. Compradores internacionales">
+        <p>
+          Para compradores que realicen pedidos desde Estados Unidos u otros países:
+        </p>
+        <LegalList
+          items={[
+            "Todos los precios están expresados en USD (dólares estadounidenses).",
+            "El comprador es responsable de los aranceles, impuestos de importación y trámites aduaneros en su país.",
+            "Los tiempos de entrega internacional son estimados y pueden variar por causas ajenas a Eterna Vida.",
+            "Las devoluciones internacionales aplican condiciones especiales (ver Política de Devoluciones).",
+            "Eterna Vida no se hace responsable por productos retenidos en aduanas por restricciones de importación.",
+          ]}
+        />
+      </LegalSection>
+
+      <LegalSection title="11. Jurisdicción y ley aplicable">
         <p>
           Estos Términos y Condiciones se rigen por las leyes de la <strong>República del
           Ecuador</strong>, incluyendo la Ley Orgánica de Defensa del Consumidor, el Código de
@@ -147,15 +162,15 @@ export default function TerminosYCondicionesPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="11. Contacto">
+      <LegalSection title="12. Contacto">
         <p>
           Para cualquier consulta relacionada con estos Términos y Condiciones:
         </p>
         <LegalList
           items={[
-            "Correo electrónico: info@dermatologika.ec",
-            "Teléfono: 098 274 0049",
-            "Dirección: Av. Jose Maria Vivar, Castro, Loja, Ecuador.",
+            "Correo electrónico: info@eternavida.com.ec",
+            "Teléfono: 098 815 8964",
+            "Dirección: Vilcabamba, Loja, Ecuador.",
             "WhatsApp: disponible en nuestro sitio web.",
           ]}
         />

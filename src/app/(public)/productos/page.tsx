@@ -38,10 +38,10 @@ export default async function PublicProductsPage({ searchParams }: PublicProduct
 
   const headingTitle = isSearchResultsMode
     ? `Resultados para: "${searchQuery}"`
-    : "Tienda Dermatologika";
+    : "Tienda Eterna Vida";
   const headingDescription = isSearchResultsMode
     ? "Explora los productos que coinciden con tu búsqueda y ajusta los filtros para encontrar justo lo que necesitas."
-    : "Descubre nuestra selección de productos dermatológicos. Cuidado de la piel respaldado por especialistas.";
+    : "Descubre nuestra selección de productos naturales y artesanales. Bienestar para ti y tu familia.";
   const emptyStateTitle = isSearchResultsMode
     ? `No encontramos resultados para: "${searchQuery}"`
     : "No encontramos productos disponibles";
