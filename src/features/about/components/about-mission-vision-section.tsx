@@ -80,7 +80,7 @@ export function AboutMissionVisionSection({ mission, vision }: AboutMissionVisio
             pretitle={mission.pretitle}
             title={mission.title}
             text={mission.seoText}
-            media={mission.media ? { url: mission.media.url, altText: mission.media.altText } : null}
+            media={mission.media?.url ? { url: mission.media.url, altText: mission.media.altText } : null}
             index={0}
             reduceMotion={reduceMotion}
           />
@@ -88,7 +88,7 @@ export function AboutMissionVisionSection({ mission, vision }: AboutMissionVisio
             pretitle={vision.pretitle}
             title={vision.title}
             text={vision.seoText}
-            media={vision.media ? { url: vision.media.url, altText: vision.media.altText } : null}
+            media={vision.media?.url ? { url: vision.media.url, altText: vision.media.altText } : null}
             index={1}
             reduceMotion={reduceMotion}
           />

@@ -98,7 +98,7 @@ function mapPublicContentToFormData(content: AboutPageContent): AdminAboutConten
 }
 
 function mapStoredRecordToFormData(record: NonNullable<Awaited<ReturnType<typeof findAboutPageContentRecord>>>): AdminAboutContentFormData {
-  const diffItemsRaw = record.diffItems as DiffItemRaw[];
+  const diffItemsRaw = record.diffItems as unknown as DiffItemRaw[];
 
   return {
     heroPretitle: record.heroPretitle,

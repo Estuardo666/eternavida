@@ -26,7 +26,7 @@ export function AboutMediaCarousel({ media, alt, autoPlayMs = 5000, className = 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const hasMedia = Boolean(media?.url);
-  const slides = hasMedia ? [media!.url] : PLACEHOLDER_IMAGES;
+  const slides: string[] = hasMedia && media!.url ? [media!.url] : PLACEHOLDER_IMAGES;
 
   useEffect(() => {
     if (slides.length < 2 || reduceMotion) return;

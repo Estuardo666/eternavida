@@ -42,7 +42,7 @@ export async function readStoredAboutPageContent(): Promise<AboutPageContent | n
 
   if (!record) return null;
 
-  const diffItemsRaw = record.diffItems as DiffItemRaw[];
+  const diffItemsRaw = record.diffItems as unknown as DiffItemRaw[];
 
   const diffItems: AboutDiffItem[] = diffItemsRaw.map((item, index) => ({
     id: `diff-${index + 1}`,

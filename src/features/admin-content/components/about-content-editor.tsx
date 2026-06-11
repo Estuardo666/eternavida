@@ -63,7 +63,9 @@ export function AboutContentEditor({ initialData }: AboutContentEditorProps) {
   function updateDiffItem(index: number, field: keyof AdminAboutDiffItem, value: string) {
     setFormData((current) => {
       const nextItems = [...current.diffItems];
-      nextItems[index] = { ...nextItems[index], [field]: value };
+      const currentItem = nextItems[index];
+      if (!currentItem) return current;
+      nextItems[index] = { ...currentItem, [field]: value };
       return { ...current, diffItems: nextItems };
     });
   }

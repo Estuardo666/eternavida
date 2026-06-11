@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-const optionalStringSchema = z.string().trim().optional().or(z.literal(""));
-
 const aboutDiffItemSchema = z.object({
   text: z.string().trim().min(1, "Diferenciador text is required"),
   mediaId: z.string().trim().default(""),
@@ -14,7 +12,7 @@ export const adminAboutContentFormSchema = z.object({
   heroSubtitle: z.string().trim().min(1),
   heroCtaText: z.string().trim().min(1),
   heroCtaHref: z.string().trim().min(1),
-  heroMediaId: optionalStringSchema,
+  heroMediaId: z.string().trim().default(""),
 
   // Section 2 – Historia
   historyPretitle: z.string().trim().min(1),
@@ -23,20 +21,20 @@ export const adminAboutContentFormSchema = z.object({
   historyCtaText: z.string().trim().min(1),
   historyCtaHref: z.string().trim().min(1),
   historySeoText: z.string().trim().min(1),
-  historyMediaId: optionalStringSchema,
+  historyMediaId: z.string().trim().default(""),
 
   // Section 3 – Misión
   missionPretitle: z.string().trim().min(1),
   missionTitle: z.string().trim().min(1),
   missionSeoText: z.string().trim().min(1),
-  missionMediaId: optionalStringSchema,
+  missionMediaId: z.string().trim().default(""),
 
   // Section 3 – Visión
   visionPretitle: z.string().trim().min(1),
   visionTitle: z.string().trim().min(1),
   visionSubtitle: z.string().trim().min(1),
   visionSeoText: z.string().trim().min(1),
-  visionMediaId: optionalStringSchema,
+  visionMediaId: z.string().trim().default(""),
 
   // Section 4 – Diferenciadores
   diffPretitle: z.string().trim().min(1),
@@ -54,7 +52,7 @@ export const adminAboutContentFormSchema = z.object({
   productionCtaText: z.string().trim().min(1),
   productionCtaHref: z.string().trim().min(1),
   productionSeoText: z.string().trim().min(1),
-  productionMediaId: optionalStringSchema,
+  productionMediaId: z.string().trim().default(""),
 
   // Section 6 – Impacto
   impactPretitle: z.string().trim().min(1),
@@ -63,7 +61,7 @@ export const adminAboutContentFormSchema = z.object({
   impactCtaText: z.string().trim().min(1),
   impactCtaHref: z.string().trim().min(1),
   impactSeoText: z.string().trim().min(1),
-  impactMediaId: optionalStringSchema,
+  impactMediaId: z.string().trim().default(""),
 
   // Section 7 – CTA
   ctaPretitle: z.string().trim().min(1),
