@@ -262,6 +262,129 @@ const publicProductInclude = {
   },
 } satisfies Prisma.ProductInclude;
 
+const publicProductDetailInclude = {
+  ...publicProductInclude,
+  nutritionalInfoImage: {
+    select: {
+      id: true,
+      kind: true,
+      publicUrl: true,
+      storageKey: true,
+      altText: true,
+      mimeType: true,
+      posterUrl: true,
+      width: true,
+      height: true,
+      durationSeconds: true,
+    },
+  },
+  variants: {
+    where: { isActive: true },
+    include: {
+      mediaAsset: {
+        select: {
+          id: true,
+          kind: true,
+          publicUrl: true,
+          storageKey: true,
+          altText: true,
+          mimeType: true,
+          posterUrl: true,
+          width: true,
+          height: true,
+          durationSeconds: true,
+        },
+      },
+    },
+    orderBy: { sortOrder: "asc" as const },
+  },
+  ingredients: {
+    include: {
+      mediaAsset: {
+        select: {
+          id: true,
+          kind: true,
+          publicUrl: true,
+          storageKey: true,
+          altText: true,
+          mimeType: true,
+          posterUrl: true,
+          width: true,
+          height: true,
+          durationSeconds: true,
+        },
+      },
+    },
+    orderBy: { sortOrder: "asc" as const },
+  },
+  benefits: {
+    orderBy: { sortOrder: "asc" as const },
+  },
+  galleryImages: {
+    include: {
+      mediaAsset: {
+        select: {
+          id: true,
+          kind: true,
+          publicUrl: true,
+          storageKey: true,
+          altText: true,
+          mimeType: true,
+          posterUrl: true,
+          width: true,
+          height: true,
+          durationSeconds: true,
+        },
+      },
+    },
+    orderBy: { sortOrder: "asc" as const },
+  },
+  usageSteps: {
+    include: {
+      mediaAsset: {
+        select: {
+          id: true,
+          kind: true,
+          publicUrl: true,
+          storageKey: true,
+          altText: true,
+          mimeType: true,
+          posterUrl: true,
+          width: true,
+          height: true,
+          durationSeconds: true,
+        },
+      },
+    },
+    orderBy: { stepNumber: "asc" as const },
+  },
+  trustBadges: {
+    orderBy: { sortOrder: "asc" as const },
+  },
+  pickupLocations: {
+    include: {
+      pickupLocation: {
+        include: {
+          logoMedia: {
+            select: {
+              id: true,
+              kind: true,
+              publicUrl: true,
+              storageKey: true,
+              altText: true,
+              mimeType: true,
+              posterUrl: true,
+              width: true,
+              height: true,
+              durationSeconds: true,
+            },
+          },
+        },
+      },
+    },
+  },
+} satisfies Prisma.ProductInclude;
+
 export async function listPublicCategoryRecords() {
   return prisma.category.findMany({
     where: buildPublicCategoryVisibilityFilter(),
@@ -448,7 +571,7 @@ export async function findPublicProductRecordBySlug(slug: string) {
       ...buildPublicProductVisibilityFilter(),
       slug,
     },
-    include: publicProductInclude,
+    include: publicProductDetailInclude,
   });
 }
 

@@ -277,12 +277,16 @@ interface ProductSummaryRecord {
     id: string;
   } | null;
   description: string;
+  preTitle?: string | null;
+  slogan?: string | null;
+  shortDescription?: string;
   href: string;
   price: number | DecimalLike;
   discountPrice: number | DecimalLike | null;
   stock: number;
   badge: string | null;
   badgeColor: string | null;
+  productColor?: string | null;
   categoryId: string | null;
   category?: {
     id: string;
@@ -310,6 +314,9 @@ interface ProductSummaryRecord {
     height: number | null;
     durationSeconds: number | null;
   } | null;
+  variants?: Array<{
+    id: string;
+  }>;
 }
 
 interface ActiveCatalogPromotion {
@@ -351,10 +358,15 @@ function mapProductSummary(
     name: record.name,
     brand: record.brand,
     description: record.description,
+    preTitle: record.preTitle ?? null,
+    slogan: record.slogan ?? null,
+    shortDescription: record.shortDescription ?? "",
     href: `/productos/${record.slug}`,
     price: toNumberValue(record.price),
     discountPrice: record.discountPrice === null ? null : toNumberValue(record.discountPrice),
     stock: record.stock,
+    productColor: record.productColor ?? null,
+    hasVariants: (record.variants ?? []).length > 0,
     activePromotion: promotionByProductId.get(record.id) ?? null,
     media: mapMediaAsset(record.mediaAsset),
     category: categories[0] ?? null,
@@ -660,6 +672,119 @@ export async function getPublicProductDetailData(
 
   const brandProductIds = new Set(brandProductRecords.map((p) => p.id));
 
+  const detailProduct = product as typeof product & {
+    nutritionalInfoImage?: {
+      id: string;
+      kind: "image" | "video";
+      publicUrl: string | null;
+      storageKey: string;
+      altText: string | null;
+      mimeType: string | null;
+      posterUrl: string | null;
+      width: number | null;
+      height: number | null;
+      durationSeconds: number | null;
+    } | null;
+    variants?: Array<{
+      id: string;
+      name: string;
+      price: number | DecimalLike;
+      discountPrice: number | DecimalLike | null;
+      stock: number;
+      mediaAsset?: {
+        id: string;
+        kind: "image" | "video";
+        publicUrl: string | null;
+        storageKey: string;
+        altText: string | null;
+        mimeType: string | null;
+        posterUrl: string | null;
+        width: number | null;
+        height: number | null;
+        durationSeconds: number | null;
+      } | null;
+    }>;
+    galleryImages?: Array<{
+      id: string;
+      mediaAsset?: {
+        id: string;
+        kind: "image" | "video";
+        publicUrl: string | null;
+        storageKey: string;
+        altText: string | null;
+        mimeType: string | null;
+        posterUrl: string | null;
+        width: number | null;
+        height: number | null;
+        durationSeconds: number | null;
+      } | null;
+    }>;
+    usageSteps?: Array<{
+      id: string;
+      stepNumber: number;
+      text: string;
+      mediaAsset?: {
+        id: string;
+        kind: "image" | "video";
+        publicUrl: string | null;
+        storageKey: string;
+        altText: string | null;
+        mimeType: string | null;
+        posterUrl: string | null;
+        width: number | null;
+        height: number | null;
+        durationSeconds: number | null;
+      } | null;
+    }>;
+    trustBadges?: Array<{
+      id: string;
+      text: string;
+      iconKey: string;
+    }>;
+    pickupLocations?: Array<{
+      pickupLocation: {
+        id: string;
+        name: string;
+        address: string;
+        directionsUrl: string | null;
+        logoMedia?: {
+          id: string;
+          kind: "image" | "video";
+          publicUrl: string | null;
+          storageKey: string;
+          altText: string | null;
+          mimeType: string | null;
+          posterUrl: string | null;
+          width: number | null;
+          height: number | null;
+          durationSeconds: number | null;
+        } | null;
+      };
+    }>;
+    ingredients?: Array<{
+      id: string;
+      name: string;
+      description: string | null;
+      mediaAsset?: {
+        id: string;
+        kind: "image" | "video";
+        publicUrl: string | null;
+        storageKey: string;
+        altText: string | null;
+        mimeType: string | null;
+        posterUrl: string | null;
+        width: number | null;
+        height: number | null;
+        durationSeconds: number | null;
+      } | null;
+    }>;
+    benefits?: Array<{
+      id: string;
+      text: string;
+      iconKey: string;
+    }>;
+  };
+
   return {
     product: mapProductSummary(product, promotionByProductId),
     brandProducts: brandProductRecords.map((record) => mapProductSummary(record, promotionByProductId)),
@@ -667,5 +792,46 @@ export async function getPublicProductDetailData(
       .filter((p) => !brandProductIds.has(p.id))
       .map((record) => mapProductSummary(record, promotionByProductId)),
     reviewAggregate,
+    variants: (detailProduct.variants ?? []).map((v) => ({
+      id: v.id,
+      name: v.name,
+      price: toNumberValue(v.price),
+      discountPrice: v.discountPrice === null ? null : toNumberValue(v.discountPrice),
+      stock: v.stock,
+    })),
+    ingredients: (detailProduct.ingredients ?? []).map((ing) => ({
+      id: ing.id,
+      name: ing.name,
+      description: ing.description,
+      media: mapMediaAsset(ing.mediaAsset),
+    })),
+    benefits: (detailProduct.benefits ?? []).map((b) => ({
+      id: b.id,
+      text: b.text,
+      iconKey: b.iconKey,
+    })),
+    nutritionalInfoImage: mapMediaAsset(detailProduct.nutritionalInfoImage),
+    galleryImages: (detailProduct.galleryImages ?? []).map((g) => ({
+      id: g.id,
+      media: mapMediaAsset(g.mediaAsset),
+    })),
+    usageSteps: (detailProduct.usageSteps ?? []).map((s) => ({
+      id: s.id,
+      stepNumber: s.stepNumber,
+      text: s.text,
+      media: mapMediaAsset(s.mediaAsset),
+    })),
+    trustBadges: (detailProduct.trustBadges ?? []).map((b) => ({
+      id: b.id,
+      text: b.text,
+      iconKey: b.iconKey,
+    })),
+    pickupLocations: (detailProduct.pickupLocations ?? []).map((pl) => ({
+      id: pl.pickupLocation.id,
+      name: pl.pickupLocation.name,
+      address: pl.pickupLocation.address,
+      directionsUrl: pl.pickupLocation.directionsUrl,
+      logoMedia: mapMediaAsset(pl.pickupLocation.logoMedia),
+    })),
   };
 }

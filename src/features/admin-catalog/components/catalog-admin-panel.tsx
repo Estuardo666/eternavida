@@ -150,6 +150,19 @@ function buildEmptyProductForm(): AdminProductFormData {
     categoryId: defaultCategoryId,
     categoryIds: defaultCategoryId ? [defaultCategoryId] : [],
     mediaAssetId: "",
+    productColor: "",
+    nutritionalInfoImageId: "",
+    variants: [],
+    ingredients: [],
+    benefits: [],
+    preTitle: "",
+    shortDescription: "",
+    longDescription: "",
+    slogan: "",
+    galleryImages: [],
+    usageSteps: [],
+    trustBadges: [],
+    pickupLocationIds: [],
   };
 }
 
@@ -445,6 +458,19 @@ export function CatalogAdminPanel({ initialData, section }: CatalogAdminPanelPro
       categoryId: product.categoryId ?? "",
       categoryIds: product.categoryIds,
       mediaAssetId: product.mediaAssetId ?? "",
+      productColor: product.productColor ?? "",
+      nutritionalInfoImageId: product.nutritionalInfoImageId ?? "",
+      variants: product.variants.map((v) => ({ id: v.id, name: v.name, price: v.price, discountPrice: v.discountPrice, stock: v.stock, isActive: v.isActive, sortOrder: v.sortOrder, mediaAssetId: v.mediaAssetId ?? "" })),
+      ingredients: product.ingredients.map((ing) => ({ id: ing.id, name: ing.name, description: ing.description ?? "", mediaAssetId: ing.mediaAssetId ?? "", sortOrder: ing.sortOrder })),
+      benefits: product.benefits.map((b) => ({ id: b.id, text: b.text, iconKey: b.iconKey, sortOrder: b.sortOrder })),
+      preTitle: product.preTitle ?? "",
+      shortDescription: product.shortDescription ?? "",
+      longDescription: product.longDescription ?? "",
+      slogan: product.slogan ?? "",
+      galleryImages: product.galleryImages.map((g) => ({ id: g.id, mediaAssetId: g.mediaAssetId, sortOrder: g.sortOrder })),
+      usageSteps: product.usageSteps.map((s) => ({ id: s.id, stepNumber: s.stepNumber, text: s.text, mediaAssetId: s.mediaAssetId ?? "" })),
+      trustBadges: product.trustBadges.map((b) => ({ id: b.id, text: b.text, iconKey: b.iconKey, sortOrder: b.sortOrder })),
+      pickupLocationIds: product.pickupLocationIds,
     });
     setProductSubmissionState("idle");
     setProductMessage(null);

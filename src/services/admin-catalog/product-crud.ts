@@ -36,6 +36,11 @@ function normalizeOptionalBadgeColor(input: { badge: string; badgeColor: string 
   return normalizeBadgeColor(input.badgeColor);
 }
 
+function normalizeProductColor(color: string): string | null {
+  const normalizedValue = color.trim();
+  return normalizedValue.length > 0 ? normalizedValue : null;
+}
+
 async function assertMediaAssetExists(mediaAssetId: string | null): Promise<void> {
   if (!mediaAssetId) {
     return;
@@ -137,6 +142,16 @@ export async function createProduct(input: AdminProductFormData) {
   const brand = await assertBrandExists(parsedInput.brandId);
   await assertCategoriesExist(categoryIds);
   await assertMediaAssetExists(mediaAssetId);
+  await assertMediaAssetExists(normalizeMediaAssetId(parsedInput.nutritionalInfoImageId));
+  for (const ing of parsedInput.ingredients) {
+    await assertMediaAssetExists(normalizeMediaAssetId(ing.mediaAssetId));
+  }
+  for (const g of parsedInput.galleryImages) {
+    await assertMediaAssetExists(g.mediaAssetId);
+  }
+  for (const s of parsedInput.usageSteps) {
+    await assertMediaAssetExists(normalizeMediaAssetId(s.mediaAssetId));
+  }
   await assertProductBusinessUniqueness({
     name: parsedInput.name,
     slug: identity.slug,
@@ -158,6 +173,8 @@ export async function createProduct(input: AdminProductFormData) {
       discountPercent: computeDiscountPercent(parsedInput.price, parsedInput.discountPrice),
       stock: parsedInput.stock,
       isActive: parsedInput.isActive,
+      productColor: normalizeProductColor(parsedInput.productColor),
+      nutritionalInfoImageId: normalizeMediaAssetId(parsedInput.nutritionalInfoImageId),
       categoryId: primaryCategoryId,
       categoryAssignments: {
         create: categoryIds.map((categoryId, index) => ({
@@ -166,6 +183,56 @@ export async function createProduct(input: AdminProductFormData) {
         })),
       },
       mediaAssetId,
+      variants: {
+        create: parsedInput.variants.map((v, index) => ({
+          name: v.name,
+          price: v.price,
+          discountPrice: v.discountPrice,
+          stock: v.stock,
+          isActive: v.isActive,
+          sortOrder: v.sortOrder ?? index,
+        })),
+      },
+      ingredients: {
+        create: parsedInput.ingredients.map((ing, index) => ({
+          name: ing.name,
+          description: ing.description || null,
+          mediaAssetId: normalizeMediaAssetId(ing.mediaAssetId),
+          sortOrder: ing.sortOrder ?? index,
+        })),
+      },
+      benefits: {
+        create: parsedInput.benefits.map((b, index) => ({
+          text: b.text,
+          iconKey: b.iconKey,
+          sortOrder: b.sortOrder ?? index,
+        })),
+      },
+      galleryImages: {
+        create: parsedInput.galleryImages.map((g, index) => ({
+          mediaAssetId: g.mediaAssetId,
+          sortOrder: g.sortOrder ?? index,
+        })),
+      },
+      usageSteps: {
+        create: parsedInput.usageSteps.map((s) => ({
+          stepNumber: s.stepNumber,
+          text: s.text,
+          mediaAssetId: normalizeMediaAssetId(s.mediaAssetId),
+        })),
+      },
+      trustBadges: {
+        create: parsedInput.trustBadges.map((b, index) => ({
+          text: b.text,
+          iconKey: b.iconKey,
+          sortOrder: b.sortOrder ?? index,
+        })),
+      },
+      pickupLocations: {
+        create: parsedInput.pickupLocationIds.map((locationId) => ({
+          pickupLocationId: locationId,
+        })),
+      },
     },
     include: {
       category: {
@@ -215,6 +282,16 @@ export async function updateProduct(id: string, input: AdminProductFormData) {
   const brand = await assertBrandExists(parsedInput.brandId);
   await assertCategoriesExist(categoryIds);
   await assertMediaAssetExists(mediaAssetId);
+  await assertMediaAssetExists(normalizeMediaAssetId(parsedInput.nutritionalInfoImageId));
+  for (const ing of parsedInput.ingredients) {
+    await assertMediaAssetExists(normalizeMediaAssetId(ing.mediaAssetId));
+  }
+  for (const g of parsedInput.galleryImages) {
+    await assertMediaAssetExists(g.mediaAssetId);
+  }
+  for (const s of parsedInput.usageSteps) {
+    await assertMediaAssetExists(normalizeMediaAssetId(s.mediaAssetId));
+  }
   await assertProductBusinessUniqueness({
     excludeId: id,
     name: parsedInput.name,
@@ -251,6 +328,8 @@ export async function updateProduct(id: string, input: AdminProductFormData) {
       badgeColor: normalizeOptionalBadgeColor(parsedInput),
       ...syncManagedPricingFields,
       isActive: parsedInput.isActive,
+      productColor: normalizeProductColor(parsedInput.productColor),
+      nutritionalInfoImageId: normalizeMediaAssetId(parsedInput.nutritionalInfoImageId),
       categoryId: primaryCategoryId,
       categoryAssignments: {
         deleteMany: {},
@@ -260,6 +339,63 @@ export async function updateProduct(id: string, input: AdminProductFormData) {
         })),
       },
       mediaAssetId,
+      variants: {
+        deleteMany: {},
+        create: parsedInput.variants.map((v, index) => ({
+          name: v.name,
+          price: v.price,
+          discountPrice: v.discountPrice,
+          stock: v.stock,
+          isActive: v.isActive,
+          sortOrder: v.sortOrder ?? index,
+        })),
+      },
+      ingredients: {
+        deleteMany: {},
+        create: parsedInput.ingredients.map((ing, index) => ({
+          name: ing.name,
+          description: ing.description || null,
+          mediaAssetId: normalizeMediaAssetId(ing.mediaAssetId),
+          sortOrder: ing.sortOrder ?? index,
+        })),
+      },
+      benefits: {
+        deleteMany: {},
+        create: parsedInput.benefits.map((b, index) => ({
+          text: b.text,
+          iconKey: b.iconKey,
+          sortOrder: b.sortOrder ?? index,
+        })),
+      },
+      galleryImages: {
+        deleteMany: {},
+        create: parsedInput.galleryImages.map((g, index) => ({
+          mediaAssetId: g.mediaAssetId,
+          sortOrder: g.sortOrder ?? index,
+        })),
+      },
+      usageSteps: {
+        deleteMany: {},
+        create: parsedInput.usageSteps.map((s) => ({
+          stepNumber: s.stepNumber,
+          text: s.text,
+          mediaAssetId: normalizeMediaAssetId(s.mediaAssetId),
+        })),
+      },
+      trustBadges: {
+        deleteMany: {},
+        create: parsedInput.trustBadges.map((b, index) => ({
+          text: b.text,
+          iconKey: b.iconKey,
+          sortOrder: b.sortOrder ?? index,
+        })),
+      },
+      pickupLocations: {
+        deleteMany: {},
+        create: parsedInput.pickupLocationIds.map((locationId) => ({
+          pickupLocationId: locationId,
+        })),
+      },
     },
     include: {
       category: {

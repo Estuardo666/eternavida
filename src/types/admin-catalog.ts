@@ -43,6 +43,52 @@ export interface AdminCategoryFormData {
   mediaAssetId: string;
 }
 
+export interface AdminProductVariantInput {
+  id: string;
+  name: string;
+  price: number;
+  discountPrice: number | null;
+  stock: number;
+  isActive: boolean;
+  sortOrder: number;
+  mediaAssetId: string;
+}
+
+export interface AdminProductIngredientInput {
+  id: string;
+  name: string;
+  description: string;
+  mediaAssetId: string;
+  sortOrder: number;
+}
+
+export interface AdminProductBenefitInput {
+  id: string;
+  text: string;
+  iconKey: string;
+  sortOrder: number;
+}
+
+export interface AdminProductGalleryImageInput {
+  id: string;
+  mediaAssetId: string;
+  sortOrder: number;
+}
+
+export interface AdminProductUsageStepInput {
+  id: string;
+  stepNumber: number;
+  text: string;
+  mediaAssetId: string;
+}
+
+export interface AdminProductTrustBadgeInput {
+  id: string;
+  text: string;
+  iconKey: string;
+  sortOrder: number;
+}
+
 export interface AdminProductFormData {
   slug: string;
   name: string;
@@ -59,6 +105,19 @@ export interface AdminProductFormData {
   categoryId: string;
   categoryIds: string[];
   mediaAssetId: string;
+  productColor: string;
+  nutritionalInfoImageId: string;
+  variants: AdminProductVariantInput[];
+  ingredients: AdminProductIngredientInput[];
+  benefits: AdminProductBenefitInput[];
+  preTitle: string;
+  shortDescription: string;
+  longDescription: string;
+  slogan: string;
+  galleryImages: AdminProductGalleryImageInput[];
+  usageSteps: AdminProductUsageStepInput[];
+  trustBadges: AdminProductTrustBadgeInput[];
+  pickupLocationIds: string[];
 }
 
 export interface AdminProductBadgePresetFormData {
@@ -87,6 +146,74 @@ export interface AdminCatalogCategoryItem {
   updatedAt: string;
 }
 
+export interface AdminCatalogProductVariantItem {
+  id: string;
+  name: string;
+  price: number;
+  discountPrice: number | null;
+  stock: number;
+  isActive: boolean;
+  sortOrder: number;
+  mediaAssetId: string | null;
+  mediaAssetPublicUrl: string | null;
+  mediaAssetAltText: string;
+}
+
+export interface AdminCatalogProductIngredientItem {
+  id: string;
+  name: string;
+  description: string | null;
+  mediaAssetId: string | null;
+  mediaAssetPublicUrl: string | null;
+  mediaAssetAltText: string;
+  sortOrder: number;
+}
+
+export interface AdminCatalogProductBenefitItem {
+  id: string;
+  text: string;
+  iconKey: string;
+  sortOrder: number;
+}
+
+export interface AdminCatalogProductGalleryImageItem {
+  id: string;
+  mediaAssetId: string;
+  mediaAssetPublicUrl: string | null;
+  mediaAssetAltText: string;
+  sortOrder: number;
+}
+
+export interface AdminCatalogProductUsageStepItem {
+  id: string;
+  stepNumber: number;
+  text: string;
+  mediaAssetId: string | null;
+  mediaAssetPublicUrl: string | null;
+  mediaAssetAltText: string;
+}
+
+export interface AdminCatalogProductTrustBadgeItem {
+  id: string;
+  text: string;
+  iconKey: string;
+  sortOrder: number;
+}
+
+export interface AdminCatalogPickupLocationItem {
+  id: string;
+  name: string;
+  address: string;
+  directionsUrl: string | null;
+  logoMediaId: string | null;
+  logoMediaPublicUrl: string | null;
+  logoMediaAltText: string;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface AdminCatalogProductItem {
   id: string;
   slug: string;
@@ -108,6 +235,21 @@ export interface AdminCatalogProductItem {
   mediaAssetId: string | null;
   mediaAssetPublicUrl: string | null;
   mediaAssetAltText: string;
+  productColor: string | null;
+  nutritionalInfoImageId: string | null;
+  nutritionalInfoImagePublicUrl: string | null;
+  nutritionalInfoImageAltText: string;
+  variants: AdminCatalogProductVariantItem[];
+  ingredients: AdminCatalogProductIngredientItem[];
+  benefits: AdminCatalogProductBenefitItem[];
+  preTitle: string | null;
+  shortDescription: string;
+  longDescription: string;
+  slogan: string | null;
+  galleryImages: AdminCatalogProductGalleryImageItem[];
+  usageSteps: AdminCatalogProductUsageStepItem[];
+  trustBadges: AdminCatalogProductTrustBadgeItem[];
+  pickupLocationIds: string[];
   externalId: string | null;
   externalSourceId: string | null;
   lastSyncedAt: string | null;
@@ -144,6 +286,16 @@ export interface AdminCatalogEditorData {
   brands: AdminBrandItem[];
   mediaAssets: AdminMediaAssetSummary[];
   badgePresets: AdminProductBadgePresetItem[];
+  pickupLocations: AdminCatalogPickupLocationItem[];
+}
+
+export interface AdminPickupLocationFormData {
+  name: string;
+  address: string;
+  directionsUrl: string;
+  logoMediaId: string;
+  isActive: boolean;
+  sortOrder: number;
 }
 
 export interface AdminCatalogSummary {
@@ -193,6 +345,18 @@ export interface AdminBrandRouteResponse {
   success: boolean;
   data?: {
     brand: AdminBrandItem;
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+  timestamp: string;
+}
+
+export interface AdminPickupLocationRouteResponse {
+  success: boolean;
+  data?: {
+    pickupLocation: AdminCatalogPickupLocationItem;
   };
   error?: {
     code: string;

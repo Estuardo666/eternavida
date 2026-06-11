@@ -24,6 +24,7 @@ import { ProductBadge } from "@/components/ui/product-badge";
 import { SelectionCheckbox } from "@/features/admin-catalog/components/selection-checkbox";
 import { cx } from "@/lib/utils";
 import { DEFAULT_PRODUCT_BADGE_COLOR, PRODUCT_BADGE_PRESETS } from "@/lib/product-badges";
+import { PRODUCT_BENEFIT_ICONS, DEFAULT_BENEFIT_ICON_KEY } from "@/lib/product-benefit-icons";
 import {
 	buildCatalogMediaStorageKey,
 	buildProductHref,
@@ -81,6 +82,19 @@ function buildProductForm(
 			categoryId: defaultCategory?.id ?? "",
 			categoryIds: defaultCategory ? [defaultCategory.id] : [],
 			mediaAssetId: "",
+			productColor: "",
+			nutritionalInfoImageId: "",
+			variants: [],
+			ingredients: [],
+			benefits: [],
+			preTitle: "",
+			shortDescription: "",
+			longDescription: "",
+			slogan: "",
+			galleryImages: [],
+			usageSteps: [],
+			trustBadges: [],
+			pickupLocationIds: [],
 		};
 	}
 
@@ -100,6 +114,53 @@ function buildProductForm(
 		categoryId: product.categoryId ?? "",
 		categoryIds: product.categoryIds,
 		mediaAssetId: product.mediaAssetId ?? "",
+		productColor: product.productColor ?? "",
+		nutritionalInfoImageId: product.nutritionalInfoImageId ?? "",
+		variants: product.variants.map((v) => ({
+			id: v.id,
+			name: v.name,
+			price: v.price,
+			discountPrice: v.discountPrice,
+			stock: v.stock,
+			isActive: v.isActive,
+			sortOrder: v.sortOrder,
+			mediaAssetId: v.mediaAssetId ?? "",
+		})),
+		ingredients: product.ingredients.map((ing) => ({
+			id: ing.id,
+			name: ing.name,
+			description: ing.description ?? "",
+			mediaAssetId: ing.mediaAssetId ?? "",
+			sortOrder: ing.sortOrder,
+		})),
+		benefits: product.benefits.map((b) => ({
+			id: b.id,
+			text: b.text,
+			iconKey: b.iconKey,
+			sortOrder: b.sortOrder,
+		})),
+		preTitle: product.preTitle ?? "",
+		shortDescription: product.shortDescription ?? "",
+		longDescription: product.longDescription ?? "",
+		slogan: product.slogan ?? "",
+		galleryImages: product.galleryImages.map((g) => ({
+			id: g.id,
+			mediaAssetId: g.mediaAssetId,
+			sortOrder: g.sortOrder,
+		})),
+		usageSteps: product.usageSteps.map((s) => ({
+			id: s.id,
+			stepNumber: s.stepNumber,
+			text: s.text,
+			mediaAssetId: s.mediaAssetId ?? "",
+		})),
+		trustBadges: product.trustBadges.map((b) => ({
+			id: b.id,
+			text: b.text,
+			iconKey: b.iconKey,
+			sortOrder: b.sortOrder,
+		})),
+		pickupLocationIds: product.pickupLocationIds,
 	};
 }
 
@@ -285,6 +346,54 @@ export function ProductAdminForm({ initialData, mode, product, syncCapabilities 
 
 	function markAsDirty() {
 		setSubmissionState((current) => (current === "saving" ? current : "idle"));
+	}
+
+	function updateVariantField<K extends keyof AdminProductFormData["variants"][number]>(index: number, key: K, value: AdminProductFormData["variants"][number][K]) {
+		markAsDirty();
+		setFormData((current) => {
+			const next = current.variants.map((item, i) => (i === index ? { ...item, [key]: value } : item));
+			return { ...current, variants: next };
+		});
+	}
+
+	function updateIngredientField<K extends keyof AdminProductFormData["ingredients"][number]>(index: number, key: K, value: AdminProductFormData["ingredients"][number][K]) {
+		markAsDirty();
+		setFormData((current) => {
+			const next = current.ingredients.map((item, i) => (i === index ? { ...item, [key]: value } : item));
+			return { ...current, ingredients: next };
+		});
+	}
+
+	function updateBenefitField<K extends keyof AdminProductFormData["benefits"][number]>(index: number, key: K, value: AdminProductFormData["benefits"][number][K]) {
+		markAsDirty();
+		setFormData((current) => {
+			const next = current.benefits.map((item, i) => (i === index ? { ...item, [key]: value } : item));
+			return { ...current, benefits: next };
+		});
+	}
+
+	function updateGalleryField<K extends keyof AdminProductFormData["galleryImages"][number]>(index: number, key: K, value: AdminProductFormData["galleryImages"][number][K]) {
+		markAsDirty();
+		setFormData((current) => {
+			const next = current.galleryImages.map((item, i) => (i === index ? { ...item, [key]: value } : item));
+			return { ...current, galleryImages: next };
+		});
+	}
+
+	function updateUsageStepField<K extends keyof AdminProductFormData["usageSteps"][number]>(index: number, key: K, value: AdminProductFormData["usageSteps"][number][K]) {
+		markAsDirty();
+		setFormData((current) => {
+			const next = current.usageSteps.map((item, i) => (i === index ? { ...item, [key]: value } : item));
+			return { ...current, usageSteps: next };
+		});
+	}
+
+	function updateTrustBadgeField<K extends keyof AdminProductFormData["trustBadges"][number]>(index: number, key: K, value: AdminProductFormData["trustBadges"][number][K]) {
+		markAsDirty();
+		setFormData((current) => {
+			const next = current.trustBadges.map((item, i) => (i === index ? { ...item, [key]: value } : item));
+			return { ...current, trustBadges: next };
+		});
 	}
 
 	function resetPendingImageSelection() {
@@ -871,6 +980,619 @@ export function ProductAdminForm({ initialData, mode, product, syncCapabilities 
 							</div>
 						</div>
 
+						{/* ── Color de producto ───────────────────────────────── */}
+						<div className={`space-y-3 ${ADMIN_INSET_CARD_CLASS_NAME}`}>
+							<span className="block text-label-md text-text-primary">Color de producto</span>
+							<p className="text-body-sm text-text-secondary">Se usa para generar el gradiente de fondo en la pagina del producto.</p>
+							<div className="flex items-center gap-4">
+								<label className="space-y-2">
+									<span className="block text-caption uppercase tracking-[0.12em] text-text-muted">Color</span>
+									<input
+										type="color"
+										value={formData.productColor || "#E8D5B7"}
+										onChange={(event) => updateField("productColor", event.target.value.toUpperCase())}
+										className="h-[52px] w-full cursor-pointer rounded-xl border border-[#c0d4be] bg-[#f8fbf7] p-2"
+									/>
+								</label>
+								{formData.productColor ? (
+									<div className="flex items-center gap-3">
+										<div className="h-10 w-24 rounded-xl border border-border-soft" style={{ background: `linear-gradient(135deg, ${formData.productColor}44, #FFF8F0)` }} />
+										<button type="button" onClick={() => updateField("productColor", "")} className="text-body-sm text-text-secondary underline-offset-4 hover:underline">Quitar</button>
+									</div>
+								) : null}
+							</div>
+						</div>
+
+						{/* ── Variantes / Presentaciones ─────────────────────── */}
+						<div className={`space-y-3 ${ADMIN_INSET_CARD_CLASS_NAME}`}>
+							<div className="flex items-center justify-between gap-3">
+								<div>
+									<span className="block text-label-md text-text-primary">Presentaciones / Variantes</span>
+									<p className="text-body-sm text-text-secondary">Si el producto tiene multiples tamanos o presentaciones, agregalas aqui. Cada una tiene su propio precio y stock.</p>
+								</div>
+								<button
+									type="button"
+								onClick={() => {
+									markAsDirty();
+									setFormData((current) => ({
+										...current,
+										variants: [...current.variants, { id: "", name: "", price: 0, discountPrice: null, stock: 0, isActive: true, sortOrder: current.variants.length, mediaAssetId: "" }],
+									}));
+								}}
+									className={ADMIN_BUTTON_SECONDARY_CLASS_NAME}
+								>
+									+ Agregar presentacion
+								</button>
+							</div>
+							{formData.variants.length > 0 ? (
+								<div className="space-y-3">
+									{formData.variants.map((variant, index) => (
+										<div key={index} className="rounded-2xl border border-border-soft bg-surface-canvas p-4 space-y-3">
+											<div className="flex items-center justify-between gap-3">
+												<span className="text-label-md text-text-primary">Variante {index + 1}</span>
+												<button
+													type="button"
+													onClick={() => {
+														markAsDirty();
+														setFormData((current) => ({
+															...current,
+															variants: current.variants.filter((_, i) => i !== index),
+														}));
+													}}
+													className="text-body-sm text-status-error underline-offset-4 hover:underline"
+												>
+													Eliminar
+												</button>
+											</div>
+											<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+												<label className="space-y-1">
+													<span className="block text-caption uppercase tracking-[0.12em] text-text-muted">Nombre</span>
+													<input
+														value={variant.name}
+													onChange={(event) => {
+														updateVariantField(index, "name", event.target.value);
+													}}
+													className={adminFieldClassName}
+													placeholder="30ml"
+												/>
+											</label>
+											<label className="space-y-1">
+												<span className="block text-caption uppercase tracking-[0.12em] text-text-muted">Precio</span>
+												<input
+													type="number"
+													min="0"
+													step="0.01"
+													value={variant.price}
+													onChange={(event) => {
+														updateVariantField(index, "price", Number(event.target.value) || 0);
+													}}
+													className={adminFieldClassName}
+												/>
+											</label>
+											<label className="space-y-1">
+												<span className="block text-caption uppercase tracking-[0.12em] text-text-muted">Precio oferta</span>
+												<input
+													type="number"
+													min="0"
+													step="0.01"
+													value={variant.discountPrice ?? ""}
+													onChange={(event) => {
+														updateVariantField(index, "discountPrice", event.target.value ? Number(event.target.value) : null);
+													}}
+													className={adminFieldClassName}
+													placeholder="Sin oferta"
+												/>
+											</label>
+											<label className="space-y-1">
+												<span className="block text-caption uppercase tracking-[0.12em] text-text-muted">Stock</span>
+												<input
+													type="number"
+													min="0"
+													step="1"
+													value={variant.stock}
+													onChange={(event) => {
+														updateVariantField(index, "stock", Number.parseInt(event.target.value, 10) || 0);
+													}}
+													className={adminFieldClassName}
+												/>
+												</label>
+											</div>
+										</div>
+									))}
+								</div>
+							) : (
+								<p className="rounded-2xl border border-dashed border-border-soft px-4 py-5 text-body-sm text-text-secondary">Sin variantes. El producto usa el precio y stock base.</p>
+							)}
+						</div>
+
+						{/* ── Ingredientes ───────────────────────────────────── */}
+						<div className={`space-y-3 ${ADMIN_INSET_CARD_CLASS_NAME}`}>
+							<div className="flex items-center justify-between gap-3">
+								<div>
+									<span className="block text-label-md text-text-primary">Ingredientes</span>
+									<p className="text-body-sm text-text-secondary">Lista de ingredientes con imagen opcional.</p>
+								</div>
+								<button
+									type="button"
+								onClick={() => {
+									markAsDirty();
+									setFormData((current) => ({
+										...current,
+										ingredients: [...current.ingredients, { id: "", name: "", description: "", mediaAssetId: "", sortOrder: current.ingredients.length }],
+									}));
+								}}
+									className={ADMIN_BUTTON_SECONDARY_CLASS_NAME}
+								>
+									+ Agregar ingrediente
+								</button>
+							</div>
+							{formData.ingredients.length > 0 ? (
+								<div className="space-y-3">
+									{formData.ingredients.map((ingredient, index) => (
+										<div key={index} className="rounded-2xl border border-border-soft bg-surface-canvas p-4 space-y-3">
+											<div className="flex items-center justify-between gap-3">
+												<span className="text-label-md text-text-primary">Ingrediente {index + 1}</span>
+												<button
+													type="button"
+													onClick={() => {
+														markAsDirty();
+														setFormData((current) => ({
+															...current,
+															ingredients: current.ingredients.filter((_, i) => i !== index),
+														}));
+													}}
+													className="text-body-sm text-status-error underline-offset-4 hover:underline"
+												>
+													Eliminar
+												</button>
+											</div>
+											<div className="grid gap-3 sm:grid-cols-2">
+												<label className="space-y-1">
+													<span className="block text-caption uppercase tracking-[0.12em] text-text-muted">Nombre</span>
+													<input
+														value={ingredient.name}
+												onChange={(event) => {
+													updateIngredientField(index, "name", event.target.value);
+												}}
+												className={adminFieldClassName}
+												placeholder="Vitamina C"
+											/>
+										</label>
+										<label className="space-y-1">
+											<span className="block text-caption uppercase tracking-[0.12em] text-text-muted">Imagen (opcional)</span>
+											<input
+												type="file"
+												accept="image/*"
+												onChange={async (event) => {
+													const file = event.target.files?.[0];
+													if (!file) return;
+													try {
+														const mediaAsset = await uploadMediaAsset(file, {
+															storageKey: `Media/Products/ingredients/${Date.now()}-${file.name}`,
+															kind: "image",
+															altText: ingredient.name || file.name,
+														});
+														updateIngredientField(index, "mediaAssetId", mediaAsset.id);
+													} catch (err) {
+														setErrorMessage(err instanceof Error ? err.message : "Error al subir imagen");
+													}
+												}}
+												className={adminFieldClassName}
+											/>
+										</label>
+									</div>
+									<label className="space-y-1 block">
+										<span className="block text-caption uppercase tracking-[0.12em] text-text-muted">Descripcion</span>
+										<textarea
+											value={ingredient.description}
+											onChange={(event) => {
+												updateIngredientField(index, "description", event.target.value);
+											}}
+													rows={2}
+													className={adminFieldClassName}
+													placeholder="Extracto natural con propiedades antioxidantes..."
+												/>
+											</label>
+										</div>
+									))}
+								</div>
+							) : (
+								<p className="rounded-2xl border border-dashed border-border-soft px-4 py-5 text-body-sm text-text-secondary">Sin ingredientes registrados.</p>
+							)}
+					</div>
+
+					{/* ── Pretitulo, Slogan, Descripcion corta ──────────────── */}
+					<div className={`space-y-3 ${ADMIN_INSET_CARD_CLASS_NAME}`}>
+						<span className="block text-label-md text-text-primary">Texto complementario</span>
+						<div className="grid gap-3 sm:grid-cols-2">
+							<label className="space-y-1">
+								<span className="block text-caption uppercase tracking-[0.12em] text-text-muted">Pretitulo (eyebrow)</span>
+								<input
+									value={formData.preTitle}
+									onChange={(event) => updateField("preTitle", event.target.value)}
+									className={adminFieldClassName}
+									placeholder="Nuevo lanzamiento"
+								/>
+							</label>
+							<label className="space-y-1">
+								<span className="block text-caption uppercase tracking-[0.12em] text-text-muted">Slogan</span>
+								<input
+									value={formData.slogan}
+									onChange={(event) => updateField("slogan", event.target.value)}
+									className={adminFieldClassName}
+									placeholder="Tu piel merece lo mejor"
+								/>
+							</label>
+						</div>
+						<label className="space-y-1 block">
+							<span className="block text-caption uppercase tracking-[0.12em] text-text-muted">Descripcion corta</span>
+							<textarea
+								value={formData.shortDescription}
+								onChange={(event) => updateField("shortDescription", event.target.value)}
+								rows={2}
+								className={adminFieldClassName}
+								placeholder="Resumen breve del producto para la ficha..."
+							/>
+						</label>
+					</div>
+
+					{/* ── Descripcion larga ──────────────────────────────────── */}
+					<div className={`space-y-3 ${ADMIN_INSET_CARD_CLASS_NAME}`}>
+						<span className="block text-label-md text-text-primary">Descripcion larga (HTML)</span>
+						<textarea
+							value={formData.longDescription}
+							onChange={(event) => updateField("longDescription", event.target.value)}
+							rows={8}
+							className={adminFieldClassName}
+							placeholder="<p>Descripcion detallada del producto con <strong>formato HTML</strong>...</p>"
+						/>
+						<p className="text-body-sm text-text-secondary">Se renderiza como HTML en la pagina del producto.</p>
+					</div>
+
+					{/* ── Galeria de imagenes ────────────────────────────────── */}
+					<div className={`space-y-3 ${ADMIN_INSET_CARD_CLASS_NAME}`}>
+						<div className="flex items-center justify-between gap-3">
+							<div>
+								<span className="block text-label-md text-text-primary">Galeria de imagenes</span>
+								<p className="text-body-sm text-text-secondary">Imagenes adicionales del producto.</p>
+							</div>
+							<button
+								type="button"
+								onClick={() => {
+									markAsDirty();
+									setFormData((current) => ({
+										...current,
+										galleryImages: [...current.galleryImages, { id: "", mediaAssetId: "", sortOrder: current.galleryImages.length }],
+									}));
+								}}
+								className={ADMIN_BUTTON_SECONDARY_CLASS_NAME}
+							>
+								+ Agregar imagen
+							</button>
+						</div>
+						{formData.galleryImages.length > 0 ? (
+							<div className="space-y-3">
+								{formData.galleryImages.map((img, index) => (
+									<div key={index} className="flex items-center gap-3 rounded-2xl border border-border-soft bg-surface-canvas p-4">
+										<span className="text-label-md text-text-primary">{index + 1}</span>
+										<button
+											type="button"
+											onClick={() => {
+												const input = document.createElement("input");
+												input.type = "file";
+												input.accept = "image/*";
+												input.onchange = async (e) => {
+													const file = (e.target as HTMLInputElement).files?.[0];
+													if (!file) return;
+													try {
+														const mediaAsset = await uploadMediaAsset(file, {
+															storageKey: `Media/Products/gallery/${Date.now()}-${file.name}`,
+															kind: "image",
+															altText: formData.name || file.name,
+														});
+														updateGalleryField(index, "mediaAssetId", mediaAsset.id);
+													} catch (err) {
+														setErrorMessage(err instanceof Error ? err.message : "Error al subir imagen");
+													}
+												};
+												input.click();
+											}}
+											className={ADMIN_BUTTON_SECONDARY_CLASS_NAME}
+										>
+											{img.mediaAssetId ? "Cambiar imagen" : "Subir imagen"}
+										</button>
+										<span className="text-body-sm text-text-secondary truncate flex-1">
+											{img.mediaAssetId ? "Imagen seleccionada" : "Sin imagen"}
+										</span>
+										<button
+											type="button"
+											onClick={() => {
+												markAsDirty();
+												setFormData((current) => ({
+													...current,
+													galleryImages: current.galleryImages.filter((_, i) => i !== index),
+												}));
+											}}
+											className="text-body-sm text-status-error underline-offset-4 hover:underline"
+										>
+											Eliminar
+										</button>
+									</div>
+								))}
+							</div>
+						) : (
+							<p className="rounded-2xl border border-dashed border-border-soft px-4 py-5 text-body-sm text-text-secondary">Sin imagenes en galeria.</p>
+						)}
+					</div>
+
+					{/* ── Como usarlo ────────────────────────────────────────── */}
+					<div className={`space-y-3 ${ADMIN_INSET_CARD_CLASS_NAME}`}>
+						<div className="flex items-center justify-between gap-3">
+							<div>
+								<span className="block text-label-md text-text-primary">Como usarlo</span>
+								<p className="text-body-sm text-text-secondary">Pasos de uso del producto.</p>
+							</div>
+							<button
+								type="button"
+								onClick={() => {
+									markAsDirty();
+									setFormData((current) => ({
+										...current,
+										usageSteps: [...current.usageSteps, { id: "", stepNumber: current.usageSteps.length + 1, text: "", mediaAssetId: "" }],
+									}));
+								}}
+								className={ADMIN_BUTTON_SECONDARY_CLASS_NAME}
+							>
+								+ Agregar paso
+							</button>
+						</div>
+						{formData.usageSteps.length > 0 ? (
+							<div className="space-y-3">
+								{formData.usageSteps.map((step, index) => (
+									<div key={index} className="rounded-2xl border border-border-soft bg-surface-canvas p-4 space-y-3">
+										<div className="flex items-center justify-between gap-3">
+											<span className="text-label-md text-text-primary">Paso {step.stepNumber}</span>
+											<button
+												type="button"
+												onClick={() => {
+													markAsDirty();
+													setFormData((current) => ({
+														...current,
+														usageSteps: current.usageSteps.filter((_, i) => i !== index).map((s, i) => ({ ...s, stepNumber: i + 1 })),
+													}));
+												}}
+												className="text-body-sm text-status-error underline-offset-4 hover:underline"
+											>
+												Eliminar
+											</button>
+										</div>
+										<label className="space-y-1 block">
+											<span className="block text-caption uppercase tracking-[0.12em] text-text-muted">Instruccion</span>
+											<textarea
+												value={step.text}
+												onChange={(event) => updateUsageStepField(index, "text", event.target.value)}
+												rows={2}
+												className={adminFieldClassName}
+												placeholder="Aplica una cantidad generosa sobre el rostro limpio..."
+											/>
+										</label>
+									</div>
+								))}
+							</div>
+						) : (
+							<p className="rounded-2xl border border-dashed border-border-soft px-4 py-5 text-body-sm text-text-secondary">Sin pasos de uso registrados.</p>
+						)}
+					</div>
+
+					{/* ── Trust badges ──────────────────────────────────────── */}
+					<div className={`space-y-3 ${ADMIN_INSET_CARD_CLASS_NAME}`}>
+						<div className="flex items-center justify-between gap-3">
+							<div>
+								<span className="block text-label-md text-text-primary">Trust badges</span>
+								<p className="text-body-sm text-text-secondary">Senales de confianza personalizadas para este producto.</p>
+							</div>
+							<button
+								type="button"
+								onClick={() => {
+									markAsDirty();
+									setFormData((current) => ({
+										...current,
+										trustBadges: [...current.trustBadges, { id: "", text: "", iconKey: "check-circle", sortOrder: current.trustBadges.length }],
+									}));
+								}}
+								className={ADMIN_BUTTON_SECONDARY_CLASS_NAME}
+							>
+								+ Agregar badge
+							</button>
+						</div>
+						{formData.trustBadges.length > 0 ? (
+							<div className="space-y-3">
+								{formData.trustBadges.map((badge, index) => (
+									<div key={index} className="rounded-2xl border border-border-soft bg-surface-canvas p-4 space-y-3">
+										<div className="flex items-center justify-between gap-3">
+											<span className="text-label-md text-text-primary">Badge {index + 1}</span>
+											<button
+												type="button"
+												onClick={() => {
+													markAsDirty();
+													setFormData((current) => ({
+														...current,
+														trustBadges: current.trustBadges.filter((_, i) => i !== index),
+													}));
+												}}
+												className="text-body-sm text-status-error underline-offset-4 hover:underline"
+											>
+												Eliminar
+											</button>
+										</div>
+										<div className="grid gap-3 sm:grid-cols-2">
+											<label className="space-y-1">
+												<span className="block text-caption uppercase tracking-[0.12em] text-text-muted">Texto</span>
+												<input
+													value={badge.text}
+													onChange={(event) => updateTrustBadgeField(index, "text", event.target.value)}
+													className={adminFieldClassName}
+													placeholder="Envio gratis a todo el pais"
+												/>
+											</label>
+											<div className="space-y-1">
+												<span className="block text-caption uppercase tracking-[0.12em] text-text-muted">Icono</span>
+												<div className="grid grid-cols-6 gap-1.5">
+													{PRODUCT_BENEFIT_ICONS.map((icon) => (
+														<button
+															key={icon.key}
+															type="button"
+															onClick={() => updateTrustBadgeField(index, "iconKey", icon.key)}
+															className={[
+																"flex items-center justify-center rounded-lg border p-1.5 transition",
+																badge.iconKey === icon.key
+																	? "border-brand-primary bg-emerald-50 text-brand-primary"
+																	: "border-border-soft bg-surface-subtle text-text-muted hover:border-border-brand",
+															].join(" ")}
+															title={icon.label}
+														>
+															<svg viewBox={icon.viewBox} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+																{icon.paths.map((d, pi) => <path key={pi} d={d} />)}
+															</svg>
+														</button>
+													))}
+												</div>
+											</div>
+										</div>
+									</div>
+								))}
+							</div>
+						) : (
+							<p className="rounded-2xl border border-dashed border-border-soft px-4 py-5 text-body-sm text-text-secondary">Sin trust badges personalizados. Se usaran los defaults del sistema.</p>
+						)}
+					</div>
+
+					{/* ── Informacion nutricional ────────────────────────── */}
+						<div className={`space-y-3 ${ADMIN_INSET_CARD_CLASS_NAME}`}>
+							<span className="block text-label-md text-text-primary">Informacion nutricional</span>
+							<p className="text-body-sm text-text-secondary">Imagen con la tabla o informacion nutricional del producto.</p>
+							<div className="flex items-center gap-4">
+								<button
+									type="button"
+									onClick={() => {
+										const input = document.createElement("input");
+										input.type = "file";
+										input.accept = "image/*";
+										input.onchange = async (e) => {
+											const file = (e.target as HTMLInputElement).files?.[0];
+											if (!file) return;
+											try {
+												const mediaAsset = await uploadMediaAsset(file, {
+													storageKey: `Media/Products/nutritional/${Date.now()}-${file.name}`,
+													kind: "image",
+													altText: `Informacion nutricional - ${formData.name}`,
+												});
+												markAsDirty();
+												updateField("nutritionalInfoImageId", mediaAsset.id);
+											} catch (err) {
+												setErrorMessage(err instanceof Error ? err.message : "Error al subir imagen");
+											}
+										};
+										input.click();
+									}}
+									className={ADMIN_BUTTON_SECONDARY_CLASS_NAME}
+								>
+									{formData.nutritionalInfoImageId ? "Cambiar imagen" : "Subir imagen"}
+								</button>
+								{formData.nutritionalInfoImageId ? (
+									<button type="button" onClick={() => updateField("nutritionalInfoImageId", "")} className="text-body-sm text-status-error underline-offset-4 hover:underline">
+										Quitar
+									</button>
+								) : null}
+							</div>
+						</div>
+
+						{/* ── Beneficios ─────────────────────────────────────── */}
+						<div className={`space-y-3 ${ADMIN_INSET_CARD_CLASS_NAME}`}>
+							<div className="flex items-center justify-between gap-3">
+								<div>
+									<span className="block text-label-md text-text-primary">Beneficios</span>
+									<p className="text-body-sm text-text-secondary">Beneficios clave del producto con icono.</p>
+								</div>
+								<button
+									type="button"
+								onClick={() => {
+									markAsDirty();
+									setFormData((current) => ({
+										...current,
+										benefits: [...current.benefits, { id: "", text: "", iconKey: DEFAULT_BENEFIT_ICON_KEY, sortOrder: current.benefits.length }],
+									}));
+								}}
+									className={ADMIN_BUTTON_SECONDARY_CLASS_NAME}
+								>
+									+ Agregar beneficio
+								</button>
+							</div>
+							{formData.benefits.length > 0 ? (
+								<div className="space-y-3">
+									{formData.benefits.map((benefit, index) => (
+										<div key={index} className="rounded-2xl border border-border-soft bg-surface-canvas p-4 space-y-3">
+											<div className="flex items-center justify-between gap-3">
+												<span className="text-label-md text-text-primary">Beneficio {index + 1}</span>
+												<button
+													type="button"
+													onClick={() => {
+														markAsDirty();
+														setFormData((current) => ({
+															...current,
+															benefits: current.benefits.filter((_, i) => i !== index),
+														}));
+													}}
+													className="text-body-sm text-status-error underline-offset-4 hover:underline"
+												>
+													Eliminar
+												</button>
+											</div>
+											<label className="space-y-1 block">
+												<span className="block text-caption uppercase tracking-[0.12em] text-text-muted">Texto</span>
+												<input
+													value={benefit.text}
+												onChange={(event) => {
+													updateBenefitField(index, "text", event.target.value);
+												}}
+												className={adminFieldClassName}
+												placeholder="Hidratacion profunda 24h"
+											/>
+										</label>
+										<div className="space-y-2">
+											<span className="block text-caption uppercase tracking-[0.12em] text-text-muted">Icono</span>
+											<div className="grid grid-cols-6 gap-2 sm:grid-cols-8 lg:grid-cols-10">
+												{PRODUCT_BENEFIT_ICONS.map((icon) => (
+													<button
+														key={icon.key}
+														type="button"
+														onClick={() => {
+															updateBenefitField(index, "iconKey", icon.key);
+														}}
+															className={[
+																"flex flex-col items-center gap-1 rounded-xl border p-2 transition",
+																benefit.iconKey === icon.key
+																	? "border-brand-primary bg-emerald-50 text-brand-primary"
+																	: "border-border-soft bg-surface-subtle text-text-muted hover:border-border-brand",
+															].join(" ")}
+															title={icon.label}
+														>
+															<svg viewBox={icon.viewBox} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+																{icon.paths.map((d, pi) => <path key={pi} d={d} />)}
+															</svg>
+															<span className="text-[0.55rem] leading-tight text-center">{icon.label}</span>
+														</button>
+													))}
+												</div>
+											</div>
+										</div>
+									))}
+								</div>
+							) : (
+								<p className="rounded-2xl border border-dashed border-border-soft px-4 py-5 text-body-sm text-text-secondary">Sin beneficios registrados.</p>
+							)}
+						</div>
+
 					</form>
 				</section>
 
@@ -946,6 +1668,58 @@ export function ProductAdminForm({ initialData, mode, product, syncCapabilities 
 									{persistedProduct?.externalSourceId ? persistedProduct.externalSourceId : "Local"}
 								</span>
 							</div>
+
+							{formData.productColor ? (
+								<div className="flex items-start justify-between gap-3">
+									<span className="text-text-secondary whitespace-nowrap">Color</span>
+									<div className="flex items-center gap-2">
+										<div className="h-4 w-4 rounded-full border border-border-soft" style={{ backgroundColor: formData.productColor }} />
+										<span className="text-label-md font-medium text-text-primary">{formData.productColor}</span>
+									</div>
+								</div>
+							) : null}
+
+							{formData.variants.length > 0 ? (
+								<div className="flex items-start justify-between gap-3">
+									<span className="text-text-secondary whitespace-nowrap">Variantes</span>
+									<span className="text-label-md font-medium text-text-primary">{formData.variants.length}</span>
+								</div>
+							) : null}
+
+							{formData.ingredients.length > 0 ? (
+								<div className="flex items-start justify-between gap-3">
+									<span className="text-text-secondary whitespace-nowrap">Ingredientes</span>
+									<span className="text-label-md font-medium text-text-primary">{formData.ingredients.length}</span>
+								</div>
+							) : null}
+
+						{formData.benefits.length > 0 ? (
+							<div className="flex items-start justify-between gap-3">
+								<span className="text-text-secondary whitespace-nowrap">Beneficios</span>
+								<span className="text-label-md font-medium text-text-primary">{formData.benefits.length}</span>
+							</div>
+						) : null}
+
+						{formData.galleryImages.length > 0 ? (
+							<div className="flex items-start justify-between gap-3">
+								<span className="text-text-secondary whitespace-nowrap">Galeria</span>
+								<span className="text-label-md font-medium text-text-primary">{formData.galleryImages.length} imagenes</span>
+							</div>
+						) : null}
+
+						{formData.usageSteps.length > 0 ? (
+							<div className="flex items-start justify-between gap-3">
+								<span className="text-text-secondary whitespace-nowrap">Uso</span>
+								<span className="text-label-md font-medium text-text-primary">{formData.usageSteps.length} pasos</span>
+							</div>
+						) : null}
+
+						{formData.trustBadges.length > 0 ? (
+							<div className="flex items-start justify-between gap-3">
+								<span className="text-text-secondary whitespace-nowrap">Trust badges</span>
+								<span className="text-label-md font-medium text-text-primary">{formData.trustBadges.length}</span>
+							</div>
+						) : null}
 						</div>
 
 						<div className="mt-5 space-y-2 border-t border-border-soft pt-5">

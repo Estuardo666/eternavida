@@ -45,6 +45,52 @@ const optionalCurrencyAmountSchema = z.preprocess(
 
 const stockSchema = z.coerce.number().int("Stock must be an integer").min(0, "Stock cannot be negative");
 
+const adminProductVariantSchema = z.object({
+  id: z.string().trim().default(""),
+  name: z.string().trim().min(1, "Variant name is required"),
+  price: currencyAmountSchema.default(0),
+  discountPrice: optionalCurrencyAmountSchema.default(null),
+  stock: stockSchema.default(0),
+  isActive: z.boolean().default(true),
+  sortOrder: z.coerce.number().int().min(0).default(0),
+  mediaAssetId: z.string().trim().default(""),
+});
+
+const adminProductIngredientSchema = z.object({
+  id: z.string().trim().default(""),
+  name: z.string().trim().min(1, "Ingredient name is required"),
+  description: z.string().trim().default(""),
+  mediaAssetId: z.string().trim().default(""),
+  sortOrder: z.coerce.number().int().min(0).default(0),
+});
+
+const adminProductBenefitSchema = z.object({
+  id: z.string().trim().default(""),
+  text: z.string().trim().min(1, "Benefit text is required"),
+  iconKey: z.string().trim().min(1, "Icon is required"),
+  sortOrder: z.coerce.number().int().min(0).default(0),
+});
+
+const adminProductGalleryImageSchema = z.object({
+  id: z.string().trim().default(""),
+  mediaAssetId: z.string().trim().min(1, "Image is required"),
+  sortOrder: z.coerce.number().int().min(0).default(0),
+});
+
+const adminProductUsageStepSchema = z.object({
+  id: z.string().trim().default(""),
+  stepNumber: z.coerce.number().int().min(1),
+  text: z.string().trim().min(1, "Step text is required"),
+  mediaAssetId: z.string().trim().default(""),
+});
+
+const adminProductTrustBadgeSchema = z.object({
+  id: z.string().trim().default(""),
+  text: z.string().trim().min(1, "Badge text is required"),
+  iconKey: z.string().trim().min(1, "Icon is required"),
+  sortOrder: z.coerce.number().int().min(0).default(0),
+});
+
 export const adminCategoryFormSchema = z.object({
   slug: optionalSlugSchema,
   name: z.string().trim().min(1, "Name is required"),
@@ -70,6 +116,19 @@ export const adminProductFormSchema = z.object({
   categoryId: z.string().trim().default(""),
   categoryIds: z.array(z.string().trim().min(1, "Category is required")).default([]),
   mediaAssetId: mediaAssetIdSchema,
+  productColor: hexColorSchema.default(""),
+  nutritionalInfoImageId: mediaAssetIdSchema,
+  variants: z.array(adminProductVariantSchema).default([]),
+  ingredients: z.array(adminProductIngredientSchema).default([]),
+  benefits: z.array(adminProductBenefitSchema).default([]),
+  preTitle: z.string().trim().default(""),
+  shortDescription: z.string().trim().default(""),
+  longDescription: z.string().trim().default(""),
+  slogan: z.string().trim().default(""),
+  galleryImages: z.array(adminProductGalleryImageSchema).default([]),
+  usageSteps: z.array(adminProductUsageStepSchema).default([]),
+  trustBadges: z.array(adminProductTrustBadgeSchema).default([]),
+  pickupLocationIds: z.array(z.string().trim()).default([]),
 }).superRefine((value, context) => {
   if (value.discountPrice !== null && value.discountPrice > value.price) {
     context.addIssue({
@@ -114,9 +173,19 @@ export const adminBrandFormSchema = z.object({
   mediaAssetId: mediaAssetIdSchema,
 });
 
+export const adminPickupLocationFormSchema = z.object({
+  name: z.string().trim().min(1, "Name is required"),
+  address: z.string().trim().min(1, "Address is required"),
+  directionsUrl: z.string().trim().default(""),
+  logoMediaId: z.string().trim().default(""),
+  isActive: z.boolean().default(true),
+  sortOrder: z.coerce.number().int("Sort order must be an integer").min(0, "Sort order cannot be negative").default(0),
+});
+
 export type AdminCategoryFormInput = z.infer<typeof adminCategoryFormSchema>;
 export type AdminProductFormInput = z.infer<typeof adminProductFormSchema>;
 export type AdminCatalogBulkActionInput = z.infer<typeof adminCatalogBulkActionSchema>;
 export type AdminProductSyncRequestInput = z.infer<typeof adminProductSyncRequestSchema>;
 export type AdminProductBadgePresetFormInput = z.infer<typeof adminProductBadgePresetFormSchema>;
 export type AdminBrandFormInput = z.infer<typeof adminBrandFormSchema>;
+export type AdminPickupLocationFormInput = z.infer<typeof adminPickupLocationFormSchema>;

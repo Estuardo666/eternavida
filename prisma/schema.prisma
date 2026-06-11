@@ -80,6 +80,12 @@ model MediaAsset {
   productCards           Product[]         @relation("ProductMediaAsset")
   brandLogos             Brand[]           @relation("BrandLogoMediaAsset")
   collections            Collection[]      @relation("CollectionMediaAsset")
+  nutritionalInfoProducts Product[]        @relation("ProductNutritionalInfoMedia")
+  ingredientMediaAssets   ProductIngredient[] @relation("IngredientMediaAsset")
+  variantMediaAssets      ProductVariant[]    @relation("VariantMediaAsset")
+  productGalleryImages    ProductGalleryImage[] @relation("ProductGalleryMediaAsset")
+  productUsageSteps       ProductUsageStep[]  @relation("ProductUsageStepMediaAsset")
+  pickupLocationLogos     PickupLocation[]    @relation("PickupLocationLogoMedia")
 
   @@index([kind])
   @@index([folderId])
@@ -115,6 +121,10 @@ model Product {
   brand           String   @default("Sin marca")
   brandId         String?
   description     String
+  shortDescription String  @default("")
+  longDescription String   @default("")
+  preTitle        String?
+  slogan          String?
   href            String
   badge           String?
   badgeColor      String?
@@ -125,6 +135,8 @@ model Product {
   isActive        Boolean  @default(true)
   categoryId      String?
   mediaAssetId    String?
+  productColor    String?   // Hex color for product gradient bg
+  nutritionalInfoImageId String?
 
   // Sync tracking
   externalId       String?   @unique
@@ -145,7 +157,15 @@ model Product {
   wishlistItems         WishlistItem[]
   restockAlerts         RestockAlert[]
   subscriptions         Subscription[]
-  collectionAssignments CollectionProduct[]
+  collectionAssignments   CollectionProduct[]
+  variants                ProductVariant[]
+  ingredients             ProductIngredient[]
+  benefits                ProductBenefit[]
+  galleryImages           ProductGalleryImage[]
+  usageSteps              ProductUsageStep[]
+  trustBadges             ProductTrustBadge[]
+  pickupLocations         ProductPickupLocation[]
+  nutritionalInfoImage    MediaAsset?                 @relation("ProductNutritionalInfoMedia", fields: [nutritionalInfoImageId], references: [id], onDelete: SetNull)
 
   @@index([isActive])
   @@index([categoryId])
@@ -156,6 +176,7 @@ model Product {
   @@index([lastSyncedAt])
   @@index([brandId])
   @@index([isActive, discountPercent])
+  @@index([nutritionalInfoImageId])
 }
 
 model Brand {
@@ -197,6 +218,121 @@ model ProductBadgePreset {
   @@index([isActive])
   @@index([sortOrder])
   @@index([createdAt])
+}
+
+model ProductVariant {
+  id            String   @id @default(cuid())
+  productId     String
+  name          String
+  price         Decimal  @default(0) @db.Decimal(10, 2)
+  discountPrice Decimal? @db.Decimal(10, 2)
+  stock         Int      @default(0)
+  isActive      Boolean  @default(true)
+  sortOrder     Int      @default(0)
+  mediaAssetId  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  mediaAsset    MediaAsset? @relation("VariantMediaAsset", fields: [mediaAssetId], references: [id], onDelete: SetNull)
+
+  @@index([productId])
+  @@index([productId, sortOrder])
+  @@index([mediaAssetId])
+}
+
+model ProductIngredient {
+  id           String      @id @default(cuid())
+  productId    String
+  name         String
+  description  String?
+  mediaAssetId String?
+  sortOrder    Int         @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  product      Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  mediaAsset   MediaAsset? @relation("IngredientMediaAsset", fields: [mediaAssetId], references: [id], onDelete: SetNull)
+
+  @@index([productId])
+  @@index([mediaAssetId])
+}
+
+model ProductBenefit {
+  id        String   @id @default(cuid())
+  productId String
+  text      String
+  iconKey   String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+model ProductGalleryImage {
+  id           String      @id @default(cuid())
+  productId    String
+  mediaAssetId String
+  sortOrder    Int         @default(0)
+  createdAt    DateTime    @default(now())
+  product      Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  mediaAsset   MediaAsset? @relation("ProductGalleryMediaAsset", fields: [mediaAssetId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+model ProductUsageStep {
+  id           String      @id @default(cuid())
+  productId    String
+  stepNumber   Int
+  text         String
+  mediaAssetId String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  product      Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  mediaAsset   MediaAsset? @relation("ProductUsageStepMediaAsset", fields: [mediaAssetId], references: [id], onDelete: SetNull)
+
+  @@index([productId])
+}
+
+model ProductTrustBadge {
+  id        String   @id @default(cuid())
+  productId String
+  text      String
+  iconKey   String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+model PickupLocation {
+  id            String   @id @default(cuid())
+  name          String
+  address       String
+  directionsUrl String?
+  logoMediaId   String?
+  isActive      Boolean  @default(true)
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  logoMedia     MediaAsset? @relation("PickupLocationLogoMedia", fields: [logoMediaId], references: [id], onDelete: SetNull)
+  products      ProductPickupLocation[]
+
+  @@index([isActive])
+  @@index([logoMediaId])
+}
+
+model ProductPickupLocation {
+  productId        String
+  pickupLocationId String
+  createdAt        DateTime @default(now())
+  product          Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  pickupLocation   PickupLocation @relation(fields: [pickupLocationId], references: [id], onDelete: Cascade)
+
+  @@id([productId, pickupLocationId])
+  @@index([pickupLocationId])
 }
 
 model Collection {

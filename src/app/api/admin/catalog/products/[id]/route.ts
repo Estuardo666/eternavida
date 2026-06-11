@@ -6,6 +6,7 @@ import { CatalogConflictError } from "@/services/admin-catalog/admin-catalog.err
 import { mapAdminProductItem } from "@/services/admin-catalog/get-catalog-admin-data";
 import { deleteProduct, updateProduct } from "@/services/admin-catalog/product-crud";
 import { requireAdminAuth } from "@/server/auth/require-admin-auth";
+import type { AdminProductFormData } from "@/types/admin-catalog";
 
 function createErrorResponse(
   status: number,
@@ -56,7 +57,7 @@ export async function PUT(
       return createErrorResponse(422, "VALIDATION_ERROR", message, timestamp);
     }
 
-    const product = await updateProduct(id, validationResult.data);
+    const product = await updateProduct(id, validationResult.data as AdminProductFormData);
 
     return NextResponse.json(
       {

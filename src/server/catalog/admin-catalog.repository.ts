@@ -137,6 +137,67 @@ const adminProductInclude = {
       altText: true,
     },
   },
+  nutritionalInfoImage: {
+    select: {
+      publicUrl: true,
+      altText: true,
+    },
+  },
+  variants: {
+    include: {
+      mediaAsset: {
+        select: {
+          publicUrl: true,
+          altText: true,
+        },
+      },
+    },
+    orderBy: { sortOrder: "asc" as const },
+  },
+  ingredients: {
+    include: {
+      mediaAsset: {
+        select: {
+          publicUrl: true,
+          altText: true,
+        },
+      },
+    },
+    orderBy: { sortOrder: "asc" as const },
+  },
+  benefits: {
+    orderBy: { sortOrder: "asc" as const },
+  },
+  galleryImages: {
+    include: {
+      mediaAsset: {
+        select: {
+          publicUrl: true,
+          altText: true,
+        },
+      },
+    },
+    orderBy: { sortOrder: "asc" as const },
+  },
+  usageSteps: {
+    include: {
+      mediaAsset: {
+        select: {
+          publicUrl: true,
+          altText: true,
+        },
+      },
+    },
+    orderBy: { stepNumber: "asc" as const },
+  },
+  trustBadges: {
+    orderBy: { sortOrder: "asc" as const },
+  },
+  pickupLocations: {
+    select: {
+      pickupLocationId: true,
+    },
+  },
 } satisfies Prisma.ProductInclude;
 
 function combineWhere<T extends Prisma.CategoryWhereInput | Prisma.ProductWhereInput>(
@@ -484,6 +545,34 @@ export async function findConflictingProductRecord(input: {
       name: true,
       slug: true,
       href: true,
+    },
+  });
+}
+
+export async function listAdminPickupLocationRecords() {
+  return prisma.pickupLocation.findMany({
+    include: {
+      logoMedia: {
+        select: {
+          publicUrl: true,
+          altText: true,
+        },
+      },
+    },
+    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+  });
+}
+
+export async function findAdminPickupLocationRecord(id: string) {
+  return prisma.pickupLocation.findUnique({
+    where: { id },
+    include: {
+      logoMedia: {
+        select: {
+          publicUrl: true,
+          altText: true,
+        },
+      },
     },
   });
 }

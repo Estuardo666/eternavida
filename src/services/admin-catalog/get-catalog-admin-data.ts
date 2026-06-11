@@ -13,6 +13,7 @@ import type {
   AdminCatalogEditorData,
   AdminProductLibraryData,
   AdminCatalogProductItem,
+  AdminCatalogPickupLocationItem,
   AdminProductBadgePresetItem,
   AdminProductSyncHistoryItem,
   CatalogListFilter,
@@ -25,6 +26,7 @@ import {
   listAdminCategoryLibraryRecords,
   listAdminCategoryRecords,
   listAdminBrandRecords,
+  listAdminPickupLocationRecords,
   listAdminProductBadgePresetRecords,
   listAdminProductLibraryRecords,
   listAdminProductRecords,
@@ -269,6 +271,8 @@ export function mapAdminProductItem(record: {
   stock: number;
   isActive: boolean;
   categoryId: string | null;
+  productColor?: string | null;
+  nutritionalInfoImageId?: string | null;
   category?: {
     id: string;
     name: string;
@@ -288,6 +292,73 @@ export function mapAdminProductItem(record: {
     publicUrl: string | null;
     altText: string | null;
   } | null;
+  nutritionalInfoImage?: {
+    publicUrl: string | null;
+    altText: string | null;
+  } | null;
+  variants?: Array<{
+    id: string;
+    name: string;
+    price: number | DecimalLike;
+    discountPrice: number | DecimalLike | null;
+    stock: number;
+    isActive: boolean;
+    sortOrder: number;
+    mediaAssetId?: string | null;
+    mediaAsset?: {
+      publicUrl: string | null;
+      altText: string | null;
+    } | null;
+  }>;
+  ingredients?: Array<{
+    id: string;
+    name: string;
+    description: string | null;
+    mediaAssetId: string | null;
+    mediaAsset?: {
+      publicUrl: string | null;
+      altText: string | null;
+    } | null;
+    sortOrder: number;
+  }>;
+  benefits?: Array<{
+    id: string;
+    text: string;
+    iconKey: string;
+    sortOrder: number;
+  }>;
+  preTitle?: string | null;
+  shortDescription?: string;
+  longDescription?: string;
+  slogan?: string | null;
+  galleryImages?: Array<{
+    id: string;
+    mediaAssetId: string;
+    mediaAsset?: {
+      publicUrl: string | null;
+      altText: string | null;
+    } | null;
+    sortOrder: number;
+  }>;
+  usageSteps?: Array<{
+    id: string;
+    stepNumber: number;
+    text: string;
+    mediaAssetId: string | null;
+    mediaAsset?: {
+      publicUrl: string | null;
+      altText: string | null;
+    } | null;
+  }>;
+  trustBadges?: Array<{
+    id: string;
+    text: string;
+    iconKey: string;
+    sortOrder: number;
+  }>;
+  pickupLocations?: Array<{
+    pickupLocationId: string;
+  }>;
   externalId: string | null;
   externalSourceId: string | null;
   lastSyncedAt: Date | null;
@@ -322,6 +393,63 @@ export function mapAdminProductItem(record: {
     mediaAssetId: record.mediaAssetId,
     mediaAssetPublicUrl: record.mediaAsset?.publicUrl ?? null,
     mediaAssetAltText: record.mediaAsset?.altText ?? "",
+    productColor: record.productColor ?? null,
+    nutritionalInfoImageId: record.nutritionalInfoImageId ?? null,
+    nutritionalInfoImagePublicUrl: record.nutritionalInfoImage?.publicUrl ?? null,
+    nutritionalInfoImageAltText: record.nutritionalInfoImage?.altText ?? "",
+    variants: (record.variants ?? []).map((v) => ({
+      id: v.id,
+      name: v.name,
+      price: toNumberValue(v.price),
+      discountPrice: v.discountPrice === null ? null : toNumberValue(v.discountPrice),
+      stock: v.stock,
+      isActive: v.isActive,
+      sortOrder: v.sortOrder,
+      mediaAssetId: v.mediaAssetId ?? null,
+      mediaAssetPublicUrl: v.mediaAsset?.publicUrl ?? null,
+      mediaAssetAltText: v.mediaAsset?.altText ?? "",
+    })),
+    ingredients: (record.ingredients ?? []).map((ing) => ({
+      id: ing.id,
+      name: ing.name,
+      description: ing.description,
+      mediaAssetId: ing.mediaAssetId,
+      mediaAssetPublicUrl: ing.mediaAsset?.publicUrl ?? null,
+      mediaAssetAltText: ing.mediaAsset?.altText ?? "",
+      sortOrder: ing.sortOrder,
+    })),
+    benefits: (record.benefits ?? []).map((b) => ({
+      id: b.id,
+      text: b.text,
+      iconKey: b.iconKey,
+      sortOrder: b.sortOrder,
+    })),
+    preTitle: record.preTitle ?? null,
+    shortDescription: record.shortDescription ?? "",
+    longDescription: record.longDescription ?? "",
+    slogan: record.slogan ?? null,
+    galleryImages: (record.galleryImages ?? []).map((g) => ({
+      id: g.id,
+      mediaAssetId: g.mediaAssetId,
+      mediaAssetPublicUrl: g.mediaAsset?.publicUrl ?? null,
+      mediaAssetAltText: g.mediaAsset?.altText ?? "",
+      sortOrder: g.sortOrder,
+    })),
+    usageSteps: (record.usageSteps ?? []).map((s) => ({
+      id: s.id,
+      stepNumber: s.stepNumber,
+      text: s.text,
+      mediaAssetId: s.mediaAssetId,
+      mediaAssetPublicUrl: s.mediaAsset?.publicUrl ?? null,
+      mediaAssetAltText: s.mediaAsset?.altText ?? "",
+    })),
+    trustBadges: (record.trustBadges ?? []).map((b) => ({
+      id: b.id,
+      text: b.text,
+      iconKey: b.iconKey,
+      sortOrder: b.sortOrder,
+    })),
+    pickupLocationIds: (record.pickupLocations ?? []).map((pl) => pl.pickupLocationId),
     externalId: record.externalId,
     externalSourceId: record.externalSourceId,
     lastSyncedAt: record.lastSyncedAt ? record.lastSyncedAt.toISOString() : null,
@@ -352,13 +480,44 @@ export function mapAdminProductBadgePresetItem(record: {
   };
 }
 
+export function mapAdminPickupLocationItem(record: {
+  id: string;
+  name: string;
+  address: string;
+  directionsUrl: string | null;
+  logoMediaId: string | null;
+  isActive: boolean;
+  sortOrder: number;
+  logoMedia?: {
+    publicUrl: string | null;
+    altText: string | null;
+  } | null;
+  createdAt: Date;
+  updatedAt: Date;
+}): AdminCatalogPickupLocationItem {
+  return {
+    id: record.id,
+    name: record.name,
+    address: record.address,
+    directionsUrl: record.directionsUrl,
+    logoMediaId: record.logoMediaId,
+    logoMediaPublicUrl: record.logoMedia?.publicUrl ?? null,
+    logoMediaAltText: record.logoMedia?.altText ?? "",
+    isActive: record.isActive,
+    sortOrder: record.sortOrder,
+    createdAt: record.createdAt.toISOString(),
+    updatedAt: record.updatedAt.toISOString(),
+  };
+}
+
 export async function getCatalogAdminData(): Promise<AdminCatalogEditorData> {
-  const [categories, products, brands, mediaAssets, badgePresets] = await Promise.all([
+  const [categories, products, brands, mediaAssets, badgePresets, pickupLocations] = await Promise.all([
     listAdminCategoryRecords(),
     listAdminProductRecords(),
     listAdminBrandRecords(),
     listAdminCatalogMediaAssetRecords(),
     listAdminProductBadgePresetRecords(),
+    listAdminPickupLocationRecords(),
   ]);
 
   return {
@@ -367,12 +526,18 @@ export async function getCatalogAdminData(): Promise<AdminCatalogEditorData> {
     brands: brands.map(mapAdminBrandItem),
     mediaAssets: mediaAssets.map(mapAdminMediaAssetSummary),
     badgePresets: badgePresets.map(mapAdminProductBadgePresetItem),
+    pickupLocations: pickupLocations.map(mapAdminPickupLocationItem),
   };
 }
 
 export async function getProductBadgePresetAdminData(): Promise<AdminProductBadgePresetItem[]> {
   const records = await listAdminProductBadgePresetRecords();
   return records.map(mapAdminProductBadgePresetItem);
+}
+
+export async function getPickupLocationAdminData(): Promise<AdminCatalogPickupLocationItem[]> {
+  const records = await listAdminPickupLocationRecords();
+  return records.map(mapAdminPickupLocationItem);
 }
 
 export async function getCategoryLibraryData(

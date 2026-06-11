@@ -65,6 +65,11 @@ export function CollectionDetailView({ collection }: CollectionDetailViewProps) 
       stock: p.product.stock,
       badge: undefined,
       badgeColor: undefined,
+      productColor: null,
+      hasVariants: false,
+      preTitle: null,
+      slogan: null,
+      shortDescription: "",
       activePromotion: null,
       media: null,
       category: null,
@@ -72,6 +77,7 @@ export function CollectionDetailView({ collection }: CollectionDetailViewProps) 
     })) as Array<{
       id: string; slug: string; name: string; brand: string; description: string;
       href: string; price: number; discountPrice: number | null; stock: number;
+      productColor: string | null; hasVariants: boolean; preTitle: string | null; slogan: string | null; shortDescription: string;
       activePromotion: null; media: null; category: null; categories: never[];
     }>;
 

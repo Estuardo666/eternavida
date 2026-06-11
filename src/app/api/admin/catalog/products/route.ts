@@ -6,6 +6,7 @@ import { CatalogConflictError } from "@/services/admin-catalog/admin-catalog.err
 import { mapAdminProductItem } from "@/services/admin-catalog/get-catalog-admin-data";
 import { createProduct } from "@/services/admin-catalog/product-crud";
 import { requireAdminAuth } from "@/server/auth/require-admin-auth";
+import type { AdminProductFormData } from "@/types/admin-catalog";
 
 function createErrorResponse(
   status: number,
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return createErrorResponse(422, "VALIDATION_ERROR", message, timestamp);
     }
 
-    const product = await createProduct(validationResult.data);
+    const product = await createProduct(validationResult.data as AdminProductFormData);
 
     return NextResponse.json(
       {

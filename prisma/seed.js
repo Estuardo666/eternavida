@@ -62,6 +62,11 @@ const productSeedData = [
     price: 34.9,
     discountPrice: 29.9,
     stock: 5,
+    productColor: "#4CAF50",
+    preTitle: "Nuevo lanzamiento",
+    slogan: "Tu piel merece lo mejor",
+    shortDescription: "Rutina de claridad con vitamina C e hialuronico para una piel luminosa.",
+    longDescription: "<p>Esta rutina de claridad combina los mejores activos para una piel radiante.</p><ul><li><strong>Vitamina C</strong> - Ilumina y protege</li><li><strong>Acido hialuronico</strong> - Hidratacion profunda</li><li><strong>Niacinamida</strong> - Unifica tono</li></ul>",
   },
   {
     slug: "product-balance",
@@ -73,6 +78,7 @@ const productSeedData = [
     price: 26.5,
     discountPrice: 22.5,
     stock: 5,
+    productColor: "#2196F3",
   },
   {
     slug: "product-renewal",
@@ -84,6 +90,7 @@ const productSeedData = [
     price: 41.0,
     discountPrice: null,
     stock: 0,
+    productColor: "#673AB7",
   },
   {
     slug: "routine-recovery",
@@ -95,6 +102,7 @@ const productSeedData = [
     price: 37.0,
     discountPrice: null,
     stock: 1,
+    productColor: "#FF9800",
   },
   {
     slug: "routine-defense",
@@ -106,6 +114,7 @@ const productSeedData = [
     price: 31.5,
     discountPrice: null,
     stock: 42,
+    productColor: "#E91E63",
   },
   {
     slug: "routine-night",
@@ -117,6 +126,7 @@ const productSeedData = [
     price: 45.0,
     discountPrice: null,
     stock: 17,
+    productColor: "#3F51B5",
   },
 ];
 
@@ -207,6 +217,11 @@ async function main() {
             price: product.price,
             discountPrice: product.discountPrice,
             stock: product.stock,
+            productColor: product.productColor ?? null,
+            preTitle: product.preTitle ?? null,
+            slogan: product.slogan ?? null,
+            shortDescription: product.shortDescription ?? "",
+            longDescription: product.longDescription ?? "",
             isActive: true,
           },
           create: {
@@ -219,12 +234,133 @@ async function main() {
             price: product.price,
             discountPrice: product.discountPrice,
             stock: product.stock,
+            productColor: product.productColor ?? null,
+            preTitle: product.preTitle ?? null,
+            slogan: product.slogan ?? null,
+            shortDescription: product.shortDescription ?? "",
+            longDescription: product.longDescription ?? "",
             isActive: true,
           },
         }),
       ),
     ),
   ]);
+
+  // ── Seed variants, ingredients, benefits for first product ──────────────
+  const clarityProduct = products[0];
+  if (clarityProduct) {
+    // Variants
+    await prisma.productVariant.deleteMany({ where: { productId: clarityProduct.id } });
+    await prisma.productVariant.createMany({
+      data: [
+        { productId: clarityProduct.id, name: "30ml", price: 34.9, discountPrice: 29.9, stock: 5, isActive: true, sortOrder: 0 },
+        { productId: clarityProduct.id, name: "60ml", price: 54.9, discountPrice: 44.9, stock: 3, isActive: true, sortOrder: 1 },
+        { productId: clarityProduct.id, name: "100ml", price: 79.9, discountPrice: null, stock: 0, isActive: false, sortOrder: 2 },
+      ],
+    });
+
+    // Ingredients
+    await prisma.productIngredient.deleteMany({ where: { productId: clarityProduct.id } });
+    await prisma.productIngredient.createMany({
+      data: [
+        { productId: clarityProduct.id, name: "Vitamina C", description: "Antioxidante potente que ilumina y protege contra radicales libres.", sortOrder: 0 },
+        { productId: clarityProduct.id, name: "Acido hialuronico", description: "Hidratacion profunda que retiene hasta 1000 veces su peso en agua.", sortOrder: 1 },
+        { productId: clarityProduct.id, name: "Niacinamida", description: "Minimiza poros y mejora la textura uniforme de la piel.", sortOrder: 2 },
+        { productId: clarityProduct.id, name: "Extracto de te verde", description: "Antiinflamatorio natural con propiedades calmantes.", sortOrder: 3 },
+      ],
+    });
+
+    // Benefits
+    await prisma.productBenefit.deleteMany({ where: { productId: clarityProduct.id } });
+    await prisma.productBenefit.createMany({
+      data: [
+        { productId: clarityProduct.id, text: "Ilumina y unifica el tono de la piel", iconKey: "sparkle", sortOrder: 0 },
+        { productId: clarityProduct.id, text: "Hidratacion profunda 24h", iconKey: "droplet", sortOrder: 1 },
+        { productId: clarityProduct.id, text: "Proteccion antioxidante contra radicales libres", iconKey: "shield", sortOrder: 2 },
+        { productId: clarityProduct.id, text: "Formula dermatologicamente testada", iconKey: "flask", sortOrder: 3 },
+        { productId: clarityProduct.id, text: "Ingredientes 100% naturales", iconKey: "leaf", sortOrder: 4 },
+        { productId: clarityProduct.id, text: "Resultados visibles en 7 dias", iconKey: "clock", sortOrder: 5 },
+      ],
+    });
+  }
+
+  // ── Seed pickup locations ─────────────────────────────────────────────────
+  const pickupLocations = await Promise.all(
+    [
+      { name: "Sucursal Centro", address: "Av. Principal 123, Centro", directionsUrl: "https://maps.google.com/?q=Av+Principal+123", sortOrder: 0 },
+      { name: "Sucursal Norte", address: "Calle Norte 456, Plaza Mayor", directionsUrl: "https://maps.google.com/?q=Calle+Norte+456", sortOrder: 1 },
+    ].map((loc) =>
+      prisma.pickupLocation.upsert({
+        where: { id: "pickup-" + loc.name.toLowerCase().replace(/\s+/g, "-") },
+        update: { ...loc },
+        create: { id: "pickup-" + loc.name.toLowerCase().replace(/\s+/g, "-"), ...loc },
+      }),
+    ),
+  );
+
+  if (clarityProduct && pickupLocations.length > 0) {
+    await prisma.productPickupLocation.deleteMany({ where: { productId: clarityProduct.id } });
+    await prisma.productPickupLocation.createMany({
+      data: pickupLocations.map((loc) => ({
+        productId: clarityProduct.id,
+        pickupLocationId: loc.id,
+      })),
+    });
+  }
+
+  // Usage steps
+  if (clarityProduct) {
+    await prisma.productUsageStep.deleteMany({ where: { productId: clarityProduct.id } });
+    await prisma.productUsageStep.createMany({
+      data: [
+        { productId: clarityProduct.id, stepNumber: 1, text: "Limpia tu rostro con un limpiador suave y seca con toques suaves." },
+        { productId: clarityProduct.id, stepNumber: 2, text: "Aplica 3-4 gotas del serum sobre el rostro y cuello, distribuyendo de forma uniforme." },
+        { productId: clarityProduct.id, stepNumber: 3, text: "Masajea con movimientos circulares ascendentes hasta su completa absorcion." },
+        { productId: clarityProduct.id, stepNumber: 4, text: "Usa protector solar SPF 30+ durante el dia para proteger los resultados." },
+      ],
+    });
+
+    // Trust badges
+    await prisma.productTrustBadge.deleteMany({ where: { productId: clarityProduct.id } });
+    await prisma.productTrustBadge.createMany({
+      data: [
+        { productId: clarityProduct.id, text: "Envio gratis a todo el pais", iconKey: "shield", sortOrder: 0 },
+        { productId: clarityProduct.id, text: "Devolucion sin costo en 30 dias", iconKey: "check-circle", sortOrder: 1 },
+        { productId: clarityProduct.id, text: "Producto 100% original", iconKey: "award", sortOrder: 2 },
+      ],
+    });
+
+    // Gallery images (reuse hero media assets)
+    await prisma.productGalleryImage.deleteMany({ where: { productId: clarityProduct.id } });
+    await prisma.productGalleryImage.createMany({
+      data: [
+        { productId: clarityProduct.id, mediaAssetId: heroMedia.id, sortOrder: 0 },
+        { productId: clarityProduct.id, mediaAssetId: heroSecondaryMedia.id, sortOrder: 1 },
+        { productId: clarityProduct.id, mediaAssetId: heroTertiaryMedia.id, sortOrder: 2 },
+      ],
+    });
+  }
+
+  // Add variants to second product too
+  const balanceProduct = products[1];
+  if (balanceProduct) {
+    await prisma.productVariant.deleteMany({ where: { productId: balanceProduct.id } });
+    await prisma.productVariant.createMany({
+      data: [
+        { productId: balanceProduct.id, name: "50ml", price: 26.5, discountPrice: 22.5, stock: 5, isActive: true, sortOrder: 0 },
+        { productId: balanceProduct.id, name: "100ml", price: 42.0, discountPrice: null, stock: 8, isActive: true, sortOrder: 1 },
+      ],
+    });
+
+    await prisma.productBenefit.deleteMany({ where: { productId: balanceProduct.id } });
+    await prisma.productBenefit.createMany({
+      data: [
+        { productId: balanceProduct.id, text: "Hidratacion equilibrada para todo tipo de piel", iconKey: "droplet", sortOrder: 0 },
+        { productId: balanceProduct.id, text: "Textura ligera no grasa", iconKey: "feather", sortOrder: 1 },
+        { productId: balanceProduct.id, text: "Refrescante y calmante", iconKey: "wind", sortOrder: 2 },
+      ],
+    });
+  }
 
   const homeContentData = {
     heroEyebrow: "Dermatología curada",

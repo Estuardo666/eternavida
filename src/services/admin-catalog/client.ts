@@ -10,6 +10,8 @@ import type {
   AdminBrandFormData,
   AdminBrandRouteResponse,
   AdminDeleteRouteResponse,
+  AdminPickupLocationFormData,
+  AdminPickupLocationRouteResponse,
   AdminProductBadgePresetFormData,
   AdminProductBadgePresetRouteResponse,
   AdminProductFormData,
@@ -153,6 +155,56 @@ export async function deleteBrandClient(id: string) {
   const body = await parseJsonResponse<AdminDeleteRouteResponse>(response);
   if (!response.ok || !body.success || !body.data) {
     throw new Error(body.error?.message ?? "Failed to delete brand.");
+  }
+
+  return body.data.deletedId;
+}
+
+export async function createPickupLocationClient(input: AdminPickupLocationFormData) {
+  const response = await fetch("/api/admin/catalog/pickup-locations", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(input),
+  });
+
+  const body = await parseJsonResponse<AdminPickupLocationRouteResponse>(response);
+  if (!response.ok || !body.success || !body.data) {
+    throw new Error(body.error?.message ?? "Failed to create pickup location.");
+  }
+
+  return body.data.pickupLocation;
+}
+
+export async function updatePickupLocationClient(id: string, input: AdminPickupLocationFormData) {
+  const response = await fetch(`/api/admin/catalog/pickup-locations/${id}`, {
+    method: "PUT",
+    headers: {
+      "content-type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(input),
+  });
+
+  const body = await parseJsonResponse<AdminPickupLocationRouteResponse>(response);
+  if (!response.ok || !body.success || !body.data) {
+    throw new Error(body.error?.message ?? "Failed to update pickup location.");
+  }
+
+  return body.data.pickupLocation;
+}
+
+export async function deletePickupLocationClient(id: string) {
+  const response = await fetch(`/api/admin/catalog/pickup-locations/${id}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  const body = await parseJsonResponse<AdminDeleteRouteResponse>(response);
+  if (!response.ok || !body.success || !body.data) {
+    throw new Error(body.error?.message ?? "Failed to delete pickup location.");
   }
 
   return body.data.deletedId;

@@ -32,6 +32,7 @@ import {
   ChevronLeft,
   ChevronDown,
   Settings,
+  MapPin,
 } from "lucide-react";
 
 import { cx } from "@/lib/utils";
@@ -56,11 +57,12 @@ const primaryNavigation: ReadonlyArray<NavigationItem> = [
 ] as const;
 
 const catalogNavigation: ReadonlyArray<NavigationItem> = [
-  { href: "/admin/catalog/categories", label: "Categorías", icon: LayoutGrid },
+  { href: "/admin/catalog/categories", label: "Categorias", icon: LayoutGrid },
   { href: "/admin/catalog/products", label: "Productos", icon: Package },
   { href: "/admin/catalog/brands", label: "Marcas", icon: Bookmark },
   { href: "/admin/catalog/badges", label: "Badges", icon: Tag },
   { href: "/admin/catalog/promotions", label: "Promociones", icon: Percent },
+  { href: "/admin/catalog/pickup-locations", label: "Pickup Locations", icon: MapPin },
   { href: "/admin/collections", label: "Colecciones", icon: Layers },
 ] as const;
 

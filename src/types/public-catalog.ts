@@ -51,6 +51,11 @@ export interface PublicCatalogProductSummary {
   stock: number;
   badge?: string;
   badgeColor?: string;
+  productColor: string | null;
+  hasVariants: boolean;
+  preTitle: string | null;
+  slogan: string | null;
+  shortDescription: string;
   activePromotion: PublicPromotionPill | null;
   media: MediaAsset | null;
   category: PublicCatalogCategoryReference | null;
@@ -113,9 +118,64 @@ export interface PublicReviewAggregate {
   verifiedCount: number;
 }
 
+export interface PublicProductVariantSummary {
+  id: string;
+  name: string;
+  price: number;
+  discountPrice: number | null;
+  stock: number;
+}
+
+export interface PublicProductIngredientSummary {
+  id: string;
+  name: string;
+  description: string | null;
+  media: MediaAsset | null;
+}
+
+export interface PublicProductBenefitSummary {
+  id: string;
+  text: string;
+  iconKey: string;
+}
+
+export interface PublicProductGalleryImageSummary {
+  id: string;
+  media: MediaAsset | null;
+}
+
+export interface PublicProductUsageStepSummary {
+  id: string;
+  stepNumber: number;
+  text: string;
+  media: MediaAsset | null;
+}
+
+export interface PublicProductTrustBadgeSummary {
+  id: string;
+  text: string;
+  iconKey: string;
+}
+
+export interface PublicPickupLocationSummary {
+  id: string;
+  name: string;
+  address: string;
+  directionsUrl: string | null;
+  logoMedia: MediaAsset | null;
+}
+
 export interface PublicProductDetailData {
   product: PublicCatalogProductSummary;
   brandProducts: PublicCatalogProductSummary[];
   recommendedProducts: PublicCatalogProductSummary[];
   reviewAggregate: PublicReviewAggregate | null;
+  variants: PublicProductVariantSummary[];
+  ingredients: PublicProductIngredientSummary[];
+  benefits: PublicProductBenefitSummary[];
+  nutritionalInfoImage: MediaAsset | null;
+  galleryImages: PublicProductGalleryImageSummary[];
+  usageSteps: PublicProductUsageStepSummary[];
+  trustBadges: PublicProductTrustBadgeSummary[];
+  pickupLocations: PublicPickupLocationSummary[];
 }
