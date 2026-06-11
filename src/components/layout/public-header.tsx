@@ -12,6 +12,7 @@ import { LiveSearch } from "@/features/search/components/live-search";
 
 const navigationLinks = [
   { href: "/productos", label: "Productos" },
+  { href: "/acerca-de-nosotros", label: "Acerca de nosotros" },
 ] as const;
 
 const categoryLinks = [

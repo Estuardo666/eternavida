@@ -4,14 +4,14 @@ import { startTransition, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useSignIn, useUser } from "@clerk/nextjs";
-import { ArrowLeft, ChevronRight, Eye, EyeOff, LoaderCircle } from "lucide-react";
+import { ArrowLeft, ChevronRight, Eye, EyeOff, LoaderCircle, RefreshCcw } from "lucide-react";
 
 import { normalizeClerkErrorMessage } from "@/features/auth/lib/normalize-clerk-error";
 import { motionTokens } from "@/motion/tokens";
 import { cx } from "@/lib/utils";
 
-type SignInStep = "email" | "password";
-type SignInFormState = "idle" | "submitting" | "error";
+type SignInStep = "email" | "password" | "verification";
+type SignInFormState = "idle" | "submitting" | "verifying" | "error";
 
 const pillInput =
   "h-10 w-full rounded-full border border-border-soft bg-surface-canvas px-5 text-body-sm text-text-primary placeholder:text-body-sm placeholder:text-text-muted transition hover:border-brand-primary/40 hover:bg-[rgba(11,93,30,0.04)] focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 disabled:cursor-not-allowed disabled:bg-surface-subtle disabled:text-text-muted";
@@ -48,8 +48,10 @@ export function PublicSignInForm() {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
   const [formState, setFormState] = useState<SignInFormState>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isLoaded || !isSignedIn) return;
@@ -95,9 +97,66 @@ export function PublicSignInForm() {
 
       if (passwordResult.error) throw passwordResult.error;
 
+      if (signIn.status === "complete") {
+        const finalizeResult = await signIn.finalize();
+        if (finalizeResult.error) throw finalizeResult.error;
+
+        startTransition(() => {
+          router.replace(redirectTarget);
+        });
+        return;
+      }
+
+      if (signIn.status === "needs_second_factor" || signIn.status === "needs_client_trust") {
+        const sendCodeResult = await signIn.emailCode.sendCode();
+        if (sendCodeResult.error) throw sendCodeResult.error;
+
+        setStep("verification");
+        setFormState("verifying");
+        setInfoMessage(`Enviamos un código de verificación a ${email.trim()}. Ingrésalo para continuar.`);
+        return;
+      }
+
+      setFormState("error");
+      setErrorMessage("Tu cuenta requiere un paso adicional que esta versión todavía no maneja.");
+    } catch (error) {
+      setFormState("error");
+      setErrorMessage(
+        normalizeClerkErrorMessage(
+          error,
+          "No fue posible iniciar sesión. Verifica tus datos e inténtalo nuevamente.",
+        ),
+      );
+    }
+  }
+
+  async function handleVerifyCode(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setErrorMessage(null);
+
+    if (!verificationCode.trim()) {
+      setFormState("error");
+      setErrorMessage("Ingresa el código de verificación que recibiste por correo.");
+      return;
+    }
+    if (!isAuthReady || !signIn) {
+      setFormState("error");
+      setErrorMessage("Todavía no podemos verificar el código. Inténtalo de nuevo en un momento.");
+      return;
+    }
+
+    setFormState("submitting");
+
+    try {
+      const verificationAttempt = await signIn.emailCode.verifyCode({
+        code: verificationCode.trim(),
+      });
+
+      if (verificationAttempt.error) throw verificationAttempt.error;
+
       if (signIn.status !== "complete") {
         setFormState("error");
-        setErrorMessage("Tu cuenta requiere un paso adicional que esta versión todavía no maneja.");
+        setErrorMessage("No pudimos completar la verificación. Solicita un nuevo código e inténtalo de nuevo.");
         return;
       }
 
@@ -112,10 +171,41 @@ export function PublicSignInForm() {
       setErrorMessage(
         normalizeClerkErrorMessage(
           error,
-          "No fue posible iniciar sesión. Verifica tus datos e inténtalo nuevamente.",
+          "El código no fue aceptado. Revisa el correo y vuelve a intentarlo.",
         ),
       );
     }
+  }
+
+  async function handleResendCode() {
+    if (!isAuthReady || !signIn) return;
+
+    setFormState("submitting");
+    setErrorMessage(null);
+
+    try {
+      const resendResult = await signIn.emailCode.sendCode();
+      if (resendResult.error) throw resendResult.error;
+
+      setFormState("verifying");
+      setInfoMessage(`Reenviamos un nuevo código a ${email.trim()}.`);
+    } catch (error) {
+      setFormState("error");
+      setErrorMessage(
+        normalizeClerkErrorMessage(
+          error,
+          "No fue posible reenviar el código. Espera unos segundos e inténtalo de nuevo.",
+        ),
+      );
+    }
+  }
+
+  function handleGoBackToPassword() {
+    setStep("password");
+    setVerificationCode("");
+    setErrorMessage(null);
+    setInfoMessage(null);
+    setFormState("idle");
   }
 
   function handleGoBack() {
@@ -188,7 +278,7 @@ export function PublicSignInForm() {
             </span>
           </motion.button>
         </motion.form>
-      ) : (
+      ) : step === "password" ? (
         /* ── Step 2: password ────────────────────────────────── */
         <motion.form
           key="step-password"
@@ -290,6 +380,107 @@ export function PublicSignInForm() {
               "Ingresar"
             )}
           </motion.button>
+        </motion.form>
+      ) : (
+        /* ── Step 3: email code verification ──────────────────── */
+        <motion.form
+          key="step-verification"
+          onSubmit={handleVerifyCode}
+          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: 20, scale: 0.98 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
+          exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
+          transition={{ duration: motionTokens.duration.base, ease: motionTokens.ease.soft }}
+          className="space-y-3"
+          noValidate
+        >
+          {/* Info banner */}
+          {infoMessage ? (
+            <div className="rounded-full border border-border-soft bg-surface-canvas px-4 py-2.5">
+              <p className="text-body-sm text-text-secondary">{infoMessage}</p>
+            </div>
+          ) : null}
+
+          {/* Email identifier badge */}
+          <div className="flex items-center gap-2 rounded-full border border-border-soft bg-surface-canvas px-4 py-2.5">
+            <span className="flex-1 truncate text-body-sm text-text-primary">{email}</span>
+            <button
+              type="button"
+              onClick={handleGoBackToPassword}
+              className="flex shrink-0 items-center gap-1 text-label-sm text-brand-primary transition hover:text-brand-primary/70 focus-visible:outline-none"
+            >
+              <ArrowLeft className="h-3 w-3" aria-hidden="true" />
+              Cambiar
+            </button>
+          </div>
+
+          {/* Code input */}
+          <div>
+            <label htmlFor="si-otp-code" className="sr-only">
+              Código de verificación
+            </label>
+            <input
+              id="si-otp-code"
+              name="verificationCode"
+              type="text"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              maxLength={6}
+              value={verificationCode}
+              onChange={(e) => {
+                setVerificationCode(e.target.value.replace(/\D/g, ""));
+                setErrorMessage(null);
+              }}
+              placeholder="Código de 6 dígitos"
+              required
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus
+              disabled={isSubmitting}
+              className={cx(pillInput, "text-center tracking-[0.3em]")}
+            />
+          </div>
+
+          <AnimatePresence initial={false}>
+            {errorMessage ? (
+              <motion.p
+                key="verification-error"
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="px-2 text-body-sm text-status-error"
+              >
+                {errorMessage}
+              </motion.p>
+            ) : null}
+          </AnimatePresence>
+
+          <motion.button
+            type="submit"
+            disabled={!verificationCode.trim() || !isAuthReady || isSubmitting}
+            {...(!reduceMotion ? { whileTap: { scale: 0.98 } } : {})}
+            className={cx(pillButton, "bg-brand-primary text-white hover:bg-brand-primary/90")}
+          >
+            {isSubmitting ? (
+              <span className="flex items-center justify-center gap-2">
+                <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+                Verificando...
+              </span>
+            ) : (
+              "Verificar código"
+            )}
+          </motion.button>
+
+          {/* Resend code */}
+          <div className="flex items-center justify-center px-1 pt-1">
+            <button
+              type="button"
+              onClick={handleResendCode}
+              disabled={isSubmitting || !isAuthReady}
+              className="flex items-center gap-1.5 text-body-sm text-text-secondary transition hover:text-text-primary disabled:opacity-50 focus-visible:outline-none"
+            >
+              <RefreshCcw className="h-3.5 w-3.5" aria-hidden="true" />
+              Reenviar código
+            </button>
+          </div>
         </motion.form>
       )}
     </AnimatePresence>

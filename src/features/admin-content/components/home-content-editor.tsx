@@ -8,6 +8,7 @@ import {
   ADMIN_BUTTON_SECONDARY_CLASS_NAME,
   ADMIN_PANEL_SURFACE_CLASS_NAME,
 } from "@/components/admin/surface-styles";
+import { HeroSlideCard } from "@/features/admin-content/components/hero-slide-card";
 import { MediaAssetFrame } from "@/components/media/media-asset-frame";
 import {
   saveHomeContent,
@@ -498,40 +499,55 @@ export function HomeContentEditor({ initialData }: HomeContentEditorProps) {
 
           <label className="space-y-2 block">
             <span className="block text-label-md text-text-primary">Slides hero persistidos</span>
-            <div className="grid gap-4 xl:grid-cols-3">
-              <label className="space-y-2">
-                <span className="block text-body-sm text-text-secondary">Slide 1</span>
-                <select value={formData.heroMediaId} onChange={(event) => updateField("heroMediaId", event.target.value)} className={adminFieldClassName}>
-                  <option value="">Sin slide persistido</option>
-                  {mediaAssets.map((asset) => (
-                    <option key={asset.id} value={asset.id}>
-                      {asset.kind.toUpperCase()} - {asset.storageKey}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="space-y-2">
-                <span className="block text-body-sm text-text-secondary">Slide 2</span>
-                <select value={formData.heroSecondaryMediaId} onChange={(event) => updateField("heroSecondaryMediaId", event.target.value)} className={adminFieldClassName}>
-                  <option value="">Sin slide persistido</option>
-                  {mediaAssets.map((asset) => (
-                    <option key={asset.id} value={asset.id}>
-                      {asset.kind.toUpperCase()} - {asset.storageKey}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="space-y-2">
-                <span className="block text-body-sm text-text-secondary">Slide 3</span>
-                <select value={formData.heroTertiaryMediaId} onChange={(event) => updateField("heroTertiaryMediaId", event.target.value)} className={adminFieldClassName}>
-                  <option value="">Sin slide persistido</option>
-                  {mediaAssets.map((asset) => (
-                    <option key={asset.id} value={asset.id}>
-                      {asset.kind.toUpperCase()} - {asset.storageKey}
-                    </option>
-                  ))}
-                </select>
-              </label>
+            <p className="text-body-sm text-text-secondary mb-3">
+              Selecciona o sube imágenes para cada slide del carrusel hero. Puedes cambiar, subir nuevas, o quitar imágenes directamente desde cada tarjeta.
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              <HeroSlideCard
+                slideNumber={1}
+                selectedAsset={selectedHeroMedia}
+                altText={formData.heroMediaAltText}
+                mediaAssets={mediaAssets}
+                onSelect={(asset) => {
+                  updateField("heroMediaId", asset?.id ?? "");
+                  if (asset?.altText) updateField("heroMediaAltText", asset.altText);
+                }}
+                onAltTextChange={(value) => updateField("heroMediaAltText", value)}
+                onUpload={async (file, input) => {
+                  const result = await uploadMediaAsset(file, input);
+                  return result;
+                }}
+              />
+              <HeroSlideCard
+                slideNumber={2}
+                selectedAsset={mediaAssets.find((a) => a.id === formData.heroSecondaryMediaId) ?? null}
+                altText={formData.heroSecondaryMediaAltText}
+                mediaAssets={mediaAssets}
+                onSelect={(asset) => {
+                  updateField("heroSecondaryMediaId", asset?.id ?? "");
+                  if (asset?.altText) updateField("heroSecondaryMediaAltText", asset.altText);
+                }}
+                onAltTextChange={(value) => updateField("heroSecondaryMediaAltText", value)}
+                onUpload={async (file, input) => {
+                  const result = await uploadMediaAsset(file, input);
+                  return result;
+                }}
+              />
+              <HeroSlideCard
+                slideNumber={3}
+                selectedAsset={mediaAssets.find((a) => a.id === formData.heroTertiaryMediaId) ?? null}
+                altText={formData.heroTertiaryMediaAltText}
+                mediaAssets={mediaAssets}
+                onSelect={(asset) => {
+                  updateField("heroTertiaryMediaId", asset?.id ?? "");
+                  if (asset?.altText) updateField("heroTertiaryMediaAltText", asset.altText);
+                }}
+                onAltTextChange={(value) => updateField("heroTertiaryMediaAltText", value)}
+                onUpload={async (file, input) => {
+                  const result = await uploadMediaAsset(file, input);
+                  return result;
+                }}
+              />
             </div>
           </label>
 
@@ -872,21 +888,40 @@ export function HomeContentEditor({ initialData }: HomeContentEditorProps) {
 
           <section className={ADMIN_PANEL_SURFACE_CLASS_NAME}>
             <div className="space-y-2">
-              <h2 className="text-section-lg text-text-primary">Slide hero principal actual</h2>
+              <h2 className="text-section-lg text-text-primary">Slides hero actuales</h2>
               <p className="text-body-sm text-text-secondary">
-                Vista rápida del asset persistido actualmente para el slide 1. Si no indicas `publicUrl`, el backend la deriva desde tu bucket público de Cloudflare R2.
+                Vista rápida de los assets persistidos para los 3 slides del carrusel hero.
               </p>
             </div>
 
-            <div className="mt-4 rounded-xl border border-border-soft bg-surface-subtle p-4 text-body-sm text-text-secondary">
-              {selectedHeroMedia ? (
-                <div className="space-y-2 break-all">
-                  <p className="text-text-primary">{selectedHeroMedia.storageKey}</p>
-                  <p>{selectedHeroMedia.publicUrl ?? "Sin URL pública derivada"}</p>
+            <div className="mt-4 space-y-3">
+              {[
+                { label: "Slide 1", asset: selectedHeroMedia },
+                { label: "Slide 2", asset: mediaAssets.find((a) => a.id === formData.heroSecondaryMediaId) ?? null },
+                { label: "Slide 3", asset: mediaAssets.find((a) => a.id === formData.heroTertiaryMediaId) ?? null },
+              ].map(({ label, asset }) => (
+                <div key={label} className="rounded-xl border border-border-soft bg-surface-subtle p-3 text-body-sm text-text-secondary">
+                  <p className="mb-1 text-label-md text-text-primary">{label}</p>
+                  {asset ? (
+                    <div className="space-y-1 break-all">
+                      <p className="text-caption">{asset.storageKey}</p>
+                      {asset.publicUrl ? (
+                        <div className="mt-2 overflow-hidden rounded-lg">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={asset.publicUrl}
+                            alt={asset.altText || asset.storageKey}
+                            className="h-auto w-full object-cover"
+                            loading="lazy"
+                          />
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : (
+                    <p>No seleccionado</p>
+                  )}
                 </div>
-              ) : (
-                <p>No hay slide hero principal persistido seleccionado.</p>
-              )}
+              ))}
             </div>
           </section>
 

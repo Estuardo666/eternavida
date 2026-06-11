@@ -30,6 +30,12 @@ export async function updateHomeContent(input: AdminHomeContentFormData) {
     }
   }
 
+  const heroAltTextUpdates = [
+    { id: parsedInput.heroMediaId, altText: parsedInput.heroMediaAltText },
+    { id: parsedInput.heroSecondaryMediaId, altText: parsedInput.heroSecondaryMediaAltText },
+    { id: parsedInput.heroTertiaryMediaId, altText: parsedInput.heroTertiaryMediaAltText },
+  ].filter((entry): entry is { id: string; altText: string } => entry.id.length > 0 && entry.altText.length > 0);
+
   const [existingCategories, existingProducts] = await Promise.all([
     prisma.category.findMany({
       where: {
@@ -226,6 +232,12 @@ export async function updateHomeContent(input: AdminHomeContentFormData) {
           position: index,
         })),
       }),
+      ...heroAltTextUpdates.map((entry) =>
+        transaction.mediaAsset.update({
+          where: { id: entry.id },
+          data: { altText: entry.altText },
+        }),
+      ),
     ]);
 
     return homeRecord;

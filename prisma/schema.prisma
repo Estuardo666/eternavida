@@ -88,6 +88,12 @@ model MediaAsset {
   pickupLocationLogos     PickupLocation[]    @relation("PickupLocationLogoMedia")
   certificateBadgeMedia   ProductCertificateBadge[] @relation("CertificateBadgeMediaAsset")
   benefitMediaAssets      ProductBenefit[]    @relation("BenefitMediaAsset")
+  aboutHeroPages          AboutPageContent[]  @relation("AboutHeroMedia")
+  aboutHistoryPages       AboutPageContent[]  @relation("AboutHistoryMedia")
+  aboutMissionPages       AboutPageContent[]  @relation("AboutMissionMedia")
+  aboutVisionPages        AboutPageContent[]  @relation("AboutVisionMedia")
+  aboutProductionPages    AboutPageContent[]  @relation("AboutProductionMedia")
+  aboutImpactPages        AboutPageContent[]  @relation("AboutImpactMedia")
 
   @@index([kind])
   @@index([folderId])
@@ -1079,4 +1085,93 @@ model SubscriptionSettings {
   maxSubscriptionsPerUser Int      @default(10)
   createdAt               DateTime @default(now())
   updatedAt               DateTime @updatedAt
+}
+
+// ─── About Page Content ──────────────────────────────────────────────────────
+
+model AboutPageContent {
+  id     String @id @default(cuid())
+  slug   String @unique @default("acerca-de-nosotros")
+
+  // Section 1 – Hero
+  heroPretitle   String
+  heroTitle      String
+  heroSubtitle   String
+  heroCtaText    String
+  heroCtaHref    String
+  heroMediaId    String?
+
+  // Section 2 – Nuestra historia
+  historyPretitle String
+  historyTitle    String
+  historySubtitle String
+  historyCtaText  String
+  historyCtaHref  String
+  historySeoText  String @db.Text
+  historyMediaId  String?
+
+  // Section 3 – Misión
+  missionPretitle String
+  missionTitle    String
+  missionSeoText  String @db.Text
+  missionMediaId  String?
+
+  // Section 3 – Visión
+  visionPretitle  String
+  visionTitle     String
+  visionSubtitle  String
+  visionSeoText   String @db.Text
+  visionMediaId   String?
+
+  // Section 4 – Diferenciadores
+  diffPretitle  String
+  diffTitle     String
+  diffSubtitle  String
+  diffCtaText   String
+  diffCtaHref   String
+  diffSeoText   String @db.Text
+  diffItems     Json   // Array of { text: string, mediaId: string }
+
+  // Section 5 – Producción responsable
+  productionPretitle String
+  productionTitle    String
+  productionSubtitle String
+  productionCtaText  String
+  productionCtaHref  String
+  productionSeoText  String @db.Text
+  productionMediaId  String?
+
+  // Section 6 – Impacto social
+  impactPretitle String
+  impactTitle    String
+  impactSubtitle String
+  impactCtaText  String
+  impactCtaHref  String
+  impactSeoText  String @db.Text
+  impactMediaId  String?
+
+  // Section 7 – Cierre / CTA
+  ctaPretitle String
+  ctaTitle    String
+  ctaSubtitle String
+  ctaCtaText  String
+  ctaCtaHref  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  heroMedia       MediaAsset? @relation("AboutHeroMedia", fields: [heroMediaId], references: [id], onDelete: SetNull)
+  historyMedia    MediaAsset? @relation("AboutHistoryMedia", fields: [historyMediaId], references: [id], onDelete: SetNull)
+  missionMedia    MediaAsset? @relation("AboutMissionMedia", fields: [missionMediaId], references: [id], onDelete: SetNull)
+  visionMedia     MediaAsset? @relation("AboutVisionMedia", fields: [visionMediaId], references: [id], onDelete: SetNull)
+  productionMedia MediaAsset? @relation("AboutProductionMedia", fields: [productionMediaId], references: [id], onDelete: SetNull)
+  impactMedia     MediaAsset? @relation("AboutImpactMedia", fields: [impactMediaId], references: [id], onDelete: SetNull)
+
+  @@index([heroMediaId])
+  @@index([historyMediaId])
+  @@index([missionMediaId])
+  @@index([visionMediaId])
+  @@index([productionMediaId])
+  @@index([impactMediaId])
+  @@index([createdAt])
 }

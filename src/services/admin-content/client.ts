@@ -1,6 +1,11 @@
 "use client";
 
 import type {
+  AdminAboutContentEditorData,
+  AdminAboutContentFormData,
+  AdminAboutContentRouteResponse,
+} from "@/types/admin-about-content";
+import type {
   AdminHomeContentEditorData,
   AdminHomeContentFormData,
   AdminHomeContentRouteResponse,
@@ -99,4 +104,24 @@ export async function uploadMediaAsset(
   }
 
   return body.data.mediaAsset;
+}
+
+export async function saveAboutContent(
+  input: AdminAboutContentFormData,
+): Promise<AdminAboutContentEditorData> {
+  const response = await fetch("/api/admin/content/acerca-de-nosotros", {
+    method: "PUT",
+    headers: {
+      "content-type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(input),
+  });
+
+  const body = await parseJsonResponse<AdminAboutContentRouteResponse>(response);
+  if (!response.ok || !body.success || !body.data) {
+    throw new Error(body.error?.message ?? "Failed to update About content.");
+  }
+
+  return body.data;
 }

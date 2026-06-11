@@ -49,8 +49,11 @@ export interface AdminHomeContentFormData {
   heroSecondaryCtaText: string;
   heroSecondaryCtaHref: string;
   heroMediaId: string;
+  heroMediaAltText: string;
   heroSecondaryMediaId: string;
+  heroSecondaryMediaAltText: string;
   heroTertiaryMediaId: string;
+  heroTertiaryMediaAltText: string;
   featuredCategoriesEyebrow: string;
   featuredCategoriesTitle: string;
   featuredCategoriesDescription: string;

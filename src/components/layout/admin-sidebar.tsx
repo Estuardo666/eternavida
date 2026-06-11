@@ -53,6 +53,7 @@ type NavigationItem = {
 const primaryNavigation: ReadonlyArray<NavigationItem> = [
   { href: "/admin/leads", label: "Leads", icon: Users },
   { href: "/admin/content/home", label: "Home pública", icon: Home },
+  { href: "/admin/content/acerca-de-nosotros", label: "Acerca de Nosotros", icon: FileText },
   { href: "/admin/media", label: "Biblioteca de medios", icon: ImageIcon },
 ] as const;
 
