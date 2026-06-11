@@ -30,7 +30,7 @@ export function renderEmailLayout(opts: {
           <!-- Header -->
           <tr>
             <td style="background-color:#0B5D1E;padding:28px 32px;text-align:center;">
-              <img src="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/logotipo.jpg"
+              <img src="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/logotipo%20para%20correos.png"
                 alt="Eterna Vida" width="140" style="width:140px;height:auto;display:block;margin:0 auto;" />
             </td>
           </tr>

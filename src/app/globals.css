@@ -1,6 +1,22 @@
 @import "tailwindcss";
 @config "../../tailwind.config.ts";
 
+@font-face {
+  font-family: 'SentaSans';
+  src: url('/fonts/SentaSans_Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SentaSans';
+  src: url('/fonts/SentaSans_Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --app-background: #FAF8F3;
   --app-foreground: #2D2D2D;
@@ -18,6 +34,16 @@ body {
 body {
   background: var(--app-background);
   color: var(--app-foreground);
+}
+
+h1 {
+  font-family: 'SentaSans', sans-serif;
+  font-weight: 400;
+}
+
+h2 {
+  font-family: 'SentaSans', sans-serif;
+  font-weight: 300;
 }
 
 .bg-surface-subtle {

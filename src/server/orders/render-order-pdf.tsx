@@ -6,7 +6,7 @@ import { OrderPdfDocument } from "@/features/admin-orders/components/order-pdf-d
 import { prisma } from "@/server/db/prisma";
 import type { OrderWithRelations } from "@/server/orders/order.repository";
 
-const DEFAULT_LOGO_URL = "https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/logotipo.jpg";
+const DEFAULT_LOGO_URL = "https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/logotipo%20general.png";
 
 export async function renderOrderPdfBuffer(order: OrderWithRelations) {
   const paymentMethod = order.paymentMethodId

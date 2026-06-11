@@ -50,7 +50,7 @@ export function PublicHeader() {
             className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
           >
             <Image
-              src="/media/logotipo.jpg"
+              src="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/logotipo%20general.png"
               alt="Eterna Vida"
               width={192}
               height={48}

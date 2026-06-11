@@ -73,7 +73,7 @@ export function PublicAuthShell({ mode, children }: PublicAuthShellProps) {
               className="relative z-10 flex items-center justify-between gap-4"
             >
               <Image
-                src="/media/logotipo.jpg"
+                src="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/logotipo%20general.png"
                 alt="Eterna Vida"
                 width={220}
                 height={72}
@@ -176,7 +176,7 @@ export function PublicAuthShell({ mode, children }: PublicAuthShellProps) {
                 Volver
               </Link>
               <Image
-                src="/media/logotipo.jpg"
+                src="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/logotipo%20general.png"
                 alt="Eterna Vida"
                 width={184}
                 height={60}

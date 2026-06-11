@@ -93,7 +93,7 @@ export function PublicUnifiedAuth({ initialMode }: PublicUnifiedAuthProps) {
           {/* Top nav — mobile only */}
           <div className="mb-8 flex items-center justify-between lg:hidden">
             <Image
-              src="/media/logotipo.jpg"
+              src="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/logotipo%20general.png"
               alt="Eterna Vida"
               width={160}
               height={50}
@@ -112,7 +112,7 @@ export function PublicUnifiedAuth({ initialMode }: PublicUnifiedAuthProps) {
           {/* Desktop logo */}
           <div className="mb-7 hidden justify-center lg:flex">
             <Image
-              src="/media/logotipo.jpg"
+              src="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/logotipo%20general.png"
               alt="Eterna Vida"
               width={240}
               height={74}

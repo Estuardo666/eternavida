@@ -30,7 +30,7 @@ export function PublicFooter() {
         <div className="space-y-4">
           <div className="space-y-3">
             <Image
-              src="/media/logotipo.jpg"
+              src="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/logotipo%20general.png"
               alt="Eterna Vida"
               width={224}
               height={56}
