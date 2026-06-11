@@ -5,6 +5,8 @@ import { ClientSidebar } from "@/components/layout/client-sidebar";
 import { PublicHeader } from "@/components/layout/public-header";
 import { requireClientPageUser } from "@/server/auth/require-client-page-user";
 
+export const dynamic = "force-dynamic";
+
 type CuentaLayoutProps = Readonly<{ children: ReactNode }>;
 
 export default async function CuentaLayout({ children }: CuentaLayoutProps) {

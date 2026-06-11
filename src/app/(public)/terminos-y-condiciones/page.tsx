@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 import { LegalPageLayout, LegalSection, LegalList } from "@/components/layout/legal-page-layout";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Términos y Condiciones",
   description:
