@@ -44,7 +44,7 @@ export function PublicAccountEntry() {
   }, [isOpen]);
 
   if (!isLoaded) {
-    return <div className="h-10 w-24 animate-pulse rounded-pill bg-surface-soft" aria-hidden="true" />;
+    return <div className="h-10 w-24 animate-pulse rounded-pill bg-white/20" aria-hidden="true" />;
   }
 
   if (!isSignedIn || !user) {
@@ -52,7 +52,7 @@ export function PublicAccountEntry() {
       <motion.div {...(reduceMotion ? {} : buttonMotion)}>
         <Link
           href={`/login${redirectSuffix}`}
-          className="inline-flex min-h-10 items-center gap-2 rounded-pill bg-surface-canvas px-3 py-2 text-label-md text-text-primary transition hover:bg-surface-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas sm:px-4"
+          className="inline-flex min-h-10 items-center gap-2 rounded-pill bg-white/15 px-3 py-2 text-label-md text-white transition hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-primary sm:px-4"
         >
           <UserRound className="h-4 w-4" aria-hidden="true" />
           <span className="hidden sm:inline">Ingresar</span>
@@ -77,7 +77,7 @@ export function PublicAccountEntry() {
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="inline-flex min-h-10 items-center gap-2 rounded-pill bg-surface-canvas px-3 py-2 text-label-md text-text-primary transition hover:bg-surface-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas sm:px-4"
+          className="inline-flex min-h-10 items-center gap-2 rounded-pill bg-white/15 px-3 py-2 text-label-md text-white transition hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-primary sm:px-4"
         >
           {user.imageUrl ? (
             <Image

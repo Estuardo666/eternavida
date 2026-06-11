@@ -32,6 +32,13 @@ export async function listAboutMediaAssetRecords() {
       publicUrl: true,
       kind: true,
       altText: true,
+      mimeType: true,
+      posterUrl: true,
+      width: true,
+      height: true,
+      durationSeconds: true,
+      createdAt: true,
+      updatedAt: true,
     },
   });
 }

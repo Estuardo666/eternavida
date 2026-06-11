@@ -19,6 +19,13 @@ function mapMediaAssetSummary(record: {
   publicUrl: string | null;
   kind: "image" | "video";
   altText: string | null;
+  mimeType: string | null;
+  posterUrl: string | null;
+  width: number | null;
+  height: number | null;
+  durationSeconds: number | null;
+  createdAt: Date;
+  updatedAt: Date;
 }): AdminAboutMediaAssetSummary {
   return {
     id: record.id,
@@ -26,6 +33,13 @@ function mapMediaAssetSummary(record: {
     publicUrl: record.publicUrl,
     kind: record.kind,
     altText: record.altText ?? "",
+    mimeType: record.mimeType,
+    posterUrl: record.posterUrl,
+    width: record.width,
+    height: record.height,
+    durationSeconds: record.durationSeconds,
+    createdAt: record.createdAt.toISOString(),
+    updatedAt: record.updatedAt.toISOString(),
   };
 }
 

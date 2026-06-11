@@ -130,7 +130,7 @@ export function CheckoutConfirmation() {
           className="flex flex-col items-center pb-2 text-center"
         >
           <Image
-            src="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/logotipo%20general.png"
+            src="/media/logotipo general.png"
             alt="Eterna Vida"
             width={180}
             height={44}

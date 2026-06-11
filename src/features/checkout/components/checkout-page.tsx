@@ -802,7 +802,7 @@ export function CheckoutPageClient() {
               aria-label="Eterna Vida — Ir al inicio"
             >
               <Image
-                src="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/logotipo%20general.png"
+                src="/media/logotipo general.png"
                 alt="Eterna Vida"
                 width={240}
                 height={80}

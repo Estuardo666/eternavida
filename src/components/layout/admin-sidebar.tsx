@@ -389,7 +389,7 @@ export function AdminSidebar({ userEmail, userRole, userImageUrl }: AdminSidebar
                 aria-label="Expandir sidebar"
               >
                 <Image
-                  src="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/logotipo%20general.png"
+                  src="/media/logo para background verde.png"
                   alt="Eterna Vida"
                   width={20}
                   height={20}
@@ -490,7 +490,7 @@ function SidebarPanel(props: {
     <div className="flex h-full w-full flex-col border-r border-border-soft bg-surface-canvas p-3">
       <div className="flex items-center justify-between gap-2 pb-3 border-b border-border-soft">
         <Image
-          src="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/logotipo%20general.png"
+          src="/media/logo para background verde.png"
           alt="Eterna Vida"
           width={120}
           height={28}

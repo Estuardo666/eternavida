@@ -25,18 +25,18 @@ export function PublicHeader() {
   const [isPromoBarVisible, setIsPromoBarVisible] = useState(true);
 
   return (
-    <header className="sticky top-0 z-sticky border-b border-border-soft bg-surface-canvas/85 backdrop-blur-md">
+    <header className="sticky top-0 z-sticky border-b border-white/20 bg-brand-primary backdrop-blur-md">
       {isPromoBarVisible && (
-        <div className="border-b border-brand-primary/35 bg-brand-soft transition-all duration-200 ease-out animate-[promo-in_200ms_ease-out]">
+        <div className="border-b border-white/20 bg-brand-primaryHover/80 transition-all duration-200 ease-out animate-[promo-in_200ms_ease-out]">
           <div className="container flex min-h-9 items-center justify-between gap-2 py-1.5">
-            <p className="truncate text-body-sm font-semibold text-text-brand">
+            <p className="truncate text-body-sm font-semibold text-white">
               Promociones activas hoy: descuentos especiales en productos naturales artesanales.
             </p>
             <button
               type="button"
               onClick={() => setIsPromoBarVisible(false)}
               aria-label="Cerrar barra de promociones"
-              className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-brand-primary/30 bg-white/70 text-text-brand transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-brand-soft"
+              className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white transition hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-primary"
             >
               <X className="h-3.5 w-3.5" aria-hidden="true" />
             </button>
@@ -48,10 +48,10 @@ export function PublicHeader() {
         <div className="flex items-center gap-2.5 md:gap-4">
           <Link
             href="/"
-            className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
+            className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-primary"
           >
             <Image
-              src="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/logotipo%20general.png"
+              src="/media/logo para background verde.png"
               alt="Eterna Vida"
               width={192}
               height={48}
@@ -77,7 +77,7 @@ export function PublicHeader() {
             <li>
               <Link
                 href="/"
-                className="inline-flex min-h-9 items-center rounded-pill px-3 text-[14px] font-semibold text-text-primary transition hover:bg-surface-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
+                className="inline-flex min-h-9 items-center rounded-pill px-3 text-[14px] font-semibold text-white transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-primary"
               >
                 Inicio
               </Link>
@@ -87,7 +87,7 @@ export function PublicHeader() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="inline-flex min-h-9 items-center rounded-pill px-3 text-[14px] font-semibold text-text-secondary transition hover:bg-surface-soft hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
+                  className="inline-flex min-h-9 items-center rounded-pill px-3 text-[14px] font-semibold text-white/85 transition hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-primary"
                 >
                   {link.label}
                 </Link>
@@ -99,12 +99,12 @@ export function PublicHeader() {
                 <Link
                   key={category.label}
                   href={category.href}
-                  className="inline-flex min-h-8 items-center rounded-pill px-2.5 text-[11px] font-semibold uppercase tracking-[0.02em] text-text-brand transition hover:bg-surface-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
+                  className="inline-flex min-h-8 items-center rounded-pill px-2.5 text-[11px] font-semibold uppercase tracking-[0.02em] text-white/90 transition hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-primary"
                 >
                   {category.label}
                 </Link>
               ))}
-              <span className="inline-flex min-h-8 items-center rounded-pill bg-brand-primary px-3 text-[11px] font-semibold uppercase tracking-[0.02em] text-text-inverse">
+              <span className="inline-flex min-h-8 items-center rounded-pill bg-white px-3 text-[11px] font-semibold uppercase tracking-[0.02em] text-brand-primary">
                 Naturales
               </span>
               <span className="inline-flex min-h-8 items-center rounded-pill bg-[#F59E0B] px-3 text-[11px] font-semibold uppercase tracking-[0.02em] text-ink-900">

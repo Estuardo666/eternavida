@@ -10,7 +10,7 @@ export function CartHeaderButton() {
     <button
       type="button"
       onClick={toggleCart}
-      className="relative inline-flex h-11 w-11 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-surface-soft hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas"
+      className="relative inline-flex h-11 w-11 items-center justify-center rounded-full text-white/85 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-primary"
       aria-label={
         itemCount > 0
           ? `Carrito — ${itemCount} ${itemCount === 1 ? "producto" : "productos"}`

@@ -1,4 +1,4 @@
-import type { MediaAssetKind } from "@/types/media";
+import type { AdminMediaAssetSummary } from "@/types/admin-home-content";
 
 export interface AdminAboutDiffItem {
   text: string;
@@ -71,13 +71,7 @@ export interface AdminAboutContentFormData {
   ctaCtaHref: string;
 }
 
-export interface AdminAboutMediaAssetSummary {
-  id: string;
-  storageKey: string;
-  publicUrl: string | null;
-  kind: MediaAssetKind;
-  altText: string;
-}
+export type AdminAboutMediaAssetSummary = AdminMediaAssetSummary;
 
 export interface AdminAboutContentEditorData {
   content: AdminAboutContentFormData;
