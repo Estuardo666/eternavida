@@ -137,6 +137,14 @@ export interface PublicProductBenefitSummary {
   id: string;
   text: string;
   iconKey: string;
+  media: MediaAsset | null;
+}
+
+export interface PublicProductCertificateBadgeSummary {
+  id: string;
+  label: string;
+  iconKey: string | null;
+  media: MediaAsset | null;
 }
 
 export interface PublicProductGalleryImageSummary {
@@ -178,4 +186,5 @@ export interface PublicProductDetailData {
   usageSteps: PublicProductUsageStepSummary[];
   trustBadges: PublicProductTrustBadgeSummary[];
   pickupLocations: PublicPickupLocationSummary[];
+  certificateBadges: PublicProductCertificateBadgeSummary[];
 }

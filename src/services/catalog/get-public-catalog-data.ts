@@ -782,6 +782,35 @@ export async function getPublicProductDetailData(
       id: string;
       text: string;
       iconKey: string;
+      mediaAsset?: {
+        id: string;
+        kind: "image" | "video";
+        publicUrl: string | null;
+        storageKey: string;
+        altText: string | null;
+        mimeType: string | null;
+        posterUrl: string | null;
+        width: number | null;
+        height: number | null;
+        durationSeconds: number | null;
+      } | null;
+    }>;
+    certificateBadges?: Array<{
+      id: string;
+      label: string;
+      iconKey: string | null;
+      mediaAsset?: {
+        id: string;
+        kind: "image" | "video";
+        publicUrl: string | null;
+        storageKey: string;
+        altText: string | null;
+        mimeType: string | null;
+        posterUrl: string | null;
+        width: number | null;
+        height: number | null;
+        durationSeconds: number | null;
+      } | null;
     }>;
   };
 
@@ -809,6 +838,7 @@ export async function getPublicProductDetailData(
       id: b.id,
       text: b.text,
       iconKey: b.iconKey,
+      media: mapMediaAsset(b.mediaAsset),
     })),
     nutritionalInfoImage: mapMediaAsset(detailProduct.nutritionalInfoImage),
     galleryImages: (detailProduct.galleryImages ?? []).map((g) => ({
@@ -832,6 +862,12 @@ export async function getPublicProductDetailData(
       address: pl.pickupLocation.address,
       directionsUrl: pl.pickupLocation.directionsUrl,
       logoMedia: mapMediaAsset(pl.pickupLocation.logoMedia),
+    })),
+    certificateBadges: (detailProduct.certificateBadges ?? []).map((cb) => ({
+      id: cb.id,
+      label: cb.label,
+      iconKey: cb.iconKey ?? null,
+      media: mapMediaAsset(cb.mediaAsset),
     })),
   };
 }

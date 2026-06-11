@@ -4,19 +4,23 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion, type Variants } from "framer-motion";
+import { ChevronRight, Store } from "lucide-react";
 
 import { ProductBadge } from "@/components/ui/product-badge";
+import { AccordionSection } from "@/components/ui/accordion-section";
 import { useCart } from "@/features/cart/context/cart-context";
 import { motionTokens } from "@/motion/tokens";
-import { getBenefitIcon } from "@/lib/product-benefit-icons";
 import type { PublicProductDetailData, PublicProductVariantSummary } from "@/types/public-catalog";
-import { useWishlist } from "../hooks/use-wishlist";
 
 import { PublicProductCarousel } from "./public-product-carousel";
 import { StarRating } from "./star-rating";
 import { ReviewForm } from "./review-form";
 import { ReviewList } from "./review-list";
 import { RestockAlertForm } from "./restock-alert-form";
+import { ProductImageGallery } from "./product-image-gallery";
+import { ProductCertificateBadges } from "./product-certificate-badges";
+import { BenefitCardScroll } from "./benefit-card-scroll";
+import { PickupLocationDrawer } from "./pickup-location-drawer";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -28,15 +32,15 @@ const priceFormatter = new Intl.NumberFormat("es-MX", {
   minimumFractionDigits: 2,
 });
 
-type StockStatus = { label: string; textColor: string; dotColor: string };
+type StockStatus = { label: string; textColor: string };
 
 function deriveStockStatus(stock: number): StockStatus {
-  if (stock === 0) return { label: "Sin stock", textColor: "text-status-error", dotColor: "bg-status-error" };
-  if (stock <= 5) return { label: "Últimas unidades", textColor: "text-status-warning", dotColor: "bg-status-warning" };
-  return { label: "En stock", textColor: "text-status-success", dotColor: "bg-status-success" };
+  if (stock === 0) return { label: "Sin stock", textColor: "text-status-error" };
+  if (stock <= 5) return { label: "Últimas unidades", textColor: "text-status-warning" };
+  return { label: "EN STOCK", textColor: "text-status-success" };
 }
 
-// ─── Framer Motion variants ───────────────────────────────────────────────────
+// ─── Framer Motion variants ──────────────────────────────────────────────────
 
 const sectionFadeUp: Variants = {
   initial: { opacity: 0, y: distance.lg },
@@ -44,22 +48,6 @@ const sectionFadeUp: Variants = {
     opacity: 1,
     y: 0,
     transition: { duration: duration.page, ease: [0.22, 1, 0.36, 1] },
-  },
-};
-
-const staggerContainer: Variants = {
-  initial: {},
-  animate: {
-    transition: { staggerChildren: 0.08 },
-  },
-};
-
-const itemFadeUp: Variants = {
-  initial: { opacity: 0, y: distance.md },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: duration.base, ease: [0.22, 1, 0.36, 1] },
   },
 };
 
@@ -130,20 +118,17 @@ interface PublicProductDetailViewProps {
 
 export function PublicProductDetailView({ data }: PublicProductDetailViewProps) {
   const reduceMotion = useReducedMotion() ?? false;
-  const { product, brandProducts, recommendedProducts, reviewAggregate, variants, ingredients, benefits, nutritionalInfoImage } = data;
+  const { product, brandProducts, recommendedProducts, reviewAggregate, variants, ingredients, benefits, galleryImages, certificateBadges, pickupLocations, usageSteps } = data;
 
   const { addItem } = useCart();
-  const { isFavorited, toggle: toggleWishlist } = useWishlist();
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState<"idle" | "added">("idle");
-  const [isHeartBeating, setIsHeartBeating] = useState(false);
+  const [isPickupOpen, setIsPickupOpen] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState<PublicProductVariantSummary | null>(
     variants.length > 0 ? (variants[0] ?? null) : null,
   );
   const cartTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const heartTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Price logic — uses variant if selected, otherwise product base
   const effectivePrice = selectedVariant ? selectedVariant.price : product.price;
   const effectiveDiscountPrice = selectedVariant
     ? selectedVariant.discountPrice
@@ -169,7 +154,6 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
   const outOfStock = effectiveStock === 0;
   const stockStatus = deriveStockStatus(effectiveStock);
 
-  // Gradient background from product color
   const gradientBg = product.productColor
     ? `linear-gradient(135deg, ${product.productColor}18, #FFF8F0 60%)`
     : undefined;
@@ -199,16 +183,8 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
   useEffect(() => {
     return () => {
       if (cartTimerRef.current) clearTimeout(cartTimerRef.current);
-      if (heartTimerRef.current) clearTimeout(heartTimerRef.current);
     };
   }, []);
-
-  const handleFavorite = useCallback(async () => {
-    setIsHeartBeating(true);
-    if (heartTimerRef.current) clearTimeout(heartTimerRef.current);
-    heartTimerRef.current = setTimeout(() => setIsHeartBeating(false), 2100);
-    await toggleWishlist(product.id);
-  }, [toggleWishlist, product.id]);
 
   return (
     <div
@@ -220,32 +196,24 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
         {/* ── Product layout ──────────────────────────────────────────────── */}
         <section
           aria-label="Detalle del producto"
-          className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)] lg:items-stretch"
+          className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)] lg:items-start"
         >
-          {/* Left: product image */}
-          <motion.div
-            variants={reduceMotion ? {} : imageReveal}
-            initial="initial"
-            animate="animate"
-            className="group relative min-h-[360px] overflow-hidden rounded-2xl border border-border-soft bg-white sm:min-h-[480px]"
-          >
-            {product.media?.url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={product.media.url}
-                alt={product.media.altText?.trim() || product.name}
-                loading="lazy"
-                decoding="async"
-                className="absolute inset-0 h-full w-full object-contain p-8 transition-transform duration-500 ease-soft group-hover:scale-[1.04]"
+          {/* Left: image gallery (sticky) */}
+          <div className="lg:sticky lg:top-24 lg:self-start">
+            <motion.div
+              variants={reduceMotion ? {} : imageReveal}
+              initial="initial"
+              animate="animate"
+            >
+              <ProductImageGallery
+                primaryImage={product.media}
+                galleryImages={galleryImages}
+                productName={product.name}
               />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center p-8">
-                <span className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-neutral-100 text-label-lg text-text-muted">
-                  {product.name.slice(0, 1).toUpperCase()}
-                </span>
-              </div>
-            )}
-          </motion.div>
+            </motion.div>
+
+            <ProductCertificateBadges badges={certificateBadges} />
+          </div>
 
           {/* Right: info panel */}
           <AnimatedSection>
@@ -279,10 +247,12 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                   </ol>
                 </nav>
                 <div className="flex shrink-0 items-center gap-1.5 opacity-75">
-                  <span
-                    className={`inline-block h-2 w-2 rounded-full ${stockStatus.dotColor}`}
-                    aria-hidden="true"
-                  />
+                  {effectiveStock > 0 && (
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-3.5 w-3.5 ${stockStatus.textColor}`} aria-hidden="true">
+                      <path d="M11 20A7 7 0 0 1 9.8 6.9C15.5 4.9 17 3.5 19 2c1 2 2 4.5 2 8 0 5.5-4.78 10-10 10z" />
+                      <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                    </svg>
+                  )}
                   <span className={`text-body-sm font-medium ${stockStatus.textColor}`}>
                     {stockStatus.label}
                   </span>
@@ -311,25 +281,12 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                 </div>
               ) : null}
 
-              {/* Name + Brand */}
-              <div className="space-y-3">
-                <h1 className="text-headline-md leading-tight text-text-primary sm:text-headline-lg">
-                  {product.name}
-                </h1>
-                <div className="flex items-center gap-2">
-                  <span
-                    className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-border-soft bg-surface-subtle text-[0.6rem] font-semibold uppercase text-text-muted"
-                    aria-hidden="true"
-                  >
-                    {product.brand.slice(0, 2)}
-                  </span>
-                  <span className="text-body-md font-medium text-text-secondary">
-                    {product.brand}
-                  </span>
-                </div>
-              </div>
+              {/* Name */}
+              <h1 className="text-[2.16rem] font-bold leading-tight text-text-primary sm:text-[2.64rem]">
+                {product.name}
+              </h1>
 
-              {/* Rating — real data */}
+              {/* Rating */}
               {reviewAggregate && reviewAggregate.totalReviews > 0 ? (
                 <a
                   href="#reviews"
@@ -356,10 +313,10 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                 {product.description}
               </p>
 
-              {/* ── Variant selector ──────────────────────────────────────── */}
+              {/* Variant selector */}
               {variants.length > 0 ? (
                 <div className="space-y-2">
-                  <span className="text-body-sm font-medium text-text-secondary">Presentacion</span>
+                  <span className="text-body-sm font-medium text-text-secondary">Presentación</span>
                   <div className="flex flex-wrap gap-2">
                     {variants.map((variant) => (
                       <motion.button
@@ -386,7 +343,19 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                 </div>
               ) : null}
 
-              {/* ── Purchase area ──────────────────────────────────────────── */}
+              {/* Low stock warning */}
+              {effectiveStock > 0 && effectiveStock <= 5 ? (
+                <p className="flex items-center gap-1.5 text-[0.8125rem] font-medium text-status-warning">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  ¡Solo quedan {effectiveStock} unidades!
+                </p>
+              ) : null}
+
+              {/* Purchase area */}
               <div className="space-y-4">
 
                 {/* Price */}
@@ -449,10 +418,10 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                   </div>
                 </div>
 
-                {/* Cart + Favorites row */}
+                {/* Cart */}
                 <div className="flex items-center gap-3">
 
-                  {/* ── Add to cart — Framer Motion post-click ───────────── */}
+                  {/* Add to cart */}
                   <motion.button
                     type="button"
                     onClick={handleAddToCart}
@@ -521,86 +490,17 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                     </AnimatePresence>
                   </motion.button>
 
-                  {/* ── Favorites — Framer Motion heart toggle ───────────── */}
-                  <div className="group relative">
-                    <motion.button
-                      type="button"
-                      onClick={handleFavorite}
-                      whileTap={reduceMotion ? {} : { scale: 0.85, transition: { duration: 0.1 } }}
-                      className={[
-                        "flex h-12 w-12 items-center justify-center rounded-full border transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2",
-                        isFavorited(product.id)
-                          ? "border-rose-200 bg-rose-50"
-                          : "border-border-soft bg-surface-canvas hover:border-rose-200 hover:bg-rose-50",
-                      ].join(" ")}
-                      aria-label={isFavorited(product.id) ? "Quitar de favoritos" : "Añadir a mis favoritos"}
-                      aria-pressed={isFavorited(product.id)}
-                    >
-                      <motion.div
-                        animate={
-                          reduceMotion
-                            ? {}
-                            : isHeartBeating
-                              ? { scale: [1, 1.42, 0.9, 1.3, 0.96, 1.2, 0.98, 1.1, 1.0, 1.0] }
-                              : { scale: 1 }
-                        }
-                        transition={
-                          reduceMotion
-                            ? { duration: 0 }
-                            : isHeartBeating
-                              ? {
-                                  duration: 2,
-                                  times: [0, 0.06, 0.15, 0.23, 0.31, 0.41, 0.48, 0.56, 0.63, 1],
-                                  ease: "easeInOut",
-                                }
-                              : { type: "spring", stiffness: 300, damping: 20 }
-                        }
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          className="h-5 w-5"
-                          aria-hidden="true"
-                        >
-                          <motion.path
-                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                            strokeWidth={2}
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            animate={{
-                              fill: isFavorited(product.id) ? "#ef4444" : "rgba(0,0,0,0)",
-                              stroke: isFavorited(product.id) ? "#ef4444" : "#9ca3af",
-                            }}
-                            transition={
-                              reduceMotion
-                                ? { duration: 0 }
-                                : { duration: 0.18, ease: [0.22, 1, 0.36, 1] }
-                            }
-                          />
-                        </svg>
-                      </motion.div>
-                    </motion.button>
-
-                    {/* Tooltip */}
-                    <span
-                      role="tooltip"
-                      className="pointer-events-none absolute bottom-full left-1/2 z-tooltip mb-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-ink-700 px-2.5 py-1 text-[0.72rem] font-medium text-white opacity-0 shadow-sm transition-opacity duration-150 group-hover:opacity-100"
-                    >
-                      {isFavorited(product.id) ? "Quitar de favoritos" : "Añadir a mis favoritos"}
-                    </span>
-                  </div>
-
                 </div>
               </div>
 
-              {/* ── Restock alert (when out of stock) ──────────────────────── */}
+              {/* Restock alert */}
               {outOfStock ? (
                 <div className="rounded-xl border border-border-soft bg-white p-4">
                   <RestockAlertForm productId={product.id} productName={product.name} />
                 </div>
               ) : null}
 
-              {/* ── Trust badges ───────────────────────────────────────────── */}
+              {/* Trust badges */}
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                   <span className="flex items-center gap-1.5 text-[0.72rem] text-text-muted">
@@ -651,163 +551,136 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                 </div>
               </div>
 
+              {/* Benefit cards scroll */}
+              <BenefitCardScroll benefits={benefits} />
+
+              {/* Pickup location */}
+              {pickupLocations.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setIsPickupOpen(true)}
+                  className="flex w-full items-center justify-between rounded-xl border border-border-soft bg-surface-canvas px-4 py-3.5 text-left transition-colors hover:bg-surface-subtle"
+                >
+                  <div className="flex items-center gap-3">
+                    <Store className="h-5 w-5 text-text-secondary" />
+                    <div>
+                      <p className="text-sm font-medium text-text-primary">
+                        Recoger en <span className="font-semibold">{pickupLocations[0]?.name}</span>
+                      </p>
+                      <p className="text-xs text-text-secondary">Listo en 24 horas</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-text-secondary" />
+                </button>
+              )}
+
               {/* Product ID */}
               <p className="text-[0.7rem] tracking-[0.04em] text-text-muted">
                 ID: {product.id}
               </p>
 
+              {/* ── Acordeón de secciones ──────────────────────────────────── */}
+              <div className="mt-6 divide-y divide-border-soft border-y border-border-soft">
+                {product.description ? (
+                  <AccordionSection title="Detalles del producto">
+                    <p>{product.description}</p>
+                  </AccordionSection>
+                ) : null}
+
+                {ingredients.length > 0 ? (
+                  <AccordionSection title="Ingredientes clave">
+                    <ul className="space-y-2">
+                      {ingredients.map((ing) => (
+                        <li key={ing.id} className="flex items-start gap-2">
+                          <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand-primary" />
+                          <div>
+                            <span className="font-medium text-text-primary">{ing.name}</span>
+                            {ing.description ? (
+                              <span className="text-text-secondary"> — {ing.description}</span>
+                            ) : null}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </AccordionSection>
+                ) : null}
+
+                {usageSteps.length > 0 ? (
+                  <AccordionSection title="Modo de uso">
+                    <ol className="space-y-3">
+                      {usageSteps.map((step) => (
+                        <li key={step.id} className="flex items-start gap-3">
+                          <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-brand-primary/10 text-xs font-semibold text-brand-primary">
+                            {step.stepNumber}
+                          </span>
+                          <span className="text-text-secondary">{step.text}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </AccordionSection>
+                ) : null}
+
+                <AccordionSection title="Reseñas de clientes">
+                  <div id="reviews" className="space-y-6">
+                    <div className="space-y-3">
+                      <h3 className="text-body-lg font-semibold text-text-primary">
+                        Deja tu reseña
+                      </h3>
+                      <ReviewForm productId={product.id} />
+                    </div>
+                    <ReviewList productSlug={product.slug} aggregate={reviewAggregate} />
+                  </div>
+                </AccordionSection>
+              </div>
+
+              {/* ── Compartir + Necesitas ayuda ──────────────────────────────── */}
+              <div className="mt-8 flex items-center gap-6 border-t border-border-soft pt-6">
+                <button
+                  type="button"
+                  className="flex items-center gap-2 text-sm text-text-secondary transition-colors hover:text-text-primary"
+                  onClick={() => {
+                    if (typeof navigator !== "undefined" && navigator.share) {
+                      navigator.share({ title: product.name, url: window.location.href });
+                    }
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden="true">
+                    <circle cx="18" cy="5" r="3" />
+                    <circle cx="6" cy="12" r="3" />
+                    <circle cx="18" cy="19" r="3" />
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                  </svg>
+                  Compartir
+                </button>
+                <button
+                  type="button"
+                  className="flex items-center gap-2 text-sm text-text-secondary transition-colors hover:text-text-primary"
+                  onClick={() => {
+                    if (typeof window !== "undefined") {
+                      window.open("https://wa.me/593999999999?text=Hola, necesito ayuda con " + encodeURIComponent(product.name), "_blank");
+                    }
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden="true">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  Necesitas ayuda
+                </button>
+              </div>
+
             </div>
           </AnimatedSection>
         </section>
 
-        {/* ── Benefits ──────────────────────────────────────────────────────── */}
-        {benefits.length > 0 ? (
-          <AnimatedSection>
-            <section className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-section-xl text-text-primary">Beneficios</h2>
-              </div>
-              <motion.div
-                variants={reduceMotion ? {} : staggerContainer}
-                initial="initial"
-                whileInView="animate"
-                viewport={{ once: true, amount: 0.15 }}
-                className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-              >
-                {benefits.map((benefit) => {
-                  const iconDef = getBenefitIcon(benefit.iconKey) ?? getBenefitIcon("check-circle");
-                  return (
-                    <motion.div
-                      key={benefit.id}
-                      variants={reduceMotion ? {} : itemFadeUp}
-                      className="flex items-start gap-3 rounded-2xl border border-border-soft bg-white/80 p-4 backdrop-blur-sm"
-                    >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-brand-primary">
-                        {iconDef ? (
-                          <svg viewBox={iconDef.viewBox} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
-                            {iconDef.paths.map((d, i) => <path key={i} d={d} />)}
-                          </svg>
-                        ) : null}
-                      </div>
-                      <p className="text-body-md font-medium text-text-primary leading-snug">
-                        {benefit.text}
-                      </p>
-                    </motion.div>
-                  );
-                })}
-              </motion.div>
-            </section>
-          </AnimatedSection>
-        ) : null}
-
-        {/* ── Ingredients ──────────────────────────────────────────────────── */}
-        {ingredients.length > 0 ? (
-          <AnimatedSection>
-            <section className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-section-xl text-text-primary">Ingredientes</h2>
-                <p className="text-body-md text-text-secondary">
-                  Ingredientes clave de este producto.
-                </p>
-              </div>
-              <motion.div
-                variants={reduceMotion ? {} : staggerContainer}
-                initial="initial"
-                whileInView="animate"
-                viewport={{ once: true, amount: 0.15 }}
-                className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-              >
-                {ingredients.map((ingredient) => (
-                  <motion.div
-                    key={ingredient.id}
-                    variants={reduceMotion ? {} : itemFadeUp}
-                    className="flex items-start gap-4 rounded-2xl border border-border-soft bg-white/80 p-4 backdrop-blur-sm"
-                  >
-                    {ingredient.media?.url ? (
-                      <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-surface-subtle">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={ingredient.media.url}
-                          alt={ingredient.media.altText?.trim() || ingredient.name}
-                          className="h-full w-full object-cover"
-                          loading="lazy"
-                        />
-                      </div>
-                    ) : (
-                      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-[0.7rem] font-semibold uppercase text-brand-primary">
-                        {ingredient.name.slice(0, 2)}
-                      </div>
-                    )}
-                    <div className="min-w-0 flex-1 space-y-1">
-                      <p className="text-body-md font-semibold text-text-primary">{ingredient.name}</p>
-                      {ingredient.description ? (
-                        <p className="text-body-sm leading-relaxed text-text-secondary">{ingredient.description}</p>
-                      ) : null}
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
-            </section>
-          </AnimatedSection>
-        ) : null}
-
-        {/* ── Nutritional Info ──────────────────────────────────────────────── */}
-        {nutritionalInfoImage?.url ? (
-          <AnimatedSection>
-            <section className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-section-xl text-text-primary">Información nutricional</h2>
-              </div>
-              <motion.div
-                variants={reduceMotion ? {} : imageReveal}
-                initial="initial"
-                whileInView="animate"
-                viewport={{ once: true, amount: 0.15 }}
-                className="group relative overflow-hidden rounded-2xl border border-border-soft bg-white"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={nutritionalInfoImage.url}
-                  alt={nutritionalInfoImage.altText?.trim() || "Información nutricional"}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full object-contain p-4 transition-transform duration-500 ease-soft group-hover:scale-[1.02] sm:max-h-[600px]"
-                />
-              </motion.div>
-            </section>
-          </AnimatedSection>
-        ) : null}
-
-        {/* ── Reviews ──────────────────────────────────────────────────────── */}
-        <AnimatedSection>
-          <section id="reviews" className="border-b border-emerald-200/50 pb-10">
-            <div className="mb-6">
-              <h2 className="text-section-xl text-text-primary">Reseñas de clientes</h2>
-            </div>
-
-            <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
-              <div className="space-y-3">
-                <h3 className="text-body-lg font-semibold text-text-primary">
-                  Deja tu reseña
-                </h3>
-                <ReviewForm productId={product.id} />
-              </div>
-
-              <div>
-                <ReviewList productSlug={product.slug} aggregate={reviewAggregate} />
-              </div>
-            </div>
-          </section>
-        </AnimatedSection>
-
-        {/* ── More from this brand ────────────────────────────────────────── */}
+        {/* ── Productos relacionados ────────────────────────────────────── */}
         {brandProducts.length > 0 ? (
           <AnimatedSection>
             <section className="space-y-6">
               <div className="space-y-2">
-                <h2 className="text-section-xl text-text-primary">Más de esta marca</h2>
+                <h2 className="text-section-xl text-text-primary">También te puede interesar</h2>
                 <p className="text-body-md text-text-secondary">
-                  Explora más productos de {product.brand} disponibles en el catálogo.
+                  Descubre más productos de {product.brand} que podrían complementar tu rutina.
                 </p>
               </div>
               <PublicProductCarousel items={brandProducts} />
@@ -815,7 +688,7 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
           </AnimatedSection>
         ) : null}
 
-        {/* ── Recomendados para ti ────────────────────────────────────────── */}
+        {/* ── Recomendados para ti ───────────────────────────────────────── */}
         {recommendedProducts.length > 0 ? (
           <AnimatedSection>
             <section className="space-y-6">
@@ -833,6 +706,14 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
         ) : null}
 
       </div>
+
+      {/* Pickup location drawer */}
+      <PickupLocationDrawer
+        isOpen={isPickupOpen}
+        onClose={() => setIsPickupOpen(false)}
+        locations={pickupLocations}
+        productName={product.name}
+      />
     </div>
   );
 }

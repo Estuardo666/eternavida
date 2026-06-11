@@ -318,6 +318,22 @@ const publicProductDetailInclude = {
     orderBy: { sortOrder: "asc" as const },
   },
   benefits: {
+    include: {
+      mediaAsset: {
+        select: {
+          id: true,
+          kind: true,
+          publicUrl: true,
+          storageKey: true,
+          altText: true,
+          mimeType: true,
+          posterUrl: true,
+          width: true,
+          height: true,
+          durationSeconds: true,
+        },
+      },
+    },
     orderBy: { sortOrder: "asc" as const },
   },
   galleryImages: {
@@ -382,6 +398,25 @@ const publicProductDetailInclude = {
         },
       },
     },
+  },
+  certificateBadges: {
+    include: {
+      mediaAsset: {
+        select: {
+          id: true,
+          kind: true,
+          publicUrl: true,
+          storageKey: true,
+          altText: true,
+          mimeType: true,
+          posterUrl: true,
+          width: true,
+          height: true,
+          durationSeconds: true,
+        },
+      },
+    },
+    orderBy: { sortOrder: "asc" as const },
   },
 } satisfies Prisma.ProductInclude;
 

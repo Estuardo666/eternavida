@@ -86,6 +86,8 @@ model MediaAsset {
   productGalleryImages    ProductGalleryImage[] @relation("ProductGalleryMediaAsset")
   productUsageSteps       ProductUsageStep[]  @relation("ProductUsageStepMediaAsset")
   pickupLocationLogos     PickupLocation[]    @relation("PickupLocationLogoMedia")
+  certificateBadgeMedia   ProductCertificateBadge[] @relation("CertificateBadgeMediaAsset")
+  benefitMediaAssets      ProductBenefit[]    @relation("BenefitMediaAsset")
 
   @@index([kind])
   @@index([folderId])
@@ -165,6 +167,7 @@ model Product {
   usageSteps              ProductUsageStep[]
   trustBadges             ProductTrustBadge[]
   pickupLocations         ProductPickupLocation[]
+  certificateBadges       ProductCertificateBadge[]
   nutritionalInfoImage    MediaAsset?                 @relation("ProductNutritionalInfoMedia", fields: [nutritionalInfoImageId], references: [id], onDelete: SetNull)
 
   @@index([isActive])
@@ -257,16 +260,36 @@ model ProductIngredient {
 }
 
 model ProductBenefit {
-  id        String   @id @default(cuid())
-  productId String
-  text      String
-  iconKey   String
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id           String      @id @default(cuid())
+  productId    String
+  text         String
+  iconKey      String
+  mediaAssetId String?
+  sortOrder    Int         @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  product      Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  mediaAsset   MediaAsset? @relation("BenefitMediaAsset", fields: [mediaAssetId], references: [id], onDelete: SetNull)
 
   @@index([productId])
+  @@index([mediaAssetId])
+}
+
+model ProductCertificateBadge {
+  id           String      @id @default(cuid())
+  productId    String
+  label        String
+  iconKey      String?
+  mediaAssetId String?
+  sortOrder    Int         @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  product      Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  mediaAsset   MediaAsset? @relation("CertificateBadgeMediaAsset", fields: [mediaAssetId], references: [id], onDelete: SetNull)
+
+  @@index([productId])
+  @@index([mediaAssetId])
+  @@index([sortOrder])
 }
 
 model ProductGalleryImage {
