@@ -12,9 +12,5 @@ export const metadata: Metadata = {
 export default async function AcercaDeNosotrosPage() {
   const contentResult = await getAboutPageContent();
 
-  return (
-    <div className="bg-gradient-to-b from-[#0B5D1E08] via-white to-white [&_h2]:tracking-[-0.03em]">
-      <AboutPageView contentResult={contentResult} />
-    </div>
-  );
+  return <AboutPageView contentResult={contentResult} />;
 }

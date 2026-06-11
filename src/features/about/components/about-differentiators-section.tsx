@@ -3,106 +3,103 @@
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 
-import { PublicLinkButton } from "@/components/ui/public-link-button";
 import { motionTokens } from "@/motion/tokens";
-import type { AboutDiffSection } from "@/types/about-content";
+import type { AboutDiffSection, AboutDiffItem } from "@/types/about-content";
 
 interface AboutDifferentiatorsSectionProps {
   content: AboutDiffSection;
 }
 
-const containerVariants = {
-  animate: {
-    transition: {
-      staggerChildren: 0.06,
-      delayChildren: 0.04,
-    },
-  },
-};
+function DiffCard({
+  item,
+  index,
+  reduceMotion,
+}: {
+  item: AboutDiffItem;
+  index: number;
+  reduceMotion: boolean;
+}) {
+  return (
+    <motion.article
+      initial={reduceMotion ? false : { opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, ease: motionTokens.ease.standard, delay: index * 0.1 }}
+      className="group grid min-h-[320px] grid-cols-[0.35fr_0.65fr] overflow-hidden rounded-[24px] bg-white/[0.04] backdrop-blur-sm sm:grid-cols-[320px_1fr]"
+    >
+      <div className="relative overflow-hidden">
+        {item.media?.url ? (
+          <Image
+            src={item.media.url}
+            alt={item.media.altText}
+            fill
+            sizes="320px"
+            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          />
+        ) : (
+          <div className="h-full w-full bg-white/[0.06]" />
+        )}
+      </div>
 
-const itemVariants = {
-  initial: { opacity: 0, y: motionTokens.distance.md },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: motionTokens.duration.base, ease: motionTokens.ease.standard },
-  },
-};
+      <div className="flex flex-col justify-center p-7 sm:p-9 lg:p-10">
+        <span className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.07]">
+          <span className="text-sm font-semibold text-white/80">{String(index + 1).padStart(2, "0")}</span>
+        </span>
+
+        <h3 className="mb-3 text-[clamp(1.25rem,2.5vw,1.75rem)] font-semibold leading-[1.15] tracking-[-0.02em] text-white">
+          {item.text}
+        </h3>
+
+        <p className="max-w-sm text-[clamp(0.875rem,1.1vw,0.95rem)] leading-[1.7] text-white/65">
+          Ingredientes cuidadosamente seleccionados y procesos responsables que garantizan la máxima calidad en cada producto.
+        </p>
+      </div>
+    </motion.article>
+  );
+}
 
 export function AboutDifferentiatorsSection({ content }: AboutDifferentiatorsSectionProps) {
   const reduceMotion = useReducedMotion() ?? false;
 
   return (
-    <section className="bg-gradient-to-b from-white via-brand-soft/20 to-white py-16 sm:py-24">
-      <div className="container">
-        <motion.div
-          initial={reduceMotion ? false : { opacity: 0, y: motionTokens.distance.md }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.25 }}
-          transition={{ duration: motionTokens.duration.page, ease: motionTokens.ease.standard }}
-          className="mb-12 space-y-4 text-center"
-        >
-          <span className="inline-flex rounded-pill border border-border-brand bg-brand-soft px-3 py-1 text-caption uppercase tracking-[0.14em] text-text-brand">
-            {content.pretitle}
-          </span>
+    <section className="w-full bg-[#14352A] px-[clamp(24px,5vw,80px)] py-[clamp(60px,8vw,120px)]">
+      <div className="mx-auto max-w-[1400px]">
+        <div className="grid items-start gap-12 lg:grid-cols-[0.3fr_0.7fr] lg:gap-16 xl:gap-20">
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6, ease: motionTokens.ease.standard }}
+            className="lg:sticky lg:top-28"
+          >
+            <span className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-400/70 sm:text-xs">
+              {content.pretitle}
+            </span>
 
-          <h2 className="mx-auto max-w-2xl text-headline-sm text-text-primary sm:text-headline-md">
-            {content.title}
-          </h2>
+            <h2 className="mb-4 max-w-sm text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-[1.12] tracking-[-0.03em] text-white">
+              {content.title}
+            </h2>
 
-          <p className="mx-auto max-w-xl text-body-lg text-text-secondary">
-            {content.subtitle}
-          </p>
+            <p className="mb-6 max-w-sm text-[clamp(1rem,1.5vw,1.15rem)] leading-relaxed text-white/70">
+              {content.subtitle}
+            </p>
 
-          <p className="mx-auto max-w-2xl text-body-md text-text-secondary">
-            {content.seoText}
-          </p>
-        </motion.div>
+            <p className="max-w-sm text-[clamp(0.875rem,1.2vw,0.975rem)] leading-[1.7] text-white/55">
+              {content.seoText}
+            </p>
+          </motion.div>
 
-        <motion.div
-          variants={reduceMotion ? undefined : containerVariants}
-          initial={reduceMotion ? false : "initial"}
-          whileInView="animate"
-          viewport={{ once: true, amount: 0.2 }}
-          className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
-        >
-          {content.items.map((item) => (
-            <motion.article
-              key={item.id}
-              variants={reduceMotion ? undefined : itemVariants}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-border-soft bg-surface-canvas shadow-sm transition-shadow hover:shadow-md"
-            >
-              {item.media?.url ? (
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <Image
-                    src={item.media.url}
-                    alt={item.media.altText}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                  />
-                </div>
-              ) : null}
-
-              <div className="flex flex-1 items-center p-5">
-                <p className="text-section-sm text-text-primary">{item.text}</p>
-              </div>
-            </motion.article>
-          ))}
-        </motion.div>
-
-        <motion.div
-          initial={reduceMotion ? false : { opacity: 0, y: motionTokens.distance.sm }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: motionTokens.duration.base, ease: motionTokens.ease.standard }}
-          className="mt-10 text-center"
-        >
-          <PublicLinkButton
-            action={{ label: content.ctaText, href: content.ctaHref }}
-            variant="primary"
-          />
-        </motion.div>
+          <div className="flex flex-col gap-6">
+            {content.items.map((item, index) => (
+              <DiffCard
+                key={item.id}
+                item={item}
+                index={index}
+                reduceMotion={reduceMotion}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

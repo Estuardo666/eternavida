@@ -15,14 +15,14 @@ export function AboutPageView({ contentResult }: AboutPageViewProps) {
   const { content } = contentResult;
 
   return (
-    <>
+    <main className="bg-white [&_h2]:tracking-[-0.03em]">
       <AboutHeroSection content={content.hero} />
       <AboutHistorySection content={content.history} />
       <AboutMissionVisionSection mission={content.mission} vision={content.vision} />
       <AboutDifferentiatorsSection content={content.differentiators} />
-      <AboutProductionSection content={content.production} />
       <AboutImpactSection content={content.impact} />
+      <AboutProductionSection content={content.production} />
       <AboutCtaSection content={content.cta} />
-    </>
+    </main>
   );
 }
