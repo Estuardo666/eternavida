@@ -199,7 +199,7 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
           className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)] lg:items-start"
         >
           {/* Left: image gallery (sticky) */}
-          <div className="lg:sticky lg:top-24 lg:self-start">
+          <div className="lg:sticky lg:top-4 lg:self-start">
             <motion.div
               variants={reduceMotion ? {} : imageReveal}
               initial="initial"

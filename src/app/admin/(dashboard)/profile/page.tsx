@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { ProfileAdminForm } from "@/features/admin-profile/components/profile-admin-form";
 import { requireAdminPageUser } from "@/server/auth/require-admin-page-user";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminProfilePage() {
   await requireAdminPageUser();
 
