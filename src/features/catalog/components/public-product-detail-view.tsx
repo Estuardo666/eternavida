@@ -47,7 +47,7 @@ const sectionFadeUp: Variants = {
   animate: {
     opacity: 1,
     y: 0,
-    transition: { duration: duration.page, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: duration.page, ease: [0.25, 0.46, 0.45, 0.94] },
   },
 };
 
@@ -56,7 +56,7 @@ const imageReveal: Variants = {
   animate: {
     opacity: 1,
     scale: 1,
-    transition: { duration: duration.slow, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: duration.slow, ease: [0.25, 0.46, 0.45, 0.94] },
   },
 };
 
@@ -66,13 +66,13 @@ const cartIdleVariants: Variants = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: duration.base, ease: ease.soft },
+    transition: { duration: duration.base, ease: [0.25, 0.46, 0.45, 0.94] },
   },
   exit: {
     opacity: 0,
     y: -5,
     scale: 0.97,
-    transition: { duration: duration.fast, ease: ease.exit },
+    transition: { duration: duration.fast, ease: [0.55, 0, 1, 0.45] },
   },
 };
 
@@ -82,13 +82,13 @@ const cartAddedVariants: Variants = {
     opacity: 1,
     scale: 1,
     y: 0,
-    transition: { duration: duration.base, ease: ease.soft },
+    transition: { duration: duration.base, ease: [0.25, 0.46, 0.45, 0.94] },
   },
   exit: {
     opacity: 0,
     scale: 0.95,
     y: -4,
-    transition: { duration: duration.fast, ease: ease.exit },
+    transition: { duration: duration.fast, ease: [0.55, 0, 1, 0.45] },
   },
 };
 
@@ -199,7 +199,7 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
           className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)] lg:items-start"
         >
           {/* Left: image gallery (sticky) */}
-          <div className="lg:sticky lg:top-4 lg:self-start">
+          <div className="lg:sticky lg:top-2 lg:self-start">
             <motion.div
               variants={reduceMotion ? {} : imageReveal}
               initial="initial"
@@ -282,7 +282,7 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
               ) : null}
 
               {/* Name */}
-              <h1 className="text-[2.16rem] font-bold leading-tight text-text-primary sm:text-[2.64rem]">
+              <h1 className="text-[2.59rem] font-bold leading-tight text-text-primary sm:text-[3.17rem]">
                 {product.name}
               </h1>
 
@@ -381,9 +381,8 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                   <p className="text-body-sm font-medium text-text-secondary">Consultar precio</p>
                 )}
 
-                {/* Quantity selector */}
+                {/* Quantity selector + Cart button */}
                 <div className="flex items-center gap-3">
-                  <span className="text-body-sm text-text-secondary sm:text-body-sm">Cantidad</span>
                   <div className="flex items-center overflow-hidden rounded-full border border-border-soft bg-surface-canvas">
                     <button
                       type="button"
@@ -416,10 +415,6 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                       </svg>
                     </button>
                   </div>
-                </div>
-
-                {/* Cart */}
-                <div className="flex items-center gap-3">
 
                   {/* Add to cart */}
                   <motion.button
@@ -433,7 +428,7 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                         ? "cursor-not-allowed bg-neutral-400"
                         : cartState === "added"
                           ? "cursor-default bg-brand-primary"
-                          : "cursor-pointer bg-gradient-to-br from-[#E5B85C] via-[#D6A03A] to-[#C58A1D] text-[#0B5D1E] font-bold shadow-cta hover:shadow-[0_12px_32px_rgba(197,138,29,0.35)]",
+                          : "cursor-pointer bg-gradient-to-br from-[#E5B85C] via-[#D6A03A] to-[#C58A1D] text-[#0B5D1E] font-bold",
                     ].join(" ")}
                     aria-label={
                       cartState === "added"
@@ -489,7 +484,6 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                       )}
                     </AnimatePresence>
                   </motion.button>
-
                 </div>
               </div>
 
@@ -516,13 +510,6 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                       <circle cx="12" cy="16" r="1" />
                     </svg>
                     Envío protegido
-                  </span>
-                  <span className="flex items-center gap-1.5 text-[0.72rem] text-text-muted">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 shrink-0 text-brand-primary" aria-hidden="true">
-                      <polyline points="23 4 23 10 17 10" />
-                      <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
-                    </svg>
-                    Devoluciones fáciles
                   </span>
                 </div>
 
@@ -573,11 +560,6 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                   <ChevronRight className="h-5 w-5 text-text-secondary" />
                 </button>
               )}
-
-              {/* Product ID */}
-              <p className="text-[0.7rem] tracking-[0.04em] text-text-muted">
-                ID: {product.id}
-              </p>
 
               {/* ── Acordeón de secciones ──────────────────────────────────── */}
               <div className="mt-6 divide-y divide-border-soft border-y border-border-soft">
@@ -633,6 +615,11 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                 </AccordionSection>
               </div>
 
+              {/* Product ID */}
+              <p className="mt-4 text-[0.7rem] tracking-[0.04em] text-text-muted">
+                ID: {product.id}
+              </p>
+
               {/* ── Compartir + Necesitas ayuda ──────────────────────────────── */}
               <div className="mt-8 flex items-center gap-6 border-t border-border-soft pt-6">
                 <button
@@ -683,7 +670,7 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                   Descubre más productos de {product.brand} que podrían complementar tu rutina.
                 </p>
               </div>
-              <PublicProductCarousel items={brandProducts} />
+              <PublicProductCarousel items={brandProducts} maxItems={3} />
             </section>
           </AnimatedSection>
         ) : null}

@@ -139,7 +139,7 @@ export function ProductImageGallery({ primaryImage, galleryImages, productName }
         <div className="relative aspect-square overflow-hidden rounded-2xl bg-surface-tertiary">
           {allImages[activeIndex] && (
             <AnimatePresence initial={false} custom={direction} mode="wait">
-              <motion.div
+                <motion.div
                 key={allImages[activeIndex].id}
                 custom={direction}
                 variants={slideVariants}
@@ -147,14 +147,14 @@ export function ProductImageGallery({ primaryImage, galleryImages, productName }
                 animate="center"
                 exit="exit"
                 transition={slideTransition}
-                className="absolute inset-0 flex items-center justify-center p-6"
+                className="absolute inset-0 flex items-center justify-center"
               >
                 {allImages[activeIndex].url && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={allImages[activeIndex].url!}
                     alt={allImages[activeIndex].altText || productName}
-                    className="h-full w-full object-contain"
+                    className="h-full w-full rounded-2xl object-cover"
                     loading={activeIndex === 0 ? "eager" : "lazy"}
                     decoding="async"
                   />

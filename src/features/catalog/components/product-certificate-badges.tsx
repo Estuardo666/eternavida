@@ -10,17 +10,17 @@ export function ProductCertificateBadges({ badges }: ProductCertificateBadgesPro
   if (badges.length === 0) return null;
 
   return (
-    <div className="mt-6 flex items-center justify-center gap-4">
+    <div className="mt-4 flex items-center justify-center gap-3">
       {badges.map((badge) => {
         const iconDef = badge.iconKey ? getBenefitIcon(badge.iconKey) : null;
 
         return (
           <div
             key={badge.id}
-            className="group flex flex-col items-center gap-2"
+            className="group flex flex-col items-center gap-1.5"
             title={badge.label}
           >
-            <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border border-border-soft bg-surface-canvas transition-shadow hover:shadow-md">
+            <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-border-soft bg-surface-canvas transition-shadow hover:shadow-md">
               {badge.media?.url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -50,7 +50,7 @@ export function ProductCertificateBadges({ badges }: ProductCertificateBadgesPro
                 </span>
               )}
             </div>
-            <span className="max-w-[72px] text-center text-[0.6875rem] leading-tight text-text-secondary">
+            <span className="max-w-[60px] text-center text-[0.625rem] leading-tight text-text-secondary">
               {badge.label}
             </span>
           </div>

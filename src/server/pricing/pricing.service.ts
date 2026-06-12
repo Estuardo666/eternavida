@@ -230,10 +230,15 @@ function normalizeCheckoutItems(items: CheckoutPricingPreviewRequest["items"]): 
   }));
 }
 
+function extractBaseProductId(productId: string): string {
+  const separatorIndex = productId.indexOf("__");
+  return separatorIndex === -1 ? productId : productId.substring(0, separatorIndex);
+}
+
 async function loadProductsForPricing(
   items: CheckoutPricingPreviewRequest["items"],
 ): Promise<Map<string, PricingProductRecord>> {
-  const productIds = items.map((item) => item.productId);
+  const productIds = [...new Set(items.map((item) => extractBaseProductId(item.productId)))];
   const records = await prisma.product.findMany({
     where: {
       id: {
@@ -243,7 +248,7 @@ async function loadProductsForPricing(
     select: pricingProductSelect,
   });
 
-  if (records.length !== productIds.length) {
+  if (records.length < productIds.length) {
     throw new CheckoutPricingError(
       "PRODUCT_NOT_FOUND",
       "One or more products in the checkout request no longer exist.",
@@ -254,7 +259,8 @@ async function loadProductsForPricing(
   const productsById = new Map(records.map((record) => [record.id, record]));
 
   for (const item of items) {
-    const product = productsById.get(item.productId);
+    const baseId = extractBaseProductId(item.productId);
+    const product = productsById.get(baseId);
     if (!product) {
       throw new CheckoutPricingError(
         "PRODUCT_NOT_FOUND",
@@ -286,7 +292,8 @@ function buildLineStates(
   productsById: Map<string, PricingProductRecord>,
 ): PricingLineState[] {
   return items.map((item) => {
-    const product = productsById.get(item.productId);
+    const baseId = extractBaseProductId(item.productId);
+    const product = productsById.get(baseId);
     if (!product) {
       throw new CheckoutPricingError(
         "PRODUCT_NOT_FOUND",

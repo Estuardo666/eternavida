@@ -12,15 +12,17 @@ import { PublicProductGrid } from "./public-product-grid";
 
 interface PublicProductCarouselProps {
   items: PublicCatalogProductSummary[];
+  maxItems?: number;
 }
 
 const ITEMS_PER_SLIDE = 2;
 
-export function PublicProductCarousel({ items }: PublicProductCarouselProps) {
+export function PublicProductCarousel({ items, maxItems }: PublicProductCarouselProps) {
   const reduceMotion = useReducedMotion() ?? false;
+  const displayItems = maxItems ? items.slice(0, maxItems) : items;
 
   // On md+ we fall back to the standard grid — carousel is mobile only
-  const totalSlides = Math.ceil(items.length / ITEMS_PER_SLIDE);
+  const totalSlides = Math.ceil(displayItems.length / ITEMS_PER_SLIDE);
   const [activeSlide, setActiveSlide] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -54,7 +56,7 @@ export function PublicProductCarousel({ items }: PublicProductCarouselProps) {
           aria-label="Carrusel de productos"
         >
           {Array.from({ length: totalSlides }).map((_, slideIndex) => {
-            const slideItems = items.slice(
+            const slideItems = displayItems.slice(
               slideIndex * ITEMS_PER_SLIDE,
               slideIndex * ITEMS_PER_SLIDE + ITEMS_PER_SLIDE,
             );
@@ -112,7 +114,7 @@ export function PublicProductCarousel({ items }: PublicProductCarouselProps) {
 
       {/* ── Desktop grid (md+) ── */}
       <div className="hidden md:block">
-        <PublicProductGrid items={items} />
+        <PublicProductGrid items={displayItems} />
       </div>
     </>
   );

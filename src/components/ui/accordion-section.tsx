@@ -20,10 +20,10 @@ export function AccordionSection({ title, children, defaultOpen = false }: Accor
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between py-5 text-left"
+        className="group flex w-full items-center justify-between py-5 text-left transition-colors hover:bg-surface-soft/50"
         aria-expanded={isOpen}
       >
-        <span className="text-[1.0625rem] font-medium text-text-primary" style={{ fontFamily: "'SentaSans', sans-serif" }}>{title}</span>
+        <span className="text-[1.22rem] font-medium text-text-primary transition-colors group-hover:text-brand-primary" style={{ fontFamily: "'SentaSans', sans-serif" }}>{title}</span>
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{

@@ -12,8 +12,8 @@ interface BenefitCardScrollProps {
   benefits: PublicProductBenefitSummary[];
 }
 
-const CARD_WIDTH = 140;
-const GAP = 12;
+const CARD_WIDTH = 130;
+const GAP = 8;
 const VISIBLE_CARDS = 3;
 
 export function BenefitCardScroll({ benefits }: BenefitCardScrollProps) {
@@ -74,11 +74,13 @@ export function BenefitCardScroll({ benefits }: BenefitCardScrollProps) {
             {benefits.slice(activeIndex, activeIndex + VISIBLE_CARDS).map((benefit) => {
               const iconDef = getBenefitIcon(benefit.iconKey) ?? getBenefitIcon("check-circle");
               return (
-                <div
+                <motion.div
                   key={benefit.id}
-                  className="flex w-[140px] flex-shrink-0 flex-col items-center gap-2.5 rounded-2xl border border-border-soft bg-surface-canvas p-3"
+                  whileHover={prefersReducedMotion ? {} : { y: -3, scale: 1.03 }}
+                  transition={{ duration: motionTokens.duration.fast, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  className="flex w-[130px] flex-shrink-0 cursor-default flex-col items-center gap-1.5 rounded-2xl border border-border-soft bg-surface-canvas p-2.5"
                 >
-                  <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl bg-surface-tertiary">
+                  <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-xl bg-surface-tertiary">
                     {benefit.media?.url ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -104,10 +106,10 @@ export function BenefitCardScroll({ benefits }: BenefitCardScrollProps) {
                       </svg>
                     ) : null}
                   </div>
-                  <p className="text-center text-[0.75rem] font-medium leading-snug text-text-primary">
+                  <p className="text-center text-[0.86rem] font-medium leading-snug text-text-primary">
                     {benefit.text}
                   </p>
-                </div>
+                </motion.div>
               );
             })}
           </motion.div>

@@ -24,6 +24,9 @@ export const metadata: Metadata = {
     template: "%s | Eterna Vida",
   },
   description: "Eterna Vida — Productos naturales y artesanales para la salud, el bienestar y la alimentación consciente. Desde Vilcabamba, Ecuador.",
+  icons: {
+    icon: "/media/favico.png",
+  },
 };
 
 type RootLayoutProps = Readonly<{

@@ -13,6 +13,7 @@ import { LiveSearch } from "@/features/search/components/live-search";
 const navigationLinks = [
   { href: "/productos", label: "Productos" },
   { href: "/acerca-de-nosotros", label: "Acerca de nosotros" },
+  { href: "/contacto", label: "Contacto" },
 ] as const;
 
 const categoryLinks = [
@@ -104,10 +105,7 @@ export function PublicHeader() {
                   {category.label}
                 </Link>
               ))}
-              <span className="inline-flex min-h-8 items-center rounded-pill bg-white px-3 text-[11px] font-semibold uppercase tracking-[0.02em] text-brand-primary">
-                Naturales
-              </span>
-              <span className="inline-flex min-h-8 items-center rounded-pill bg-[#F59E0B] px-3 text-[11px] font-semibold uppercase tracking-[0.02em] text-ink-900">
+              <span className="inline-flex min-h-7 items-center rounded-full bg-[#F59E0B] px-2.5 text-[10px] font-bold uppercase tracking-[0.04em] text-ink-900 shadow-sm">
                 Artesanales
               </span>
             </li>
