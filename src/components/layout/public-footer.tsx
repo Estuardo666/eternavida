@@ -5,6 +5,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 const exploreLinks = [
   { label: "Nuestra historia" },
   { href: "/productos", label: "Productos" },
+  { href: "/blog", label: "Blog" },
   { label: "Contacto" },
   { label: "Impacto social" },
 ] as const;

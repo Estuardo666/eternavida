@@ -33,6 +33,8 @@ import {
   ChevronDown,
   Settings,
   MapPin,
+  QrCode,
+  PenLine,
 } from "lucide-react";
 
 import { cx } from "@/lib/utils";
@@ -55,6 +57,7 @@ const primaryNavigation: ReadonlyArray<NavigationItem> = [
   { href: "/admin/content/home", label: "Home pública", icon: Home },
   { href: "/admin/content/acerca-de-nosotros", label: "Acerca de Nosotros", icon: FileText },
   { href: "/admin/media", label: "Biblioteca de medios", icon: ImageIcon },
+  { href: "/admin/qr-generator", label: "Generador de QR", icon: QrCode },
 ] as const;
 
 const catalogNavigation: ReadonlyArray<NavigationItem> = [
@@ -85,6 +88,11 @@ const integrationsNavigation: ReadonlyArray<NavigationItem> = [
   { href: "/admin/webhook-events", label: "Eventos de webhooks", icon: Activity },
 ] as const;
 
+const blogNavigation: ReadonlyArray<NavigationItem> = [
+  { href: "/admin/blog/posts", label: "Entradas de blog", icon: PenLine },
+  { href: "/admin/blog/categories", label: "Categorías de blog", icon: LayoutGrid },
+] as const;
+
 const navigationSections: ReadonlyArray<{
   id: string;
   label: string;
@@ -94,6 +102,7 @@ const navigationSections: ReadonlyArray<{
   { id: "catalog", label: "Catálogo", items: catalogNavigation },
   { id: "store", label: "Tienda", items: storeNavigation },
   { id: "integrations", label: "Integraciones", items: integrationsNavigation },
+  { id: "blog", label: "Blog", items: blogNavigation },
 ] as const;
 
 const sidebarEaseEnter = [0.2, 0.9, 0.24, 1] as const;
