@@ -1,6 +1,6 @@
 import type { AdminMediaAssetSummary } from "@/types/admin-home-content";
 
-export type QrEntityType = "product" | "category" | "collection" | "static-page";
+export type QrEntityType = "product" | "category" | "collection" | "static-page" | "blog-post" | "blog-category";
 
 export type QrStaticPageKey =
   | "home"

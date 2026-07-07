@@ -45,7 +45,7 @@ interface QrGeneratorViewProps {
   initialData: QrGeneratorData;
 }
 
-type QrEntityTypeLabel = "Página estática" | "Producto" | "Categoría" | "Colección";
+type QrEntityTypeLabel = "Página estática" | "Producto" | "Categoría" | "Colección" | "Post de blog" | "Categoría blog";
 
 function getEntityTypeLabel(entityType: QrEntityOption["entityType"]): QrEntityTypeLabel {
   switch (entityType) {
@@ -57,6 +57,10 @@ function getEntityTypeLabel(entityType: QrEntityOption["entityType"]): QrEntityT
       return "Colección";
     case "static-page":
       return "Página estática";
+    case "blog-post":
+      return "Post de blog";
+    case "blog-category":
+      return "Categoría blog";
   }
 }
 

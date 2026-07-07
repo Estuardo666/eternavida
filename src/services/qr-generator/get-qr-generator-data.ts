@@ -6,6 +6,8 @@ import {
   listAdminProductRecords,
 } from "@/server/catalog/admin-catalog.repository";
 import { collectionRepository } from "@/server/collections/collection.repository";
+import { listPublishedPosts } from "@/server/blog/blog-post.repository";
+import { listActiveCategories } from "@/server/blog/blog-category.repository";
 import { mapAdminMediaAssetSummary } from "@/services/admin-catalog/get-catalog-admin-data";
 import type {
   QrEntityOption,
@@ -26,11 +28,13 @@ const STATIC_PAGE_MAP: ReadonlyArray<{ key: QrStaticPageKey; label: string; path
 ];
 
 export async function getQrGeneratorData(): Promise<QrGeneratorData> {
-  const [productRecords, categoryRecords, collectionRecords, rawMediaAssets] = await Promise.all([
+  const [productRecords, categoryRecords, collectionRecords, rawMediaAssets, blogPostResult, blogCategoryRecords] = await Promise.all([
     listAdminProductRecords(),
     listAdminCategoryRecords(),
     collectionRepository.findAll({ includeInactive: true }),
     listMediaAssets(),
+    listPublishedPosts({ page: 1, pageSize: 500 }),
+    listActiveCategories(),
   ]);
 
   const productOptions: QrEntityOption[] = productRecords
@@ -60,6 +64,20 @@ export async function getQrGeneratorData(): Promise<QrGeneratorData> {
       entityType: "collection" as const,
     }));
 
+  const blogPostOptions: QrEntityOption[] = blogPostResult.items.map((p) => ({
+    id: p.id,
+    label: p.title,
+    url: `${BASE_URL}/blog/${p.slug}`,
+    entityType: "blog-post" as const,
+  }));
+
+  const blogCategoryOptions: QrEntityOption[] = blogCategoryRecords.map((c) => ({
+    id: c.id,
+    label: c.name,
+    url: `${BASE_URL}/blog/categoria/${c.slug}`,
+    entityType: "blog-category" as const,
+  }));
+
   const staticPageOptions: QrEntityOption[] = STATIC_PAGE_MAP.map((page) => ({
     id: `static-${page.key}`,
     label: page.label,
@@ -74,6 +92,8 @@ export async function getQrGeneratorData(): Promise<QrGeneratorData> {
   return {
     entityOptions: [
       ...staticPageOptions,
+      ...blogPostOptions,
+      ...blogCategoryOptions,
       ...productOptions,
       ...categoryOptions,
       ...collectionOptions,
