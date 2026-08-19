@@ -5,7 +5,7 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "@/server/db/prisma";
 import type { PublicProductCatalogSort } from "@/types/public-catalog";
 
-export const PUBLIC_CATALOG_PAGE_SIZE = 12;
+export const PUBLIC_CATALOG_PAGE_SIZE = 15;
 
 interface PublicProductListQuery {
   query: string;
@@ -258,6 +258,26 @@ const publicProductInclude = {
       width: true,
       height: true,
       durationSeconds: true,
+    },
+  },
+  galleryImages: {
+    take: 1,
+    orderBy: { sortOrder: "asc" as const },
+    select: {
+      mediaAsset: {
+        select: {
+          id: true,
+          kind: true,
+          publicUrl: true,
+          storageKey: true,
+          altText: true,
+          mimeType: true,
+          posterUrl: true,
+          width: true,
+          height: true,
+          durationSeconds: true,
+        },
+      },
     },
   },
 } satisfies Prisma.ProductInclude;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -25,22 +25,45 @@ const categoryLinks = [
 
 export function PublicHeader() {
   const [isPromoBarVisible, setIsPromoBarVisible] = useState(true);
+  const headerRef = useRef<HTMLElement | null>(null);
+
+  // Publish the live header height so sticky page elements can offset below it.
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+
+    const syncHeight = () => {
+      document.documentElement.style.setProperty(
+        "--public-header-height",
+        `${Math.round(header.getBoundingClientRect().height)}px`,
+      );
+    };
+
+    syncHeight();
+    const observer = new ResizeObserver(syncHeight);
+    observer.observe(header);
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <header className="sticky top-0 z-sticky border-b border-white/20 bg-brand-primary backdrop-blur-md">
+    <header
+      ref={headerRef}
+      className="sticky top-0 z-sticky border-b border-white/20 bg-brand-primary backdrop-blur-md"
+    >
       {isPromoBarVisible && (
-        <div className="border-b border-white/20 bg-brand-primaryHover/80 transition-all duration-200 ease-out animate-[promo-in_200ms_ease-out]">
-          <div className="container flex min-h-9 items-center justify-between gap-2 py-1.5">
-            <p className="truncate text-body-sm font-semibold text-white">
+        <div className="border-b border-[#8a6412]/40 bg-gradient-to-r from-[#B47C18] via-[#E3B558] to-[#B47C18] transition-all duration-200 ease-out animate-[promo-in_200ms_ease-out]">
+          <div className="container flex min-h-0 items-center justify-between gap-2 py-0.5">
+            <p className="truncate text-body-sm font-semibold text-[#0F2A21]">
               Promociones activas hoy: descuentos especiales en productos naturales artesanales.
             </p>
             <button
               type="button"
               onClick={() => setIsPromoBarVisible(false)}
               aria-label="Cerrar barra de promociones"
-              className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white transition hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-primary"
+              className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#0F2A21]/25 bg-white/30 text-[#0F2A21] transition hover:bg-white/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F2A21] focus-visible:ring-offset-2 focus-visible:ring-offset-[#E3B558]"
             >
-              <X className="h-3.5 w-3.5" aria-hidden="true" />
+              <X className="h-3 w-3" aria-hidden="true" />
             </button>
           </div>
         </div>

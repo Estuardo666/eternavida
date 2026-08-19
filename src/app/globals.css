@@ -18,6 +18,8 @@
 }
 
 :root {
+  /* Overwritten at runtime by PublicHeader (promo bar changes header height). */
+  --public-header-height: 108px;
   --app-background: #FAF8F3;
   --app-foreground: #2D2D2D;
   --brand-primary: #0B5D1E;

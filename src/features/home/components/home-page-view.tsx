@@ -34,8 +34,8 @@ export function HomePageView({ contentResult }: HomePageViewProps) {
       <FeaturedCategoryProductsSectionDeferred content={content.featuredProducts} />
       <WideBannerSection content={content.routinePromo} />
       <FeaturedCategoriesGridSection content={content.featuredCategories} />
-      <CtaSection content={content.cta} />
       <HomeBottomBenefitsStrip />
+      <CtaSection content={content.cta} />
     </>
   );
 }

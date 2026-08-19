@@ -292,7 +292,7 @@ export function ProfileClientForm({ initialProfile }: ProfileClientFormProps) {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.48, ease: EASE, delay: 0.32 }}
-          className="space-y-4 xl:sticky xl:top-6 xl:self-start"
+          className="space-y-4 xl:sticky xl:top-[calc(var(--public-header-height,108px)+24px)] xl:self-start"
         >
           <section className={CARD_CLASS}>
             <h2 className="text-section-lg text-text-primary">Resumen</h2>

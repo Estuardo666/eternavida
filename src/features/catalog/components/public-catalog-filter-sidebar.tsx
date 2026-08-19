@@ -1132,8 +1132,7 @@ export function PublicCatalogFilterSidebar({
       {/* Desktop sticky sidebar */}
       <aside
         aria-label="Filtros de catalogo"
-        className="hidden lg:flex lg:w-60 xl:w-64 shrink-0 self-start sticky flex-col"
-        style={{ top: "108px" }}
+        className="hidden lg:flex lg:w-60 xl:w-64 shrink-0 self-start sticky top-[calc(var(--public-header-height,108px)+24px)] flex-col"
       >
         <div className="flex flex-col rounded-2xl border p-4 shadow-xs" style={{ background: "#0B5D1E08", borderColor: "#0B5D1E69" }}>
           <FilterBody {...bodyProps} />

@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 
-import { motionTokens } from "@/motion/tokens";
+import { fadeScaleIn } from "./about-motion";
 import type { AboutDiffSection, AboutDiffItem } from "@/types/about-content";
 
 interface AboutDifferentiatorsSectionProps {
@@ -19,12 +19,15 @@ function DiffCard({
   index: number;
   reduceMotion: boolean;
 }) {
+  const separatorIndex = item.text.indexOf(": ");
+  const heading = separatorIndex > 0 ? item.text.slice(0, separatorIndex) : item.text;
+  const rawDescription = separatorIndex > 0 ? item.text.slice(separatorIndex + 2) : null;
+  const description = rawDescription
+    ? rawDescription.charAt(0).toUpperCase() + rawDescription.slice(1)
+    : null;
+
   return (
-    <motion.article
-      initial={reduceMotion ? false : { opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.6, ease: motionTokens.ease.standard, delay: index * 0.1 }}
+    <article
       className="group grid min-h-[320px] grid-cols-[0.35fr_0.65fr] overflow-hidden rounded-[24px] bg-white/[0.04] backdrop-blur-sm sm:grid-cols-[320px_1fr]"
     >
       <div className="relative overflow-hidden">
@@ -41,20 +44,25 @@ function DiffCard({
         )}
       </div>
 
-      <div className="flex flex-col justify-center p-7 sm:p-9 lg:p-10">
+      <motion.div
+        {...fadeScaleIn(reduceMotion, index * 0.1)}
+        className="flex flex-col justify-center p-7 sm:p-9 lg:p-10"
+      >
         <span className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.07]">
           <span className="text-sm font-semibold text-white/80">{String(index + 1).padStart(2, "0")}</span>
         </span>
 
-        <h3 className="mb-3 text-[clamp(1.25rem,2.5vw,1.75rem)] font-semibold leading-[1.15] tracking-[-0.02em] text-white">
-          {item.text}
+        <h3 className="mb-3 text-[clamp(1.25rem,2.5vw,1.75rem)] font-semibold leading-[1.15] tracking-[-0.02em] text-brand-goldLight">
+          {heading}
         </h3>
 
-        <p className="max-w-sm text-[clamp(0.875rem,1.1vw,0.95rem)] leading-[1.7] text-white/65">
-          Ingredientes cuidadosamente seleccionados y procesos responsables que garantizan la máxima calidad en cada producto.
-        </p>
-      </div>
-    </motion.article>
+        {description ? (
+          <p className="max-w-sm text-[clamp(0.875rem,1.1vw,0.95rem)] leading-[1.7] text-white/65">
+            {description}
+          </p>
+        ) : null}
+      </motion.div>
+    </article>
   );
 }
 
@@ -66,17 +74,14 @@ export function AboutDifferentiatorsSection({ content }: AboutDifferentiatorsSec
       <div className="mx-auto max-w-[1400px]">
         <div className="grid items-start gap-12 lg:grid-cols-[0.3fr_0.7fr] lg:gap-16 xl:gap-20">
           <motion.div
-            initial={reduceMotion ? false : { opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6, ease: motionTokens.ease.standard }}
-            className="lg:sticky lg:top-28"
+            {...fadeScaleIn(reduceMotion)}
+            className="lg:sticky lg:top-[calc(var(--public-header-height,108px)+24px)]"
           >
             <span className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-400/70 sm:text-xs">
               {content.pretitle}
             </span>
 
-            <h2 className="mb-4 max-w-sm text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-[1.12] tracking-[-0.03em] text-white">
+            <h2 className="mb-4 max-w-sm text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-[1.12] tracking-[-0.03em] text-brand-goldLight">
               {content.title}
             </h2>
 

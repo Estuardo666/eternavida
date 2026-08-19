@@ -304,6 +304,20 @@ interface ProductSummaryRecord {
     height: number | null;
     durationSeconds: number | null;
   } | null;
+  galleryImages?: Array<{
+    mediaAsset?: {
+      id: string;
+      kind: "image" | "video";
+      publicUrl: string | null;
+      storageKey: string;
+      altText: string | null;
+      mimeType: string | null;
+      posterUrl: string | null;
+      width: number | null;
+      height: number | null;
+      durationSeconds: number | null;
+    } | null;
+  }>;
   variants?: Array<{
     id: string;
   }>;
@@ -358,7 +372,7 @@ function mapProductSummary(
     productColor: record.productColor ?? null,
     hasVariants: (record.variants ?? []).length > 0,
     activePromotion: promotionByProductId.get(record.id) ?? null,
-    media: mapProductMediaAsset(record.mediaAsset, record.name),
+    media: mapProductMediaAsset(record.mediaAsset ?? record.galleryImages?.[0]?.mediaAsset ?? null, record.name),
     category: categories[0] ?? null,
     categories,
   };

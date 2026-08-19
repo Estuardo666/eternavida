@@ -26,9 +26,7 @@ function resolveColumnCount(
   layout: "default" | "withSidebar" = "default",
 ): number {
   if (layout === "withSidebar") {
-    if (width >= 1440) return 5;
-    if (width >= 1280) return 4;
-    if (width >= 1024) return 3;
+    if (width >= 1024) return 4;
     if (width >= 768) return 3;
     if (width >= 640) return 2;
     return mobileColumns;
@@ -77,8 +75,8 @@ export function PublicProductGrid({ items, mobileColumns = 1, inlineBannerSlot, 
   const gridClass =
     layout === "withSidebar"
       ? mobileColumns === 2
-        ? "grid grid-cols-2 gap-4 sm:grid-cols-2 sm:gap-5 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
-        : "grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+        ? "grid grid-cols-2 gap-4 sm:grid-cols-2 sm:gap-5 md:grid-cols-3 lg:grid-cols-4"
+        : "grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
       : mobileColumns === 2
         ? "grid grid-cols-2 gap-4 sm:grid-cols-2 sm:gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
         : "grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5";

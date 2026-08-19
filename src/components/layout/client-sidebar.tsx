@@ -225,7 +225,7 @@ export function ClientSidebar({ userEmail, userName, userImageUrl }: ClientSideb
       </AnimatePresence>
 
       {/* Desktop sidebar */}
-      <aside className="hidden shrink-0 lg:sticky lg:top-6 lg:block lg:self-start">
+      <aside className="hidden shrink-0 lg:sticky lg:top-[calc(var(--public-header-height,108px)+24px)] lg:block lg:self-start">
         <motion.div
           initial={false}
           animate={{ width: isCollapsed ? 60 : 256 }}

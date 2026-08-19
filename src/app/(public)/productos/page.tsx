@@ -4,9 +4,8 @@ import Link from "next/link";
 import { PublicBrandHorizontalNav } from "@/features/catalog/components/public-brand-horizontal-nav";
 import { PublicCatalogEmptyState } from "@/features/catalog/components/public-catalog-empty-state";
 import { PublicCatalogFilterSidebar } from "@/features/catalog/components/public-catalog-filter-sidebar";
-import { PublicCatalogPagination } from "@/features/catalog/components/public-catalog-pagination";
+import { PublicCatalogInfiniteGrid } from "@/features/catalog/components/public-catalog-infinite-grid";
 import { PublicCategoryHorizontalNav } from "@/features/catalog/components/public-category-horizontal-nav";
-import { PublicProductGrid } from "@/features/catalog/components/public-product-grid";
 import { buildProductIndexMetadata } from "@/seo/catalog";
 import { mapBrandIdsToSlugs } from "@/services/catalog/get-public-catalog-data";
 import { getPublicProductCatalogData } from "@/services/catalog/get-public-catalog-data";
@@ -119,16 +118,11 @@ export default async function PublicProductsPage({ searchParams }: PublicProduct
 
             {data.items.length > 0 ? (
               <>
-                <PublicProductGrid
-                  items={data.items}
-                  mobileColumns={2}
-                  layout="withSidebar"
-                  id="catalog-products-top"
-                />
-                <PublicCatalogPagination
-                  basePath="/productos"
-                  pagination={data.pagination}
+                <PublicCatalogInfiniteGrid
+                  initialItems={data.items}
+                  initialPagination={data.pagination}
                   searchParams={normalizedSearchParams}
+                  id="catalog-products-top"
                 />
               </>
             ) : (

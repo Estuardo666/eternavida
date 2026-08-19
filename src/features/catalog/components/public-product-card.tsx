@@ -146,7 +146,7 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
       onPointerLeave={() => setShowAddToCart(false)}
       onFocus={() => setShowAddToCart(true)}
       onBlur={() => setShowAddToCart(false)}
-      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border-soft bg-white shadow-sm transition-[border-color,box-shadow,background-color] duration-200 ease-soft hover:border-[#d9d6ce] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
+      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border-soft bg-white transition-[border-color,background-color] duration-200 ease-soft hover:border-[#d9d6ce] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
     >
       {/* Image area */}
       <div className="relative bg-white">
@@ -407,13 +407,9 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
           )}
         </div>
 
-        <h2 className="mt-3 w-full text-[0.98rem] font-medium leading-[1.15] text-text-primary line-clamp-3 sm:w-4/5 sm:text-[1.04rem] sm:leading-[1.2rem]">
+        <h2 className="mt-3 w-full text-[0.98rem] font-semibold leading-[1.15] text-text-primary line-clamp-3 sm:w-4/5 sm:text-[1.04rem] sm:leading-[1.2rem]">
           {product.name}
         </h2>
-
-        <p className="mt-2 text-body-sm font-normal leading-[1.12] text-text-secondary">
-          {product.brand}
-        </p>
 
         <div className="mt-auto pt-4 md:hidden">
           <motion.button

@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 
 import { PublicLinkButton } from "@/components/ui/public-link-button";
-import { motionTokens } from "@/motion/tokens";
+import { fadeScaleIn } from "./about-motion";
 import type { AboutCtaSection as AboutCtaSectionType } from "@/types/about-content";
 
 interface AboutCtaSectionProps {
@@ -15,21 +15,18 @@ export function AboutCtaSection({ content }: AboutCtaSectionProps) {
   const reduceMotion = useReducedMotion() ?? false;
 
   return (
-    <section className="w-full px-[clamp(24px,5vw,80px)] py-[clamp(60px,8vw,120px)]">
-      <div className="mx-auto max-w-[1400px]">
-        <div className="grid min-h-[500px] overflow-hidden rounded-[28px] lg:grid-cols-2">
+    <section className="w-full">
+      <div className="w-full">
+        <div className="grid min-h-[500px] w-full overflow-hidden lg:grid-cols-2">
           <motion.div
-            initial={reduceMotion ? false : { opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6, ease: motionTokens.ease.standard }}
+            {...fadeScaleIn(reduceMotion)}
             className="flex flex-col justify-center bg-[#14352A] p-8 sm:p-12 lg:p-16"
           >
             <span className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-400/70 sm:text-xs">
               {content.pretitle}
             </span>
 
-            <h2 className="mb-4 max-w-md text-[clamp(1.75rem,4vw,3rem)] font-semibold leading-[1.08] tracking-[-0.03em] text-white">
+            <h2 className="mb-4 max-w-md text-[clamp(1.75rem,4vw,3rem)] font-semibold leading-[1.08] tracking-[-0.03em] text-brand-goldLight">
               {content.title}
             </h2>
 
@@ -43,13 +40,7 @@ export function AboutCtaSection({ content }: AboutCtaSectionProps) {
             />
           </motion.div>
 
-          <motion.div
-            initial={reduceMotion ? false : { opacity: 0, scale: 0.97 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6, ease: motionTokens.ease.standard }}
-            className="relative min-h-[300px] lg:min-h-0"
-          >
+          <div className="relative min-h-[300px] lg:min-h-0">
             <Image
               src="/media/new dev media/181090.jpg"
               alt="Productos naturales Eterna Vida"
@@ -57,7 +48,7 @@ export function AboutCtaSection({ content }: AboutCtaSectionProps) {
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
             />
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

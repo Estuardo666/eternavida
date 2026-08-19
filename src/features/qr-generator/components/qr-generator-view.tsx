@@ -602,7 +602,7 @@ export function QrGeneratorView({ initialData }: QrGeneratorViewProps) {
         </div>
 
         {/* Preview + Download */}
-        <div className="flex flex-col gap-5 lg:sticky lg:top-6 lg:self-start">
+        <div className="flex flex-col gap-5 lg:sticky lg:top-[calc(var(--public-header-height,108px)+24px)] lg:self-start">
           <div className={cx(ADMIN_PANEL_SURFACE_CLASS_NAME, "flex flex-col items-center gap-5")}>
             <p className="text-label-sm text-text-secondary">
               {selectedEntity

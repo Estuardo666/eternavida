@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 
 import { PublicLinkButton } from "@/components/ui/public-link-button";
 import { AboutMediaCarousel } from "./about-media-carousel";
-import { motionTokens } from "@/motion/tokens";
+import { fadeScaleIn } from "./about-motion";
 import type { AboutSectionBasic } from "@/types/about-content";
 
 interface AboutImpactSectionProps {
@@ -18,7 +18,7 @@ export function AboutImpactSection({ content }: AboutImpactSectionProps) {
     <section className="w-full px-[clamp(24px,5vw,80px)] py-[clamp(60px,8vw,120px)]">
       <div className="mx-auto max-w-[1400px]">
         <div className="grid items-start gap-8 lg:grid-cols-[1fr_0.67fr] lg:gap-16 xl:gap-20">
-          <div className="relative lg:sticky lg:top-28">
+          <div className="relative lg:sticky lg:top-[calc(var(--public-header-height,108px)+24px)]">
             <AboutMediaCarousel
               media={content.media}
               alt={content.title}
@@ -27,10 +27,7 @@ export function AboutImpactSection({ content }: AboutImpactSectionProps) {
           </div>
 
           <motion.div
-            initial={reduceMotion ? false : { opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
-            transition={{ duration: 0.6, ease: motionTokens.ease.standard }}
+            {...fadeScaleIn(reduceMotion)}
             className="flex flex-col justify-center py-4 lg:py-12"
           >
             <span className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-text-brand sm:text-xs">
@@ -45,7 +42,7 @@ export function AboutImpactSection({ content }: AboutImpactSectionProps) {
               {content.subtitle}
             </p>
 
-            <p className="mb-8 max-w-md text-[clamp(0.875rem,1.2vw,0.975rem)] leading-[1.7] text-text-secondary/85">
+            <p className="mb-8 max-w-md whitespace-pre-line text-[clamp(0.875rem,1.2vw,0.975rem)] leading-[1.7] text-text-secondary/85">
               {content.seoText}
             </p>
 

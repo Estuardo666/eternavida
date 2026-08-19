@@ -136,7 +136,7 @@ export function BlogListView({ data, categorySlug }: BlogListViewProps) {
         </div>
 
         {/* Sidebar */}
-        <aside className="space-y-6 lg:sticky lg:top-6 lg:self-start">
+        <aside className="space-y-6 lg:sticky lg:top-[calc(var(--public-header-height,108px)+24px)] lg:self-start">
           {/* Categories */}
           {data.categories.length > 0 && (
             <div className="rounded-2xl border border-border-soft bg-surface-canvas p-5">
