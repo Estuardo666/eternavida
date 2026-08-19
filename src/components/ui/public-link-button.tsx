@@ -19,7 +19,7 @@ const variantClassNames: Record<PublicLinkButtonVariant, string> = {
   ghost:
     "text-text-secondary transition hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
   cta:
-    "bg-gradient-to-br from-[#E5B85C] via-[#D6A03A] to-[#C58A1D] text-[#0B5D1E] font-bold shadow-cta transition hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(197,138,29,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C58A1D] focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
+    "bg-[#C58A1D] text-[#0B5D1E] font-bold transition hover:-translate-y-0.5 hover:bg-[#B47C18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C58A1D] focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
 };
 
 export function PublicLinkButton({

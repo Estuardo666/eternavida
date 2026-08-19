@@ -15,9 +15,9 @@ interface AboutMediaCarouselProps {
 }
 
 const PLACEHOLDER_IMAGES = [
-  "https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/imagen.jpg",
-  "https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/imagen2.jpg",
-  "https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/banner3.jpg",
+  "/media/new dev media/147186.jpg",
+  "/media/new dev media/181090.jpg",
+  "/media/new dev media/87122.jpg",
 ];
 
 export function AboutMediaCarousel({ media, alt, autoPlayMs = 5000, className = "" }: AboutMediaCarouselProps) {

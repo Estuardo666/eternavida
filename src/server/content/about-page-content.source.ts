@@ -4,33 +4,29 @@ import { findAboutPageContentRecord } from "@/server/content/admin-about-content
 import type { AboutPageContent, AboutDiffItem } from "@/types/about-content";
 import type { MediaAsset } from "@/types/media";
 
-function mapMediaAsset(record: {
-  id: string;
-  storageKey: string;
-  publicUrl: string | null;
-  kind: "image" | "video";
-  altText: string | null;
-  mimeType: string | null;
-  posterUrl: string | null;
-  width: number | null;
-  height: number | null;
-  durationSeconds: number | null;
-} | null): MediaAsset | null {
-  if (!record) return null;
-
+function buildLocalMediaAsset(fileName: string, altText: string): MediaAsset {
   return {
-    id: record.id,
-    kind: record.kind,
-    url: record.publicUrl ?? `/api/media/${encodeURIComponent(record.storageKey)}`,
-    storageKey: record.storageKey,
-    altText: record.altText ?? "",
-    mimeType: record.mimeType,
-    posterUrl: record.posterUrl,
-    width: record.width,
-    height: record.height,
-    durationSeconds: record.durationSeconds,
+    id: `about-media-${fileName}`,
+    kind: "image",
+    url: `/media/new dev media/${encodeURIComponent(fileName)}`,
+    storageKey: `public/media/new dev media/${fileName}`,
+    altText,
+    mimeType: null,
+    posterUrl: null,
+    width: null,
+    height: null,
+    durationSeconds: null,
   };
 }
+
+const DIFF_ITEM_IMAGE_FILES = [
+  "138219.jpg",
+  "147186.jpg",
+  "2247.jpg",
+  "87122.jpg",
+  "364942.jpg",
+  "23273.jpg",
+] as const;
 
 interface DiffItemRaw {
   text: string;
@@ -48,7 +44,7 @@ export async function readStoredAboutPageContent(): Promise<AboutPageContent | n
     id: `diff-${index + 1}`,
     text: item.text,
     mediaId: item.mediaId ?? null,
-    media: null,
+    media: buildLocalMediaAsset(DIFF_ITEM_IMAGE_FILES[index % DIFF_ITEM_IMAGE_FILES.length] ?? DIFF_ITEM_IMAGE_FILES[0], item.text),
   }));
 
   return {
@@ -58,7 +54,7 @@ export async function readStoredAboutPageContent(): Promise<AboutPageContent | n
       subtitle: record.heroSubtitle,
       ctaText: record.heroCtaText,
       ctaHref: record.heroCtaHref,
-      media: mapMediaAsset(record.heroMedia),
+      media: buildLocalMediaAsset("364942.jpg", record.heroTitle),
     },
     history: {
       pretitle: record.historyPretitle,
@@ -67,20 +63,20 @@ export async function readStoredAboutPageContent(): Promise<AboutPageContent | n
       ctaText: record.historyCtaText,
       ctaHref: record.historyCtaHref,
       seoText: record.historySeoText,
-      media: mapMediaAsset(record.historyMedia),
+      media: buildLocalMediaAsset("23273.jpg", record.historyTitle),
     },
     mission: {
       pretitle: record.missionPretitle,
       title: record.missionTitle,
       seoText: record.missionSeoText,
-      media: mapMediaAsset(record.missionMedia),
+      media: buildLocalMediaAsset("484899.jpg", record.missionTitle),
     },
     vision: {
       pretitle: record.visionPretitle,
       title: record.visionTitle,
       subtitle: record.visionSubtitle,
       seoText: record.visionSeoText,
-      media: mapMediaAsset(record.visionMedia),
+      media: buildLocalMediaAsset("48159.jpg", record.visionTitle),
     },
     differentiators: {
       pretitle: record.diffPretitle,
@@ -98,7 +94,7 @@ export async function readStoredAboutPageContent(): Promise<AboutPageContent | n
       ctaText: record.productionCtaText,
       ctaHref: record.productionCtaHref,
       seoText: record.productionSeoText,
-      media: mapMediaAsset(record.productionMedia),
+      media: buildLocalMediaAsset("181090.jpg", record.productionTitle),
     },
     impact: {
       pretitle: record.impactPretitle,
@@ -107,7 +103,7 @@ export async function readStoredAboutPageContent(): Promise<AboutPageContent | n
       ctaText: record.impactCtaText,
       ctaHref: record.impactCtaHref,
       seoText: record.impactSeoText,
-      media: mapMediaAsset(record.impactMedia),
+      media: buildLocalMediaAsset("1107.jpg", record.impactTitle),
     },
     cta: {
       pretitle: record.ctaPretitle,

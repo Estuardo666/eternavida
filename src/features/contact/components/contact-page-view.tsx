@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  Clock3,
+  Clock,
   Mail,
   MapPin,
   MessageCircle,
@@ -9,16 +9,6 @@ import {
 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { motionTokens } from "@/motion/tokens";
-
-const businessHours = [
-  { day: "Lunes", hours: "8:00 a. m. - 8:00 p. m." },
-  { day: "Martes", hours: "8:00 a. m. - 8:00 p. m." },
-  { day: "Miércoles", hours: "8:00 a. m. - 8:00 p. m." },
-  { day: "Jueves", hours: "8:00 a. m. - 8:00 p. m." },
-  { day: "Viernes", hours: "8:00 a. m. - 8:00 p. m." },
-  { day: "Sábado", hours: "8:00 a. m. - 6:00 p. m." },
-  { day: "Domingo", hours: "Cerrado" },
-] as const;
 
 const mapEmbedUrl =
   "https://www.google.com/maps?q=-3.995121259388611,-79.1971842368048&z=17&output=embed";
@@ -45,9 +35,8 @@ export function ContactPageView() {
   const reduceMotion = useReducedMotion() ?? false;
 
   return (
-    <section className="container py-8 sm:py-12 lg:py-16">
-      <div className="overflow-hidden rounded-[32px] border border-border-soft bg-surface-canvas shadow-sm">
-        <div className="grid min-h-[520px] lg:grid-cols-[1.05fr_minmax(0,1fr)]">
+    <section className="w-full">
+      <div className="grid min-h-[calc(100vh-152px)] lg:grid-cols-[2fr_1fr]">
           {/* Left: Map with verdoso overlay */}
           <div className="relative min-h-[420px] lg:min-h-full">
             <iframe
@@ -81,11 +70,11 @@ export function ContactPageView() {
               className="space-y-2"
             >
               <h1 className="text-headline-sm text-text-primary sm:text-headline-md">
-                Agenda tu visita en Eterna Vida
+                Visítanos en Eterna Vida
               </h1>
               <p className="max-w-prose text-body-md text-text-secondary">
-                Brindamos atención personalizada en Loja, Ecuador. Escríbenos o
-                llámanos para resolver tus dudas y coordinar tu visita.
+                Productos orgánicos y artesanales desde Vilcabamba, Loja.
+                Escríbenos o llámanos para consultar disponibilidad, pedidos y envíos.
               </p>
             </motion.div>
 
@@ -102,7 +91,34 @@ export function ContactPageView() {
                 </h2>
                 <div className="flex items-start gap-3 text-body-sm text-text-primary">
                   <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" aria-hidden="true" />
-                  <p>Vilcabamba, Loja, Ecuador</p>
+                  <a
+                    href="https://maps.app.goo.gl/DoBH5qRPAMyjP5GXA?g_st=ic"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="transition hover:text-text-brand"
+                  >
+                    Vía Cucanamá - Vilcabamba
+                  </a>
+                </div>
+              </motion.article>
+
+              {/* Hours */}
+              <motion.article
+                initial={reduceMotion ? {} : { opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: motionTokens.duration.base, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+                className="space-y-1.5"
+              >
+                <h2 className="inline-flex items-center rounded-pill bg-brand-primary px-3 py-1 text-label-sm uppercase text-text-inverse">
+                  Horarios de atención
+                </h2>
+                <div className="flex items-start gap-3 text-body-sm text-text-primary">
+                  <Clock className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" aria-hidden="true" />
+                  <ul className="space-y-0.5">
+                    <li>Lunes a Viernes: 08:30 – 18:00</li>
+                    <li>Sábados: 09:00 – 13:00</li>
+                    <li>Domingos: Cerrado</li>
+                  </ul>
                 </div>
               </motion.article>
 
@@ -116,19 +132,19 @@ export function ContactPageView() {
                 <h2 className="inline-flex items-center rounded-pill bg-brand-primary px-3 py-1 text-label-sm uppercase text-text-inverse">
                   Teléfonos
                 </h2>
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className="flex flex-col gap-2">
                   <a
                     href="tel:+593988158964"
-                    className="inline-flex items-start gap-2 rounded-md border border-border bg-surface-canvas p-2.5 text-body-sm text-text-primary transition hover:border-border-brand"
+                    className="inline-flex items-start gap-3 text-body-sm text-text-primary transition hover:text-text-brand"
                   >
-                    <Phone className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" aria-hidden="true" />
+                    <Phone className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" aria-hidden="true" />
                     <span>098 815 8964</span>
                   </a>
                   <a
                     href="tel:+593988158964"
-                    className="inline-flex items-start gap-2 rounded-md border border-border bg-surface-canvas p-2.5 text-body-sm text-text-primary transition hover:border-border-brand"
+                    className="inline-flex items-start gap-3 text-body-sm text-text-primary transition hover:text-text-brand"
                   >
-                    <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" aria-hidden="true" />
+                    <MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" aria-hidden="true" />
                     <span>098 815 8964</span>
                   </a>
                 </div>
@@ -146,37 +162,11 @@ export function ContactPageView() {
                 </h2>
                 <a
                   href="mailto:info@eternavida.com.ec"
-                  className="inline-flex items-start gap-2 rounded-md border border-border bg-surface-canvas p-2.5 text-body-sm text-text-primary transition hover:border-border-brand"
+                  className="inline-flex items-start gap-3 text-body-sm text-text-primary transition hover:text-text-brand"
                 >
-                  <Mail className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" aria-hidden="true" />
+                  <Mail className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" aria-hidden="true" />
                   <span>info@eternavida.com.ec</span>
                 </a>
-              </motion.article>
-
-              {/* Business hours */}
-              <motion.article
-                initial={reduceMotion ? {} : { opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: motionTokens.duration.base, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                className="space-y-2"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <h2 className="inline-flex items-center rounded-pill bg-brand-primary px-3 py-1 text-label-sm uppercase text-text-inverse">
-                    Horario
-                  </h2>
-                  <span className="inline-flex items-center gap-1 text-label-sm text-status-success">
-                    <Clock3 className="h-4 w-4" aria-hidden="true" />
-                    Abierto ahora
-                  </span>
-                </div>
-                <ul className="space-y-0.5 rounded-md border border-border bg-surface-canvas p-2.5">
-                  {businessHours.map((item) => (
-                    <li key={item.day} className="flex items-center justify-between gap-4 text-body-sm">
-                      <span className="text-text-secondary">{item.day}</span>
-                      <span className="font-medium text-text-primary">{item.hours}</span>
-                    </li>
-                  ))}
-                </ul>
               </motion.article>
 
               {/* Social media */}
@@ -212,7 +202,6 @@ export function ContactPageView() {
               </motion.article>
             </div>
           </div>
-        </div>
       </div>
     </section>
   );

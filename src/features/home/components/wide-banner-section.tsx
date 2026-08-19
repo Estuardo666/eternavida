@@ -15,7 +15,7 @@ export function WideBannerSection({ content }: WideBannerSectionProps) {
         className="group block overflow-hidden rounded-[32px] border border-border-soft shadow-sm transition hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
       >
         <Image
-          src="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/banner3.jpg"
+          src="/media/new dev media/147186.jpg"
           alt="Eterna Vida - Banner promocional"
           width={1200}
           height={400}

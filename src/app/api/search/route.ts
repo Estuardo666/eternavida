@@ -84,7 +84,7 @@ export async function GET(request: Request) {
         brand: product.brand,
         price: Number(product.price),
         discountPrice: product.discountPrice === null ? null : Number(product.discountPrice),
-        mediaUrl: product.mediaAsset?.publicUrl ?? null,
+        mediaUrl: "/media/new dev media/productos.png",
         href: `/productos/${product.slug}`,
       })),
       categories: categories.map((category) => ({

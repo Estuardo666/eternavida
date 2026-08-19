@@ -223,7 +223,7 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
                       ? "cursor-not-allowed bg-neutral-400"
                       : cardState === "added"
                         ? "cursor-default bg-brand-primary"
-                        : "cursor-pointer bg-gradient-to-br from-[#E5B85C] via-[#D6A03A] to-[#C58A1D] text-[#0B5D1E] font-bold shadow-cta hover:shadow-[0_12px_32px_rgba(197,138,29,0.35)]",
+                        : "cursor-pointer bg-[#C58A1D] text-[#0B5D1E] font-bold hover:bg-[#B47C18]",
                   ].join(" ")}
                   aria-label={
                     isOutOfStock
@@ -308,7 +308,7 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
                       ? "cursor-not-allowed bg-neutral-400"
                       : cardState === "added"
                         ? "cursor-default bg-brand-primary"
-                        : "cursor-pointer bg-gradient-to-br from-[#E5B85C] via-[#D6A03A] to-[#C58A1D] text-[#0B5D1E] font-bold shadow-cta hover:shadow-[0_12px_32px_rgba(197,138,29,0.35)]",
+                        : "cursor-pointer bg-[#C58A1D] text-[#0B5D1E] font-bold hover:bg-[#B47C18]",
                   ].join(" ")}
                   aria-label={
                     isOutOfStock
@@ -427,7 +427,7 @@ export function PublicProductCard({ product }: PublicProductCardProps) {
                 ? "cursor-not-allowed bg-neutral-400"
                 : cardState === "added"
                   ? "cursor-default bg-brand-primary"
-                  : "cursor-pointer bg-gradient-to-br from-[#E5B85C] via-[#D6A03A] to-[#C58A1D] text-[#0B5D1E] font-bold shadow-cta hover:shadow-[0_12px_32px_rgba(197,138,29,0.35)]",
+                  : "cursor-pointer bg-[#C58A1D] text-[#0B5D1E] font-bold hover:bg-[#B47C18]",
             ].join(" ")}
             aria-label={
               isOutOfStock

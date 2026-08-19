@@ -6,26 +6,17 @@ import type { FeaturedCategoryContent, HomePageContentResult } from "@/types/con
 import type { MediaAsset } from "@/types/media";
 
 const CATEGORY_IMAGE_FILES = [
-  "aceite de coco.jpg",
-  "aceite de oregano.jpg",
-  "aceite de oregano 2.jpg",
-  "aceite de ajonjoli.jpg",
-  "aceite de linaza.jpg",
-  "manteca de cacao.jpg",
-  "imagen.jpg",
-  "imagen2.jpg",
-  "IMG_9445.jpeg",
-  "banner.jpg",
-  "banner 2.jpg",
-  "banner3.jpg",
+  "1107.jpg",
+  "138219.jpg",
+  "147186.jpg",
+  "181090.jpg",
+  "2247.jpg",
+  "23273.jpg",
+  "364942.jpg",
+  "48159.jpg",
+  "484899.jpg",
+  "87122.jpg",
 ] as const;
-
-function normalizeCategoryText(value: string): string {
-  return value
-    .toLocaleLowerCase("es-EC")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-}
 
 function hashCategoryId(value: string): number {
   let hash = 0;
@@ -36,60 +27,15 @@ function hashCategoryId(value: string): number {
   return hash;
 }
 
-function resolveSemanticCategoryImageFile(categoryId: string, categoryName: string): string | null {
-  const searchable = normalizeCategoryText(`${categoryId} ${categoryName}`);
-
-  if (searchable.includes("limpieza")) {
-    return "limpieza clinica.jpg";
-  }
-
-  if (searchable.includes("acne") || searchable.includes("grasa")) {
-    return "acne y piel grasa.jpg";
-  }
-
-  if (
-    searchable.includes("proteccion") ||
-    searchable.includes("solar") ||
-    searchable.includes("bloqueador")
-  ) {
-    return "cat bloqueadores solares.jpg";
-  }
-
-  if (searchable.includes("contorno") || searchable.includes("ojos") || searchable.includes("ojo")) {
-    return "contorno de ojos.webp";
-  }
-
-  if (searchable.includes("maquillaje")) {
-    return "maquillaje dermo.webp";
-  }
-
-  if (searchable.includes("hombre") || searchable.includes("men")) {
-    return "cathombre.jpg";
-  }
-
-  if (
-    searchable.includes("post") ||
-    searchable.includes("procedimiento") ||
-    searchable.includes("barrera") ||
-    searchable.includes("reparacion")
-  ) {
-    return "cat4.jpg";
-  }
-
-  return null;
-}
-
 function buildCategoryImageAsset(categoryId: string, categoryName: string): MediaAsset {
-  const semanticFileName = resolveSemanticCategoryImageFile(categoryId, categoryName);
-  const fallbackFileName =
-    CATEGORY_IMAGE_FILES[hashCategoryId(categoryId) % CATEGORY_IMAGE_FILES.length] ?? "cat1.webp";
-  const fileName = semanticFileName ?? fallbackFileName;
+  const fileName =
+    CATEGORY_IMAGE_FILES[hashCategoryId(categoryId) % CATEGORY_IMAGE_FILES.length] ?? CATEGORY_IMAGE_FILES[0];
 
   return {
     id: `hardcoded-category-media-${categoryId}`,
     kind: "image",
-    url: `/categorias/${encodeURIComponent(fileName)}`,
-    storageKey: `public/categorias/${fileName}`,
+    url: `/media/new dev media/${encodeURIComponent(fileName)}`,
+    storageKey: `public/media/new dev media/${fileName}`,
     altText: categoryName,
     mimeType: null,
     posterUrl: null,

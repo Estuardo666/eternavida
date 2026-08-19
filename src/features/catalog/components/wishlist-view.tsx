@@ -31,13 +31,12 @@ interface WishlistItemData {
 }
 
 function toMediaAsset(product: WishlistProduct): MediaAsset | null {
-  if (!product.mediaAsset?.publicUrl || !product.mediaAssetId) return null;
   return {
-    id: product.mediaAssetId,
+    id: product.mediaAssetId ?? "product-photo-placeholder",
     kind: "image",
-    url: product.mediaAsset.publicUrl,
+    url: "/media/new dev media/productos.png",
     storageKey: null,
-    altText: product.mediaAsset.altText || product.name,
+    altText: product.mediaAsset?.altText || product.name,
   };
 }
 

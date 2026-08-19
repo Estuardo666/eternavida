@@ -53,26 +53,17 @@ interface DecimalLike {
 }
 
 const CATEGORY_FALLBACK_IMAGE_FILES = [
-  "aceite de coco.jpg",
-  "aceite de oregano.jpg",
-  "aceite de oregano 2.jpg",
-  "aceite de ajonjoli.jpg",
-  "aceite de linaza.jpg",
-  "manteca de cacao.jpg",
-  "imagen.jpg",
-  "imagen2.jpg",
-  "IMG_9445.jpeg",
-  "banner.jpg",
-  "banner 2.jpg",
-  "banner3.jpg",
+  "1107.jpg",
+  "138219.jpg",
+  "147186.jpg",
+  "181090.jpg",
+  "2247.jpg",
+  "23273.jpg",
+  "364942.jpg",
+  "48159.jpg",
+  "484899.jpg",
+  "87122.jpg",
 ] as const;
-
-function normalizeCategoryText(value: string): string {
-  return value
-    .toLocaleLowerCase("es-EC")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-}
 
 function hashValue(value: string): number {
   let hash = 0;
@@ -82,38 +73,14 @@ function hashValue(value: string): number {
   return hash;
 }
 
-function resolveCategoryFallbackImageFile(slug: string, name: string): string {
-  const searchable = normalizeCategoryText(`${slug} ${name}`);
-
-  if (searchable.includes("limpieza")) return "limpieza clinica.jpg";
-  if (searchable.includes("acne") || searchable.includes("grasa")) return "acne y piel grasa.jpg";
-  if (searchable.includes("proteccion") || searchable.includes("solar") || searchable.includes("bloqueador")) {
-    return "cat bloqueadores solares.jpg";
-  }
-  if (searchable.includes("contorno") || searchable.includes("ojos") || searchable.includes("ojo")) {
-    return "contorno de ojos.webp";
-  }
-  if (searchable.includes("maquillaje")) return "maquillaje dermo.webp";
-  if (searchable.includes("hombre") || searchable.includes("men")) return "cathombre.jpg";
-  if (
-    searchable.includes("post") ||
-    searchable.includes("procedimiento") ||
-    searchable.includes("barrera") ||
-    searchable.includes("reparacion")
-  ) {
-    return "cat4.jpg";
-  }
-
-  return CATEGORY_FALLBACK_IMAGE_FILES[hashValue(slug) % CATEGORY_FALLBACK_IMAGE_FILES.length] ?? "cat1.webp";
-}
-
 function buildCategoryFallbackMedia(slug: string, name: string): MediaAsset {
-  const fileName = resolveCategoryFallbackImageFile(slug, name);
+  const fileName =
+    CATEGORY_FALLBACK_IMAGE_FILES[hashValue(slug) % CATEGORY_FALLBACK_IMAGE_FILES.length] ?? CATEGORY_FALLBACK_IMAGE_FILES[0];
   return {
     id: `fallback-category-media-${slug}`,
     kind: "image",
-    url: `/categorias/${encodeURIComponent(fileName)}`,
-    storageKey: `public/categorias/${fileName}`,
+    url: `/media/new dev media/${encodeURIComponent(fileName)}`,
+    storageKey: `public/media/new dev media/${fileName}`,
     altText: name,
     mimeType: null,
     posterUrl: null,
@@ -195,6 +162,29 @@ function mapMediaAsset(record: {
   };
 }
 
+const PRODUCT_PHOTO_URL = "/media/new dev media/productos.png";
+
+function mapProductMediaAsset(
+  record: {
+    id: string;
+    altText: string | null;
+  } | null | undefined,
+  fallbackAltText: string,
+): MediaAsset {
+  return {
+    id: record?.id ?? "product-photo-placeholder",
+    kind: "image",
+    url: PRODUCT_PHOTO_URL,
+    storageKey: "product-photo-placeholder",
+    altText: record?.altText ?? fallbackAltText,
+    mimeType: "image/png",
+    posterUrl: null,
+    width: null,
+    height: null,
+    durationSeconds: null,
+  };
+}
+
 function mapCategorySummary(record: {
   id: string;
   slug: string;
@@ -217,7 +207,7 @@ function mapCategorySummary(record: {
     productAssignments: number;
   };
 }): PublicCatalogCategorySummary {
-  const resolvedMedia = mapMediaAsset(record.mediaAsset) ?? buildCategoryFallbackMedia(record.slug, record.name);
+  const resolvedMedia = buildCategoryFallbackMedia(record.slug, record.name);
 
   return {
     id: record.id,
@@ -368,7 +358,7 @@ function mapProductSummary(
     productColor: record.productColor ?? null,
     hasVariants: (record.variants ?? []).length > 0,
     activePromotion: promotionByProductId.get(record.id) ?? null,
-    media: mapMediaAsset(record.mediaAsset),
+    media: mapProductMediaAsset(record.mediaAsset, record.name),
     category: categories[0] ?? null,
     categories,
   };
@@ -843,7 +833,7 @@ export async function getPublicProductDetailData(
     nutritionalInfoImage: mapMediaAsset(detailProduct.nutritionalInfoImage),
     galleryImages: (detailProduct.galleryImages ?? []).map((g) => ({
       id: g.id,
-      media: mapMediaAsset(g.mediaAsset),
+      media: mapProductMediaAsset(g.mediaAsset, product.name),
     })),
     usageSteps: (detailProduct.usageSteps ?? []).map((s) => ({
       id: s.id,

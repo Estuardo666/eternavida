@@ -51,7 +51,7 @@ export function AboutCtaSection({ content }: AboutCtaSectionProps) {
             className="relative min-h-[300px] lg:min-h-0"
           >
             <Image
-              src="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev/media/about-cta.webp"
+              src="/media/new dev media/181090.jpg"
               alt="Productos naturales Eterna Vida"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"

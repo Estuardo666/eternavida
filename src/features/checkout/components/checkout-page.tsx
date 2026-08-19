@@ -1282,10 +1282,10 @@ export function CheckoutPageClient() {
               {...buttonMotionProps}
               className={cx(
                 "relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-pill px-8 py-3.5 text-label-md font-bold text-[#0B5D1E]",
-                "shadow-cta transition-[background,box-shadow,opacity] duration-base",
+                "transition-[background,opacity] duration-base",
                 buttonState === "done"
-                  ? "bg-status-success shadow-[0_2px_12px_rgba(46,139,87,0.28)]"
-                  : "bg-gradient-to-br from-[#E5B85C] via-[#D6A03A] to-[#C58A1D] hover:shadow-[0_12px_32px_rgba(197,138,29,0.35)]",
+                  ? "bg-status-success"
+                  : "bg-[#C58A1D] hover:bg-[#B47C18]",
                 (buttonState !== "idle" || isPricingLoading || pricingError || !hasAcceptedTerms) && "cursor-default opacity-95",
               )}
               aria-live="polite"

@@ -428,7 +428,7 @@ export function PublicProductDetailView({ data }: PublicProductDetailViewProps) 
                         ? "cursor-not-allowed bg-neutral-400"
                         : cartState === "added"
                           ? "cursor-default bg-brand-primary"
-                          : "cursor-pointer bg-gradient-to-br from-[#E5B85C] via-[#D6A03A] to-[#C58A1D] text-[#0B5D1E] font-bold",
+                          : "cursor-pointer bg-[#C58A1D] text-[#0B5D1E] font-bold hover:bg-[#B47C18]",
                     ].join(" ")}
                     aria-label={
                       cartState === "added"

@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-const { PrismaClient, MediaAssetKind } = require("@prisma/client");
+const { PrismaClient, MediaAssetKind, ReviewStatus } = require("@prisma/client");
+const {
+  BRAND,
+  categories: categorySeedData,
+  products: productSeedData,
+  trustBadgesDefault,
+  certByCategory,
+} = require("./seed-catalog");
 
 const prisma = new PrismaClient();
 
@@ -24,248 +31,21 @@ const heroSeedAssets = [
   },
 ];
 
-const categorySeedData = [
-  {
-    slug: "aceites-naturales",
-    name: "Aceites naturales",
-    description: "Aceites vírgenes y esenciales para alimentación, cuidado personal y bienestar.",
-    href: "#contact-cta",
-  },
-  {
-    slug: "miel-y-derivados",
-    name: "Miel y derivados",
-    description: "Miel pura, vino de miel y productos derivados de colmenas propias.",
-    href: "#contact-cta",
-  },
-  {
-    slug: "suplementos",
-    name: "Suplementos naturales",
-    description: "Suplementos herbales y naturales para fortalecer tu salud de forma preventiva.",
-    href: "#contact-cta",
-  },
-  {
-    slug: "bienestar-general",
-    name: "Bienestar general",
-    description: "Productos para el bienestar integral: piel, cabello, digestión e inmunidad.",
-    href: "#contact-cta",
-  },
-];
-
-const productSeedData = [
-  {
-    slug: "aceite-coco-virgen",
-    name: "Aceite de coco virgen",
-    description: "Aceite de coco virgen multifuncional para alimentación, cuidado personal y bienestar. 100% natural, artesanal y sin aditivos. Desde la palma a tu mesa.",
-    href: "#contact-cta",
-    badge: "Destacado",
-    badgeColor: "#1F8F6B",
-    price: 13.0,
-    discountPrice: null,
-    stock: 45,
-    productColor: "#4CAF50",
-    preTitle: "Multifuncional",
-    slogan: "Desde la palma a tu mesa. 100% natural, artesanal y multifuncional.",
-    shortDescription: "Aceite de coco virgen para alimentación, piel y cabello. 100% natural y artesanal.",
-    longDescription: "",
-    brand: "Eterna Vida",
-  },
-  {
-    slug: "aceite-oregano",
-    name: "Aceite de orégano",
-    description: "Suplemento natural de orégano orgánico para fortalecer el sistema inmune y promover el bienestar general. Pequeñas gotas, grandes defensas.",
-    href: "#contact-cta",
-    badge: "Natural",
-    badgeColor: "#2F6FDE",
-    price: 15.0,
-    discountPrice: null,
-    stock: 28,
-    productColor: "#673AB7",
-    preTitle: "Suplemento inmune",
-    slogan: "Pequeñas gotas, grandes defensas.",
-    shortDescription: "Suplemento natural de orégano orgánico para el sistema inmune.",
-    longDescription: "",
-    brand: "Eterna Vida",
-  },
-  {
-    slug: "miel-abeja-pura",
-    name: "Miel de abeja pura",
-    description: "Miel pura de abeja proveniente de colmenas propias. Endulzante natural, artesanal y responsable. La dulzura que sana.",
-    href: "#contact-cta",
-    badge: "Artesanal",
-    badgeColor: "#B7791F",
-    price: 14.0,
-    discountPrice: null,
-    stock: 52,
-    productColor: "#FF9800",
-    preTitle: "Colmenas propias",
-    slogan: "La dulzura que sana.",
-    shortDescription: "Miel pura de abeja, endulzante natural de colmenas propias.",
-    longDescription: "",
-    brand: "Eterna Vida",
-  },
-  {
-    slug: "vino-miel",
-    name: "Vino de miel",
-    description: "Vino artesanal elaborado con miel de abeja pura. Sabor único y natural, producción tradicional. Línea complementaria de nuestra miel.",
-    href: "#contact-cta",
-    badge: "Edición especial",
-    badgeColor: "#8A5CF6",
-    price: 18.0,
-    discountPrice: null,
-    stock: 20,
-    productColor: "#7B1FA2",
-    preTitle: "Línea complementaria",
-    slogan: "El sabor de la tradición.",
-    shortDescription: "Vino artesanal de miel pura, producción tradicional.",
-    longDescription: "",
-    brand: "Eterna Vida",
-  },
-];
-
-// ── Product-specific seed data ──────────────────────────────────────────────
-
-const productDetails = {
-  "aceite-coco-virgen": {
-    variants: [
-      { name: "250ml", price: 13.0, discountPrice: null, stock: 45, sortOrder: 0 },
-      { name: "500ml", price: 18.0, discountPrice: null, stock: 32, sortOrder: 1 },
-      { name: "1000ml", price: 24.0, discountPrice: null, stock: 18, sortOrder: 2 },
-    ],
-    ingredients: [
-      { name: "Coco orgánico", description: "Aceite extraído de coco fresco cultivado sin pesticidas.", sortOrder: 0 },
-      { name: "Ácido láurico", description: "Ácido graso de cadena media con propiedades antimicrobianas.", sortOrder: 1 },
-      { name: "Vitamina E", description: "Antioxidante natural que protege y nutre la piel.", sortOrder: 2 },
-      { name: "Ácidos grasos de cadena media", description: "MCT que proporcionan energía rápida y apoyo metabólico.", sortOrder: 3 },
-    ],
-    benefits: [
-      { text: "Alternativa a aceites procesados", iconKey: "leaf", sortOrder: 0 },
-      { text: "Uso culinario saludable", iconKey: "check-circle", sortOrder: 1 },
-      { text: "Hidratación para piel y cabello", iconKey: "droplet", sortOrder: 2 },
-      { text: "Producción artesanal", iconKey: "award", sortOrder: 3 },
-      { text: "Sin aditivos ni refinados", iconKey: "shield", sortOrder: 4 },
-      { text: "Resultados visibles en 7 días", iconKey: "clock", sortOrder: 5 },
-    ],
-    usageSteps: [
-      { stepNumber: 1, text: "Para cocinar: usa 1-2 cucharadas como sustituto de aceites procesados." },
-      { stepNumber: 2, text: "Para piel: aplica una pequeña cantidad y masajea suavemente hasta absorción." },
-      { stepNumber: 3, text: "Para cabello: aplica desde la mitad hasta las puntas, deja actuar 20 minutos y enjuaga." },
-      { stepNumber: 4, text: "Para limpieza facial: aplica con un disco de algodón y retira con movimientos suaves." },
-    ],
-    trustBadges: [
-      { text: "Envío gratis a todo el país", iconKey: "shield", sortOrder: 0 },
-      { text: "Devolución sin costo en 30 días", iconKey: "check-circle", sortOrder: 1 },
-      { text: "Producto 100% natural", iconKey: "leaf", sortOrder: 2 },
-    ],
-    certificateBadges: [
-      { label: "100% Natural", iconKey: "leaf", sortOrder: 0 },
-      { label: "Artesanal", iconKey: "award", sortOrder: 1 },
-      { label: "Sin aditivos", iconKey: "shield", sortOrder: 2 },
-    ],
-  },
-  "aceite-oregano": {
-    variants: [
-      { name: "30ml", price: 15.0, discountPrice: null, stock: 28, sortOrder: 0 },
-      { name: "60ml", price: 22.0, discountPrice: null, stock: 15, sortOrder: 1 },
-    ],
-    ingredients: [
-      { name: "Orégano orgánico", description: "Orégano cultivado de forma orgánica, rico en carvacrol.", sortOrder: 0 },
-      { name: "Carvacrol", description: "Compuesto activo principal con propiedades antimicrobianas.", sortOrder: 1 },
-      { name: "Timol", description: "Fenol natural con acción antioxidante y antiséptica.", sortOrder: 2 },
-      { name: "Ácido rosmarínico", description: "Polifenol con efecto antiinflamatorio y protector celular.", sortOrder: 3 },
-    ],
-    benefits: [
-      { text: "Apoyo al sistema inmunológico", iconKey: "shield", sortOrder: 0 },
-      { text: "Uso para salud respiratoria", iconKey: "wind", sortOrder: 1 },
-      { text: "Bienestar digestivo", iconKey: "heart", sortOrder: 2 },
-      { text: "Producción artesanal", iconKey: "award", sortOrder: 3 },
-      { text: "Orégano cultivado orgánicamente", iconKey: "leaf", sortOrder: 4 },
-    ],
-    usageSteps: [
-      { stepNumber: 1, text: "Diluir 2-3 gotas en un vaso de agua o jugo y consumir antes de las comidas." },
-      { stepNumber: 2, text: "Para uso aromático: agregar 3-4 gotas en un difusor para purificar el ambiente." },
-      { stepNumber: 3, text: "Uso tópico: diluir con un aceite portador y aplicar en el pecho para bienestar respiratorio." },
-    ],
-    trustBadges: [
-      { text: "Envío gratis a todo el país", iconKey: "shield", sortOrder: 0 },
-      { text: "Devolución sin costo en 30 días", iconKey: "check-circle", sortOrder: 1 },
-      { text: "Orégano 100% orgánico", iconKey: "leaf", sortOrder: 2 },
-    ],
-    certificateBadges: [
-      { label: "Orgánico", iconKey: "leaf", sortOrder: 0 },
-      { label: "Sistema inmune", iconKey: "shield", sortOrder: 1 },
-      { label: "Artesanal", iconKey: "award", sortOrder: 2 },
-    ],
-  },
-  "miel-abeja-pura": {
-    variants: [
-      { name: "250g", price: 14.0, discountPrice: null, stock: 52, sortOrder: 0 },
-      { name: "500g", price: 19.0, discountPrice: null, stock: 38, sortOrder: 1 },
-      { name: "1000g", price: 25.0, discountPrice: null, stock: 22, sortOrder: 2 },
-    ],
-    ingredients: [
-      { name: "Miel de abeja pura", description: "Miel cruda extraída de colmenas propias sin procesamiento industrial.", sortOrder: 0 },
-      { name: "Enzimas naturales", description: "Enzimas que favorecen la digestión y absorción de nutrientes.", sortOrder: 1 },
-      { name: "Antioxidantes", description: "Flavonoides y compuestos fenólicos que combaten el estrés oxidativo.", sortOrder: 2 },
-      { name: "Polen natural", description: "Micronutrientes esenciales: vitaminas, minerales y aminoácidos.", sortOrder: 3 },
-    ],
-    benefits: [
-      { text: "Endulzante natural", iconKey: "sparkle", sortOrder: 0 },
-      { text: "Producto artesanal", iconKey: "award", sortOrder: 1 },
-      { text: "Producción responsable", iconKey: "leaf", sortOrder: 2 },
-      { text: "Apoyo al sistema inmune", iconKey: "shield", sortOrder: 3 },
-      { text: "Sustituto del azúcar refinada", iconKey: "heart", sortOrder: 4 },
-    ],
-    usageSteps: [
-      { stepNumber: 1, text: "Endulzar bebidas calientes o frías: agregar 1-2 cucharadas al gusto." },
-      { stepNumber: 2, text: "Untar en pan, tostadas o galletas como alternativa al azúcar." },
-      { stepNumber: 3, text: "Mascarilla facial: aplicar una capa fina, dejar 15 minutos y enjuagar con agua tibia." },
-      { stepNumber: 4, text: "Para alivio de garganta: disolver 1 cucharada en agua tibia con limón." },
-    ],
-    trustBadges: [
-      { text: "Envío gratis a todo el país", iconKey: "shield", sortOrder: 0 },
-      { text: "Devolución sin costo en 30 días", iconKey: "check-circle", sortOrder: 1 },
-      { text: "Miel 100% pura", iconKey: "droplet", sortOrder: 2 },
-    ],
-    certificateBadges: [
-      { label: "Pura", iconKey: "droplet", sortOrder: 0 },
-      { label: "Artesanal", iconKey: "award", sortOrder: 1 },
-      { label: "Natural", iconKey: "leaf", sortOrder: 2 },
-    ],
-  },
-  "vino-miel": {
-    variants: [
-      { name: "375ml", price: 18.0, discountPrice: null, stock: 20, sortOrder: 0 },
-      { name: "750ml", price: 24.0, discountPrice: null, stock: 12, sortOrder: 1 },
-    ],
-    ingredients: [
-      { name: "Miel de abeja pura", description: "Miel de colmenas propias, base del proceso de fermentación.", sortOrder: 0 },
-      { name: "Uvas seleccionadas", description: "Uvas de calidad seleccionadas para el blend del vino.", sortOrder: 1 },
-      { name: "Levaduras naturales", description: "Levaduras que fermentan los azúcares de forma controlada.", sortOrder: 2 },
-      { name: "Agua de manantial", description: "Agua pura de manantial para el proceso de elaboración.", sortOrder: 3 },
-    ],
-    benefits: [
-      { text: "Sabor único y natural", iconKey: "sparkle", sortOrder: 0 },
-      { text: "Producción artesanal", iconKey: "award", sortOrder: 1 },
-      { text: "Línea complementaria de miel", iconKey: "heart", sortOrder: 2 },
-      { text: "Elaboración tradicional", iconKey: "leaf", sortOrder: 3 },
-    ],
-    usageSteps: [
-      { stepNumber: 1, text: "Servir frío entre 8-10°C para apreciar mejor sus notas aromáticas." },
-      { stepNumber: 2, text: "Maridar con quesos suaves, frutas frescas o postres ligeros." },
-      { stepNumber: 3, text: "Disfrutar con moderación como parte de una experiencia gourmet." },
-    ],
-    trustBadges: [
-      { text: "Envío gratis a todo el país", iconKey: "shield", sortOrder: 0 },
-      { text: "Devolución sin costo en 30 días", iconKey: "check-circle", sortOrder: 1 },
-      { text: "Elaboración artesanal", iconKey: "award", sortOrder: 2 },
-    ],
-    certificateBadges: [
-      { label: "Artesanal", iconKey: "award", sortOrder: 0 },
-      { label: "Natural", iconKey: "leaf", sortOrder: 1 },
-      { label: "Producción propia", iconKey: "flask", sortOrder: 2 },
-    ],
-  },
+// Imagen destacada compartida por todos los productos hasta tener fotos por SKU.
+const productFeaturedAsset = {
+  storageKey: "eternavida/catalogo/productos.png",
+  publicUrl: "/media/productos.png",
+  altText: "Línea de productos Eternavida",
+  mimeType: "image/png",
 };
+
+/** Precio de lista = variante más barata. */
+const basePrice = (product) =>
+  product.variants.reduce((min, variant) => Math.min(min, variant.price), Infinity);
+
+/** Stock del producto = suma del stock de sus variantes. */
+const totalStock = (product) =>
+  product.variants.reduce((sum, variant) => sum + variant.stock, 0);
 
 async function main() {
   // ── Badge presets ─────────────────────────────────────────────────────────
@@ -274,6 +54,10 @@ async function main() {
       { label: "Nuevo", color: "#1F8F6B", sortOrder: 0 },
       { label: "Oferta", color: "#D94F4F", sortOrder: 1 },
       { label: "Destacado", color: "#B7791F", sortOrder: 2 },
+      { label: "Origen", color: "#8A5CF6", sortOrder: 3 },
+      { label: "Sin gluten", color: "#1F8F6B", sortOrder: 4 },
+      { label: "Natural", color: "#2F6FDE", sortOrder: 5 },
+      { label: "Edición especial", color: "#8A5CF6", sortOrder: 6 },
     ].map((preset) =>
       prisma.productBadgePreset.upsert({
         where: { label: preset.label },
@@ -283,7 +67,7 @@ async function main() {
     ),
   );
 
-  // ── Media assets (reuse hero images for gallery) ──────────────────────────
+  // ── Media assets ──────────────────────────────────────────────────────────
   const [heroMedia, heroSecondaryMedia, heroTertiaryMedia] = await Promise.all(
     heroSeedAssets.map((asset) =>
       prisma.mediaAsset.upsert({
@@ -305,20 +89,51 @@ async function main() {
     ),
   );
 
-  const galleryMediaAssets = [heroMedia, heroSecondaryMedia, heroTertiaryMedia];
+  const productMedia = await prisma.mediaAsset.upsert({
+    where: { storageKey: productFeaturedAsset.storageKey },
+    update: {
+      publicUrl: productFeaturedAsset.publicUrl,
+      kind: MediaAssetKind.image,
+      mimeType: productFeaturedAsset.mimeType,
+      altText: productFeaturedAsset.altText,
+    },
+    create: {
+      storageKey: productFeaturedAsset.storageKey,
+      publicUrl: productFeaturedAsset.publicUrl,
+      kind: MediaAssetKind.image,
+      mimeType: productFeaturedAsset.mimeType,
+      altText: productFeaturedAsset.altText,
+    },
+  });
 
   // ── Categories ────────────────────────────────────────────────────────────
   const categories = await Promise.all(
     categorySeedData.map((category) =>
       prisma.category.upsert({
         where: { slug: category.slug },
-        update: { name: category.name, description: category.description, href: category.href, isActive: true },
-        create: { slug: category.slug, name: category.name, description: category.description, href: category.href, isActive: true },
+        update: {
+          name: category.name,
+          description: category.description,
+          href: `/categorias/${category.slug}`,
+          mediaAssetId: productMedia.id,
+          isActive: true,
+        },
+        create: {
+          slug: category.slug,
+          name: category.name,
+          description: category.description,
+          href: `/categorias/${category.slug}`,
+          mediaAssetId: productMedia.id,
+          isActive: true,
+        },
       }),
     ),
   );
 
-  // ── Delete ALL existing products and related data ─────────────────────────
+  const categoryBySlug = new Map(categories.map((category) => [category.slug, category]));
+  const keptCategorySlugs = categorySeedData.map((category) => category.slug);
+
+  // ── Purga de catálogo anterior (productos y categorías de demo) ────────────
   await prisma.productCertificateBadge.deleteMany({});
   await prisma.productPickupLocation.deleteMany({});
   await prisma.productTrustBadge.deleteMany({});
@@ -327,38 +142,45 @@ async function main() {
   await prisma.productBenefit.deleteMany({});
   await prisma.productIngredient.deleteMany({});
   await prisma.productVariant.deleteMany({});
+  await prisma.productCategoryAssignment.deleteMany({});
   await prisma.review.deleteMany({});
   await prisma.wishlistItem.deleteMany({});
   await prisma.restockAlert.deleteMany({});
   await prisma.product.deleteMany({});
+  await prisma.category.deleteMany({ where: { slug: { notIn: keptCategorySlugs } } });
 
-  // ── Create products ───────────────────────────────────────────────────────
-  const products = await Promise.all(
-    productSeedData.map((product) =>
-      prisma.product.create({
-        data: {
-          slug: product.slug,
-          name: product.name,
-          description: product.description,
-          href: product.href,
-          badge: product.badge,
-          badgeColor: product.badgeColor,
-          price: product.price,
-          discountPrice: product.discountPrice,
-          discountPercent: 0,
-          stock: product.stock,
-          productColor: product.productColor ?? null,
-          preTitle: product.preTitle ?? null,
-          slogan: product.slogan ?? null,
-          shortDescription: product.shortDescription ?? "",
-          longDescription: product.longDescription ?? "",
-          brand: product.brand,
-          isActive: true,
-          category: { connect: { id: categories[0].id } },
-        },
-      }),
-    ),
-  );
+  // ── Productos ─────────────────────────────────────────────────────────────
+  const products = [];
+  for (const seed of productSeedData) {
+    const category = categoryBySlug.get(seed.category);
+    if (!category) throw new Error(`Categoría no encontrada: ${seed.category}`);
+
+    const product = await prisma.product.create({
+      data: {
+        slug: seed.slug,
+        name: seed.name,
+        description: seed.description,
+        shortDescription: seed.shortDescription,
+        longDescription: seed.longDescription,
+        preTitle: seed.preTitle ?? null,
+        slogan: seed.slogan ?? null,
+        href: `/productos/${seed.slug}`,
+        badge: seed.badge ?? null,
+        badgeColor: seed.badgeColor ?? null,
+        price: basePrice(seed),
+        discountPrice: null,
+        discountPercent: 0,
+        stock: totalStock(seed),
+        productColor: seed.productColor ?? null,
+        brand: BRAND,
+        isActive: true,
+        mediaAsset: { connect: { id: productMedia.id } },
+        category: { connect: { id: category.id } },
+      },
+    });
+
+    products.push({ record: product, seed, categoryId: category.id });
+  }
 
   // ── Pickup locations ──────────────────────────────────────────────────────
   const pickupLocations = await Promise.all(
@@ -374,152 +196,175 @@ async function main() {
     ),
   );
 
-  // ── Seed rich data for each product ───────────────────────────────────────
-  for (const product of products) {
-    const details = productDetails[product.slug];
-    if (!details) continue;
+  // ── Datos ricos por producto ──────────────────────────────────────────────
+  for (const { record, seed, categoryId } of products) {
+    const productId = record.id;
 
-    // Variants
+    // Asignación de categoría (relación many-to-many usada por el catálogo público)
+    await prisma.productCategoryAssignment.create({
+      data: { productId, categoryId, position: 0 },
+    });
+
+    // Presentaciones (producto variable)
     await prisma.productVariant.createMany({
-      data: details.variants.map((v) => ({
-        productId: product.id,
-        name: v.name,
-        price: v.price,
-        discountPrice: v.discountPrice,
-        stock: v.stock,
+      data: seed.variants.map((variant) => ({
+        productId,
+        name: variant.name,
+        price: variant.price,
+        discountPrice: variant.discountPrice,
+        stock: variant.stock,
+        mediaAssetId: productMedia.id,
         isActive: true,
-        sortOrder: v.sortOrder,
+        sortOrder: variant.sortOrder,
       })),
     });
 
-    // Ingredients
+    // Tab "Ingredientes clave"
     await prisma.productIngredient.createMany({
-      data: details.ingredients.map((ing) => ({
-        productId: product.id,
-        name: ing.name,
-        description: ing.description,
-        sortOrder: ing.sortOrder,
+      data: seed.ingredients.map((item) => ({
+        productId,
+        name: item.name,
+        description: item.description,
+        sortOrder: item.sortOrder,
       })),
     });
 
-    // Benefits
+    // Tab "Detalles del producto" — beneficios
     await prisma.productBenefit.createMany({
-      data: details.benefits.map((b) => ({
-        productId: product.id,
-        text: b.text,
-        iconKey: b.iconKey,
-        sortOrder: b.sortOrder,
+      data: seed.benefits.map((item) => ({
+        productId,
+        text: item.text,
+        iconKey: item.iconKey,
+        sortOrder: item.sortOrder,
       })),
     });
 
-    // Gallery images (reuse hero media assets)
-    await prisma.productGalleryImage.createMany({
-      data: galleryMediaAssets.map((media, index) => ({
-        productId: product.id,
-        mediaAssetId: media.id,
-        sortOrder: index,
-      })),
+    // Galería
+    await prisma.productGalleryImage.create({
+      data: { productId, mediaAssetId: productMedia.id, sortOrder: 0 },
     });
 
-    // Usage steps
+    // Tab "Modo de uso"
     await prisma.productUsageStep.createMany({
-      data: details.usageSteps.map((s) => ({
-        productId: product.id,
-        stepNumber: s.stepNumber,
-        text: s.text,
+      data: seed.usageSteps.map((step) => ({
+        productId,
+        stepNumber: step.stepNumber,
+        text: step.text,
       })),
     });
 
-    // Trust badges
+    // Tab "Reseñas de clientes"
+    await prisma.review.createMany({
+      data: seed.reviews.map((review) => ({
+        productId,
+        clerkUserId: review.clerkUserId,
+        rating: review.rating,
+        title: review.title,
+        body: review.body,
+        isVerifiedPurchase: true,
+        status: ReviewStatus.approved,
+      })),
+    });
+
     await prisma.productTrustBadge.createMany({
-      data: details.trustBadges.map((tb) => ({
-        productId: product.id,
-        text: tb.text,
-        iconKey: tb.iconKey,
-        sortOrder: tb.sortOrder,
+      data: trustBadgesDefault.map((badge) => ({
+        productId,
+        text: badge.text,
+        iconKey: badge.iconKey,
+        sortOrder: badge.sortOrder,
       })),
     });
 
-    // Certificate badges
     await prisma.productCertificateBadge.createMany({
-      data: details.certificateBadges.map((cb) => ({
-        productId: product.id,
-        label: cb.label,
-        iconKey: cb.iconKey,
-        sortOrder: cb.sortOrder,
+      data: (certByCategory[seed.category] ?? []).map((badge) => ({
+        productId,
+        label: badge.label,
+        iconKey: badge.iconKey,
+        sortOrder: badge.sortOrder,
       })),
     });
 
-    // Pickup locations
     await prisma.productPickupLocation.createMany({
-      data: pickupLocations.map((loc) => ({
-        productId: product.id,
-        pickupLocationId: loc.id,
-      })),
+      data: pickupLocations.map((loc) => ({ productId, pickupLocationId: loc.id })),
     });
   }
 
   // ── Home page content ─────────────────────────────────────────────────────
+  const featuredCategorySlugs = [
+    "productos-de-la-colmena",
+    "cacao-de-palanda",
+    "aceites-vegetales",
+  ];
+  const featuredProductSlugs = ["miel-de-abeja", "aceite-de-coco", "cacao-en-polvo"];
+
+  const featuredCategories = featuredCategorySlugs.map((slug) => categoryBySlug.get(slug));
+  const featuredProducts = featuredProductSlugs.map((slug) =>
+    products.find((entry) => entry.seed.slug === slug),
+  );
+
   const homeContentData = {
-    heroEyebrow: "Eterna Vida",
-    heroTitle: "Productos naturales para tu bienestar.",
+    heroEyebrow: "Eternavida",
+    heroTitle: "Ciencia, naturaleza y tecnología desde el origen.",
     heroSubtitle:
-      "Aceites vírgenes, miel pura y suplementos artesanales directo de nuestras manos a tu mesa.",
-    heroSupportingBadge: "100% natural, artesanal y multifuncional",
+      "Miel, cacao de Palanda, aceites prensados en frío, esenciales destilados y snacks deshidratados. Del origen al proceso, del proceso al producto.",
+    heroSupportingBadge: "Cultivando bienestar",
     heroPrimaryCtaText: "Explorar productos",
-    heroPrimaryCtaHref: "#featured-products",
-    heroSecondaryCtaText: "Conocer más",
-    heroSecondaryCtaHref: "#contact-cta",
+    heroPrimaryCtaHref: "/productos",
+    heroSecondaryCtaText: "Conocer nuestros procesos",
+    heroSecondaryCtaHref: "/nosotros",
     heroMediaId: heroMedia.id,
     heroSecondaryMediaId: heroSecondaryMedia.id,
     heroTertiaryMediaId: heroTertiaryMedia.id,
     featuredCategoriesEyebrow: "Categorías",
-    featuredCategoriesTitle: "Nuestros productos naturales.",
+    featuredCategoriesTitle: "Ocho líneas, una misma filosofía.",
     featuredCategoriesDescription:
-      "Aceites, mieles y suplementos elaborados con procesos artesanales y responsables.",
-    featuredCategoriesItems: categories.slice(0, 3).map((category) => ({
+      "Diferentes materias primas. Diferentes procesos. Conocer lo que procesamos para entender lo que producimos.",
+    featuredCategoriesItems: featuredCategories.map((category) => ({
       id: category.slug,
       name: category.name,
       description: category.description,
-      href: category.href,
+      href: `/categorias/${category.slug}`,
     })),
     featuredProductsEyebrow: "Destacados",
-    featuredProductsTitle: "Productos seleccionados para ti.",
+    featuredProductsTitle: "Del origen a tus manos.",
     featuredProductsDescription:
-      "Descubre nuestros productos más populares, elaborados con ingredientes naturales de la más alta calidad.",
-    featuredProductsItems: productSeedData.slice(0, 3).map((product) => ({
-      id: product.slug,
-      name: product.name,
-      description: product.shortDescription,
-      href: product.href,
-      ...(product.badge ? { badge: product.badge } : {}),
-      ...(product.badgeColor ? { badgeColor: product.badgeColor } : {}),
+      "Colmenas, frutas, semillas, plantas, mar y cacao transformados con procesos controlados.",
+    featuredProductsItems: featuredProducts.map(({ seed }) => ({
+      id: seed.slug,
+      name: seed.name,
+      description: seed.shortDescription,
+      href: `/productos/${seed.slug}`,
+      ...(seed.badge ? { badge: seed.badge } : {}),
+      ...(seed.badgeColor ? { badgeColor: seed.badgeColor } : {}),
     })),
-    trustHighlightsEyebrow: "Confianza",
-    trustHighlightsTitle: "Compromiso con la calidad.",
+    trustHighlightsEyebrow: "Nuestra forma de hacer las cosas",
+    trustHighlightsTitle: "Naturaleza como origen. Ciencia como herramienta.",
     trustHighlightsDescription:
-      "Cada producto es elaborado con procesos artesanales, ingredientes naturales y producción responsable.",
+      "Seleccionamos el origen. Estudiamos la materia prima. Definimos el proceso. Controlamos las variables. Transformamos.",
     trustHighlightsItems: [
       {
-        id: "natural",
-        title: "100% Natural",
-        description: "Todos nuestros productos son elaborados con ingredientes naturales sin aditivos artificiales.",
+        id: "origen",
+        title: "Origen trazable",
+        description:
+          "Colmenas, cultivos y cacao de Palanda seleccionados antes de iniciar cualquier transformación.",
       },
       {
-        id: "artesanal",
-        title: "Producción artesanal",
-        description: "Procesos tradicionales que preservan las propiedades naturales de cada ingrediente.",
+        id: "proceso",
+        title: "Procesos controlados",
+        description:
+          "Centrifugación, deshidratación, fermentación, prensado en frío, destilación, molienda, refinado y encapsulado.",
       },
       {
-        id: "responsable",
-        title: "Producción responsable",
-        description: "Compromiso con el medio ambiente y las comunidades que nos rodean.",
+        id: "producto",
+        title: "Producto sin atajos",
+        description:
+          "Sin aditivos innecesarios. Cada etapa responde a las características particulares de la materia prima.",
       },
     ],
     ctaEyebrow: "Contáctanos",
-    ctaTitle: "¿Listo para cuidar tu bienestar de forma natural?",
+    ctaTitle: "¿Listo para llevar el origen a tu mesa?",
     ctaDescription:
-      "Escoge el producto que mejor se adapte a tus necesidades y recíbelo en la comodidad de tu hogar.",
+      "Escoge la presentación que mejor se adapte a ti y recíbela en la comodidad de tu hogar.",
     ctaPrimaryCtaText: "Ver productos",
     ctaPrimaryCtaHref: "/productos",
     ctaSecondaryCtaText: "WhatsApp",
@@ -536,7 +381,7 @@ async function main() {
   await prisma.homeFeaturedProduct.deleteMany({ where: { homePageContentId: homeRecord.id } });
 
   await prisma.homeFeaturedCategory.createMany({
-    data: categories.slice(0, 3).map((category, index) => ({
+    data: featuredCategories.map((category, index) => ({
       homePageContentId: homeRecord.id,
       categoryId: category.id,
       position: index,
@@ -544,9 +389,9 @@ async function main() {
   });
 
   await prisma.homeFeaturedProduct.createMany({
-    data: products.slice(0, 3).map((product, index) => ({
+    data: featuredProducts.map(({ record }, index) => ({
       homePageContentId: homeRecord.id,
-      productId: product.id,
+      productId: record.id,
       position: index,
     })),
   });
@@ -562,7 +407,7 @@ async function main() {
       sortOrder: 0,
     },
     {
-      name: "Retiro en Tienda Eterna Vida",
+      name: "Retiro en Tienda Eternavida",
       type: "pickup",
       price: 0.0,
       estimatedDays: "Coordinamos por WhatsApp",
@@ -582,21 +427,23 @@ async function main() {
   // ── Payment methods ───────────────────────────────────────────────────────
   await prisma.paymentMethod.upsert({
     where: { type: "bank_transfer" },
-    update: {
-      name: "Transferencia bancaria",
-      isActive: true,
-      sortOrder: 0,
-    },
+    update: { name: "Transferencia bancaria", isActive: true, sortOrder: 0 },
     create: {
       name: "Transferencia bancaria",
       type: "bank_transfer",
       description: "Paga mediante transferencia y envía tu comprobante por WhatsApp.",
       instructions:
-        "Banco: Tu Banco\nCuenta corriente: 0000000000\nBeneficiario: Eterna Vida\n\nEnvía tu comprobante de pago por WhatsApp al +593 99 999 9999 junto con tu número de pedido.",
+        "Banco: Tu Banco\nCuenta corriente: 0000000000\nBeneficiario: Eternavida\n\nEnvía tu comprobante de pago por WhatsApp al +593 99 999 9999 junto con tu número de pedido.",
       isActive: true,
       sortOrder: 0,
     },
   });
+
+  console.log(
+    `Seed completo: ${categories.length} categorías, ${products.length} productos, ` +
+      `${productSeedData.reduce((n, p) => n + p.variants.length, 0)} presentaciones, ` +
+      `${productSeedData.reduce((n, p) => n + p.reviews.length, 0)} reseñas.`,
+  );
 }
 
 main()

@@ -151,6 +151,40 @@ function buildOptionalActionLink(
   };
 }
 
+const PRODUCT_PHOTO_URL = "/media/new dev media/productos.png";
+
+function mapStoredProductMediaAsset(asset: unknown, fallbackAltText: string): MediaAsset {
+  if (!asset) {
+    return {
+      id: "product-photo-placeholder",
+      kind: "image",
+      url: PRODUCT_PHOTO_URL,
+      storageKey: "product-photo-placeholder",
+      altText: fallbackAltText,
+      mimeType: "image/png",
+      posterUrl: null,
+      width: null,
+      height: null,
+      durationSeconds: null,
+    };
+  }
+
+  const parsedAsset = storedMediaAssetSchema.parse(asset);
+
+  return {
+    id: parsedAsset.id,
+    kind: "image",
+    url: PRODUCT_PHOTO_URL,
+    storageKey: parsedAsset.storageKey,
+    altText: parsedAsset.altText ?? fallbackAltText,
+    mimeType: "image/png",
+    posterUrl: null,
+    width: parsedAsset.width,
+    height: parsedAsset.height,
+    durationSeconds: null,
+  };
+}
+
 function mapStoredMediaAsset(asset: unknown): MediaAsset | null {
   if (!asset) {
     return null;
@@ -208,7 +242,7 @@ function parseFeaturedProductsItems(value: unknown): FeaturedProductContent[] {
       price: item.price ?? null,
       discountPrice: item.discountPrice ?? null,
       category: item.category ?? null,
-      media: null,
+      media: mapStoredProductMediaAsset(null, item.name),
     };
 
     return item.badge
@@ -247,7 +281,7 @@ function parseFeaturedProductSelections(value: unknown): FeaturedProductContent[
             href: selection.product.category.href,
           }
         : null,
-      media: mapStoredMediaAsset(selection.product.mediaAsset ?? null),
+      media: mapStoredProductMediaAsset(selection.product.mediaAsset ?? null, selection.product.name),
     };
 
     return selection.product.badge

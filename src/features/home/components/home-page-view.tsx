@@ -28,7 +28,7 @@ export function HomePageView({ contentResult }: HomePageViewProps) {
 
   return (
     <>
-      <HeroSection content={content.hero} />
+      <HeroSection />
       <BestOffersSectionDeferred content={content.featuredProducts} />
       <PromoCollectionSection content={content.featuredCampaign} />
       <FeaturedCategoryProductsSectionDeferred content={content.featuredProducts} />

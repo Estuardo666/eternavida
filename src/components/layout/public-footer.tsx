@@ -44,7 +44,7 @@ export function PublicFooter() {
               <li className="flex items-start gap-2">
                 <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#E5B85C]" aria-hidden="true" />
                 <a
-                  href="tel:+593982740049"
+                  href="tel:+593988158964"
                   className="transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B5D1E]"
                 >
                   098 815 8964
@@ -52,7 +52,14 @@ export function PublicFooter() {
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#E5B85C]" aria-hidden="true" />
-                <span>Vilcabamba, Loja, Ecuador</span>
+                <a
+                  href="https://maps.app.goo.gl/DoBH5qRPAMyjP5GXA?g_st=ic"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B5D1E]"
+                >
+                  Vía Cucanamá - Vilcabamba
+                </a>
               </li>
               <li className="flex items-start gap-2">
                 <Mail className="mt-0.5 h-4 w-4 shrink-0 text-[#E5B85C]" aria-hidden="true" />

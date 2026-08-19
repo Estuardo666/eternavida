@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { esMX } from "@clerk/localizations";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Geist } from "next/font/google";
 import dynamic from "next/dynamic";
 
 import { CartProvider } from "@/features/cart/context/cart-context";
@@ -11,11 +11,10 @@ const WhatsAppFloatDeferred = dynamic(
   () => import("@/components/layout/whatsapp-float").then((mod) => mod.WhatsAppFloat),
 );
 
-const plusJakartaSans = Plus_Jakarta_Sans({
+const geistSans = Geist({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -35,7 +34,7 @@ type RootLayoutProps = Readonly<{
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="es" className={plusJakartaSans.variable} suppressHydrationWarning>
+    <html lang="es" className={geistSans.variable} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev" />
         <link rel="preconnect" href="https://img.clerk.com" />

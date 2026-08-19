@@ -12,7 +12,7 @@ export function CtaSection({ content }: CtaSectionProps) {
     <section id={content.sectionId} className="container py-12 sm:py-16 lg:py-20">
       <div className="relative overflow-hidden rounded-[36px] border border-border-brand p-6 shadow-sm sm:p-8 lg:p-10">
         <Image
-          src="/media/IMG_9445.jpeg"
+          src="/media/new dev media/48159.jpg"
           alt=""
           aria-hidden="true"
           fill
