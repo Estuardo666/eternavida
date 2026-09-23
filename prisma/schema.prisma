@@ -673,6 +673,16 @@ model Order {
   total              Decimal         @db.Decimal(10, 2)
   checkoutNotes      String?         @map("notes")
   archived           Boolean         @default(false)
+  paymentProvider          String?
+  paymentCheckoutId        String?
+  paymentTransactionId     String?
+  paymentResultCode        String?
+  paymentResultDescription String?
+  paymentAuthCode          String?
+  paymentCardLast4         String?
+  paymentCardBrand         String?
+  paymentPaidAt            DateTime?
+  paymentRaw               Json?
   billingFirstName   String?
   billingLastName    String?
   billingAddress     String?
@@ -695,6 +705,7 @@ model Order {
   @@index([source])
   @@index([syncedAt])
   @@index([createdAt])
+  @@index([paymentCheckoutId])
 }
 
 model OrderItem {
@@ -838,6 +849,13 @@ model PaymentMethod {
   type               String   @unique
   instructions       String?  @db.Text
   initialOrderStatus String?
+  qrImageUrl          String?
+  bankName            String?
+  bankAccountType     String?
+  bankAccountNumber   String?
+  bankAccountHolder   String?
+  bankAccountDocument String?
+  bankAccountEmail    String?
   isActive           Boolean  @default(true)
   sortOrder          Int      @default(0)
   createdAt          DateTime @default(now())

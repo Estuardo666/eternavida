@@ -1,19 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { buildCheckoutPricingPreview } from "@/server/pricing/pricing.service";
-import { CheckoutPricingError } from "@/server/pricing/pricing.errors";
+import {
+  CheckoutPricingError,
+  type CheckoutPricingErrorDetails,
+} from "@/server/pricing/pricing.errors";
 import {
   checkoutPricePreviewRequestSchema,
   normalizeCheckoutPricePreviewInput,
 } from "@/server/pricing/promotion.schemas";
 
-function createErrorResponse(status: number, code: string, message: string, timestamp: string): NextResponse {
+function createErrorResponse(
+  status: number,
+  code: string,
+  message: string,
+  timestamp: string,
+  details?: CheckoutPricingErrorDetails,
+): NextResponse {
   return NextResponse.json(
     {
       success: false,
       error: {
         code,
         message,
+        ...(details && Object.keys(details).length > 0 ? { details } : {}),
       },
       timestamp,
     },
@@ -60,7 +70,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
 
     if (error instanceof CheckoutPricingError) {
-      return createErrorResponse(error.status, error.code, error.message, timestamp);
+      return createErrorResponse(error.status, error.code, error.message, timestamp, error.details);
     }
 
     return createErrorResponse(500, "INTERNAL_ERROR", "Failed to calculate checkout pricing preview.", timestamp);

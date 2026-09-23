@@ -12,5 +12,12 @@ export async function getActivePaymentMethods(): Promise<PublicPaymentMethod[]> 
     description: m.description,
     instructions: m.instructions,
     initialOrderStatus: m.initialOrderStatus,
+    qrImageUrl: m.qrImageUrl,
+    bankName: m.bankName,
+    bankAccountType: m.bankAccountType,
+    bankAccountNumber: m.bankAccountNumber,
+    bankAccountHolder: m.bankAccountHolder,
+    bankAccountDocument: m.bankAccountDocument,
+    bankAccountEmail: m.bankAccountEmail,
   }));
 }

@@ -248,15 +248,16 @@ async function loadProductsForPricing(
     select: pricingProductSelect,
   });
 
+  const productsById = new Map(records.map((record) => [record.id, record]));
+
   if (records.length < productIds.length) {
     throw new CheckoutPricingError(
       "PRODUCT_NOT_FOUND",
-      "One or more products in the checkout request no longer exist.",
+      "Algunos productos de tu carrito ya no estan disponibles.",
       404,
+      { missingProductIds: productIds.filter((id) => !productsById.has(id)) },
     );
   }
-
-  const productsById = new Map(records.map((record) => [record.id, record]));
 
   for (const item of items) {
     const baseId = extractBaseProductId(item.productId);
@@ -264,8 +265,9 @@ async function loadProductsForPricing(
     if (!product) {
       throw new CheckoutPricingError(
         "PRODUCT_NOT_FOUND",
-        "One or more products in the checkout request no longer exist.",
+        "Algunos productos de tu carrito ya no estan disponibles.",
         404,
+        { missingProductIds: [baseId] },
       );
     }
 
@@ -297,8 +299,9 @@ function buildLineStates(
     if (!product) {
       throw new CheckoutPricingError(
         "PRODUCT_NOT_FOUND",
-        "One or more products in the checkout request no longer exist.",
+        "Algunos productos de tu carrito ya no estan disponibles.",
         404,
+        { missingProductIds: [baseId] },
       );
     }
 

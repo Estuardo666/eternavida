@@ -124,6 +124,14 @@ export type AdminOrderRecord = {
   shippingMethodName: string;
   paymentMethodId: string | null;
   paymentMethodName: string;
+  paymentProvider: string | null;
+  paymentTransactionId: string | null;
+  paymentResultCode: string | null;
+  paymentResultDescription: string | null;
+  paymentAuthCode: string | null;
+  paymentCardBrand: string | null;
+  paymentCardLast4: string | null;
+  paymentPaidAt: string | null;
   couponCode: string | null;
   subtotal: string;
   shippingCost: string;

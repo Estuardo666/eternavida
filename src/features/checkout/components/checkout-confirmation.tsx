@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, ChevronRight, ShoppingBag, User } from "lucide-react";
 
 import { motionTokens } from "@/motion/tokens";
+import { useCart } from "@/features/cart/context/cart-context";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -46,6 +47,7 @@ const GUEST_BENEFITS = [
 export function CheckoutConfirmation() {
   const router = useRouter();
   const { isSignedIn, isLoaded } = useUser();
+  const { clearCart } = useCart();
 
   const [order, setOrder] = useState<ConfirmationData | null>(null);
   const [ready, setReady] = useState(false);
@@ -58,6 +60,12 @@ export function CheckoutConfirmation() {
       // sessionStorage unavailable
     }
   }
+
+  // El flujo con pasarela mantiene el carrito hasta que el pago se aprueba.
+  useEffect(() => {
+    clearCart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     try {

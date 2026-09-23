@@ -63,6 +63,9 @@ export interface CheckoutPricingPreviewRouteResponse {
   error?: {
     code: string;
     message: string;
+    details?: {
+      missingProductIds?: string[];
+    };
   };
   timestamp: string;
 }

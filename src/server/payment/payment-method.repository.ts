@@ -11,6 +11,13 @@ function mapPaymentMethod(record: {
   type: string;
   instructions: string | null;
   initialOrderStatus: string | null;
+  qrImageUrl: string | null;
+  bankName: string | null;
+  bankAccountType: string | null;
+  bankAccountNumber: string | null;
+  bankAccountHolder: string | null;
+  bankAccountDocument: string | null;
+  bankAccountEmail: string | null;
   isActive: boolean;
   sortOrder: number;
   createdAt: Date;
@@ -23,6 +30,13 @@ function mapPaymentMethod(record: {
     type: record.type,
     instructions: record.instructions,
     initialOrderStatus: record.initialOrderStatus,
+    qrImageUrl: record.qrImageUrl,
+    bankName: record.bankName,
+    bankAccountType: record.bankAccountType,
+    bankAccountNumber: record.bankAccountNumber,
+    bankAccountHolder: record.bankAccountHolder,
+    bankAccountDocument: record.bankAccountDocument,
+    bankAccountEmail: record.bankAccountEmail,
     isActive: record.isActive,
     sortOrder: record.sortOrder,
     createdAt: record.createdAt.toISOString(),

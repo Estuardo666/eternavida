@@ -137,7 +137,7 @@ export function BestOffersSection({ content }: BestOffersSectionProps) {
   if (!items.length) return null;
 
   return (
-    <section className="w-full pt-0 pb-8 sm:pb-10 lg:pb-12">
+    <section className="w-full pt-8 pb-8 sm:pt-10 sm:pb-10 lg:pt-12 lg:pb-12">
       <div className="container space-y-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-1">

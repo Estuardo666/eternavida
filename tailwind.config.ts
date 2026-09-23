@@ -103,7 +103,11 @@ const config = {
         },
       },
       fontFamily: {
-        sans: ['var(--font-sans)', 'Geist', 'Inter', 'SF Pro Display', 'Segoe UI', 'sans-serif'],
+        sans: ['var(--font-google-sans)', 'Arial', 'sans-serif'],
+      },
+      fontWeight: {
+        semibold: '500',
+        bold: '500',
       },
       fontSize: {
         'display-xl': ['64px', { lineHeight: '72px', letterSpacing: '-0.03em', fontWeight: '500' }],

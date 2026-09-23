@@ -2,19 +2,71 @@
 @config "../../tailwind.config.ts";
 
 @font-face {
-  font-family: 'SentaSans';
-  src: url('/fonts/SentaSans_Regular.woff2') format('woff2');
+  font-family: 'Freemius';
+  src: url('/fonts/Freemius-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'SentaSans';
-  src: url('/fonts/SentaSans_Light.woff2') format('woff2');
-  font-weight: 300;
+  font-family: 'Freemius';
+  src: url('/fonts/Freemius-Medium.woff2') format('woff2');
+  font-weight: 500;
   font-style: normal;
   font-display: swap;
+}
+
+@font-face {
+  font-family: 'Google Sans';
+  src: url('/fonts/GoogleSans-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Google Sans';
+  src: url('/fonts/GoogleSans-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-google-sans: 'Google Sans', Arial, sans-serif;
+  --font-freemius: 'Freemius', var(--font-google-sans);
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-google-sans);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-freemius);
+}
+
+h4,
+h5,
+h6 {
+  font-family: var(--font-google-sans);
+}
+
+/* Remove default inconsistent heading family from the old global rule. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-synthesis: none;
+  font-weight: 500 !important;
 }
 
 :root {
@@ -36,15 +88,6 @@ body {
 body {
   background: var(--app-background);
   color: var(--app-foreground);
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-sans), sans-serif;
 }
 
 .bg-surface-subtle {

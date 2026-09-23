@@ -4,6 +4,19 @@ import type {
   CheckoutPricingPreviewRouteResponse,
 } from "@/types/checkout-pricing";
 
+/** Error del preview que conserva el codigo y los productos faltantes. */
+export class CheckoutPricePreviewError extends Error {
+  readonly code: string;
+  readonly missingProductIds: string[];
+
+  constructor(message: string, code: string, missingProductIds: string[]) {
+    super(message);
+    this.name = "CheckoutPricePreviewError";
+    this.code = code;
+    this.missingProductIds = missingProductIds;
+  }
+}
+
 export async function getCheckoutPricePreview(
   input: CheckoutPricingPreviewRequest,
 ): Promise<CheckoutPricingPreview> {
@@ -23,7 +36,11 @@ export async function getCheckoutPricePreview(
   }
 
   if (!response.ok || !payload.success || !payload.data?.preview) {
-    throw new Error(payload.error?.message ?? "Failed to calculate checkout pricing preview.");
+    throw new CheckoutPricePreviewError(
+      payload.error?.message ?? "No se pudo calcular el total del checkout.",
+      payload.error?.code ?? "UNKNOWN",
+      payload.error?.details?.missingProductIds ?? [],
+    );
   }
 
   return payload.data.preview;

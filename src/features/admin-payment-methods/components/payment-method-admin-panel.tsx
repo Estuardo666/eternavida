@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import {
@@ -18,6 +19,7 @@ import {
   ADMIN_STICKY_PANEL_SURFACE_CLASS_NAME,
 } from "@/components/admin/surface-styles";
 import { AdminBreadcrumbs } from "@/components/layout/admin-breadcrumbs";
+import { MediaPickerModal } from "@/components/media/media-picker-modal";
 import { cx } from "@/lib/utils";
 import {
   createPaymentMethodClient,
@@ -34,6 +36,13 @@ interface PaymentMethodEditorState {
   type: string;
   instructions: string;
   initialOrderStatus: "pending" | "confirmed";
+  qrImageUrl: string;
+  bankName: string;
+  bankAccountType: string;
+  bankAccountNumber: string;
+  bankAccountHolder: string;
+  bankAccountDocument: string;
+  bankAccountEmail: string;
   isActive: boolean;
   sortOrder: string;
 }
@@ -44,6 +53,13 @@ const DEFAULT_STATE: PaymentMethodEditorState = {
   type: "",
   instructions: "",
   initialOrderStatus: "pending",
+  qrImageUrl: "",
+  bankName: "",
+  bankAccountType: "",
+  bankAccountNumber: "",
+  bankAccountHolder: "",
+  bankAccountDocument: "",
+  bankAccountEmail: "",
   isActive: true,
   sortOrder: "0",
 };
@@ -55,6 +71,13 @@ function toEditorState(method: PaymentMethodItem): PaymentMethodEditorState {
     type: method.type,
     instructions: method.instructions ?? "",
     initialOrderStatus: method.initialOrderStatus === "confirmed" ? "confirmed" : "pending",
+    qrImageUrl: method.qrImageUrl ?? "",
+    bankName: method.bankName ?? "",
+    bankAccountType: method.bankAccountType ?? "",
+    bankAccountNumber: method.bankAccountNumber ?? "",
+    bankAccountHolder: method.bankAccountHolder ?? "",
+    bankAccountDocument: method.bankAccountDocument ?? "",
+    bankAccountEmail: method.bankAccountEmail ?? "",
     isActive: method.isActive,
     sortOrder: String(method.sortOrder),
   };
@@ -67,6 +90,13 @@ function toFormData(state: PaymentMethodEditorState): PaymentMethodFormData {
     type: state.type.trim(),
     instructions: state.instructions.trim(),
     initialOrderStatus: state.initialOrderStatus,
+    qrImageUrl: state.qrImageUrl.trim(),
+    bankName: state.bankName.trim(),
+    bankAccountType: state.bankAccountType.trim(),
+    bankAccountNumber: state.bankAccountNumber.trim(),
+    bankAccountHolder: state.bankAccountHolder.trim(),
+    bankAccountDocument: state.bankAccountDocument.trim(),
+    bankAccountEmail: state.bankAccountEmail.trim(),
     isActive: state.isActive,
     sortOrder: parseInt(state.sortOrder, 10) || 0,
   };
@@ -86,6 +116,7 @@ export function PaymentMethodAdminPanel({ initialMethods }: Props) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [qrPickerOpen, setQrPickerOpen] = useState(false);
 
   const selectedMethod = methods.find((m) => m.id === selectedId) ?? null;
   const isDirty = selectedId !== null || isCreating;
@@ -342,6 +373,160 @@ export function PaymentMethodAdminPanel({ initialMethods }: Props) {
                 <p className="mt-1 text-caption text-text-secondary">
                   Estas instrucciones se muestran al cliente tras seleccionar este método.
                 </p>
+              </div>
+
+              {/* Datos bancarios */}
+              <div className={cx(ADMIN_INSET_CARD_CLASS_NAME, "space-y-3")}>
+                <div>
+                  <p className="text-label-sm font-medium text-text-primary">Datos de la cuenta bancaria</p>
+                  <p className="text-caption text-text-secondary">
+                    Se muestran al cliente cuando elige este método. Dejalos vacíos si no aplica.
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="mb-1 block text-label-sm text-text-secondary">Banco</label>
+                    <input
+                      type="text"
+                      value={form.bankName}
+                      onChange={(e) => updateField("bankName", e.target.value)}
+                      className={ADMIN_COMPACT_FIELD_CLASS_NAME}
+                      placeholder="Ej. Banco Pichincha"
+                      maxLength={120}
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-label-sm text-text-secondary">Tipo de cuenta</label>
+                    <input
+                      type="text"
+                      value={form.bankAccountType}
+                      onChange={(e) => updateField("bankAccountType", e.target.value)}
+                      className={ADMIN_COMPACT_FIELD_CLASS_NAME}
+                      placeholder="Ej. Ahorros"
+                      maxLength={60}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="mb-1 block text-label-sm text-text-secondary">Número de cuenta</label>
+                    <input
+                      type="text"
+                      value={form.bankAccountNumber}
+                      onChange={(e) => updateField("bankAccountNumber", e.target.value)}
+                      className={ADMIN_COMPACT_FIELD_CLASS_NAME}
+                      placeholder="Ej. 2100123456"
+                      maxLength={60}
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-label-sm text-text-secondary">Cédula / RUC</label>
+                    <input
+                      type="text"
+                      value={form.bankAccountDocument}
+                      onChange={(e) => updateField("bankAccountDocument", e.target.value)}
+                      className={ADMIN_COMPACT_FIELD_CLASS_NAME}
+                      placeholder="Ej. 1791234567001"
+                      maxLength={30}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="mb-1 block text-label-sm text-text-secondary">Titular</label>
+                  <input
+                    type="text"
+                    value={form.bankAccountHolder}
+                    onChange={(e) => updateField("bankAccountHolder", e.target.value)}
+                    className={ADMIN_COMPACT_FIELD_CLASS_NAME}
+                    placeholder="Ej. Eterna Vida S.A."
+                    maxLength={160}
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-label-sm text-text-secondary">
+                    Correo para comprobantes
+                  </label>
+                  <input
+                    type="email"
+                    value={form.bankAccountEmail}
+                    onChange={(e) => updateField("bankAccountEmail", e.target.value)}
+                    className={ADMIN_COMPACT_FIELD_CLASS_NAME}
+                    placeholder="pagos@eternavida.com.ec"
+                    maxLength={160}
+                  />
+                </div>
+              </div>
+
+              {/* Imagen QR */}
+              <div className={cx(ADMIN_INSET_CARD_CLASS_NAME, "space-y-3")}>
+                <div>
+                  <p className="text-label-sm font-medium text-text-primary">Imagen QR</p>
+                  <p className="text-caption text-text-secondary">
+                    Para métodos tipo Ahorita o Deuna!. El cliente escanea este código al pagar.
+                  </p>
+                </div>
+
+                {form.qrImageUrl ? (
+                  <div className="flex items-start gap-3">
+                    <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-xl border border-[#d8e3d4] bg-white">
+                      <Image
+                        src={form.qrImageUrl}
+                        alt="Código QR del método de pago"
+                        fill
+                        loading="eager"
+                        sizes="112px"
+                        className="object-contain p-1"
+                        unoptimized
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setQrPickerOpen(true)}
+                        className={ADMIN_BUTTON_SECONDARY_CLASS_NAME}
+                      >
+                        Cambiar imagen
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => updateField("qrImageUrl", "")}
+                        className={ADMIN_BUTTON_SECONDARY_CLASS_NAME}
+                      >
+                        Quitar imagen
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setQrPickerOpen(true)}
+                    className={ADMIN_BUTTON_SECONDARY_CLASS_NAME}
+                  >
+                    Seleccionar imagen QR
+                  </button>
+                )}
+
+                <div>
+                  <label className="mb-1 block text-label-sm text-text-secondary">URL de la imagen</label>
+                  <input
+                    type="text"
+                    value={form.qrImageUrl}
+                    onChange={(e) => updateField("qrImageUrl", e.target.value)}
+                    className={ADMIN_COMPACT_FIELD_CLASS_NAME}
+                    placeholder="https://..."
+                    maxLength={2000}
+                  />
+                </div>
+
+                <MediaPickerModal
+                  open={qrPickerOpen}
+                  onClose={() => setQrPickerOpen(false)}
+                  onSelect={(asset) => {
+                    if (asset.publicUrl) updateField("qrImageUrl", asset.publicUrl);
+                    setQrPickerOpen(false);
+                  }}
+                  uploadStorageKeyPrefix="Media/PaymentMethods"
+                />
               </div>
 
               {/* isActive */}

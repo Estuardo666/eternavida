@@ -29,6 +29,17 @@ const serverEnvSchema = z.object({
   EMAIL_FROM_NAME: z.string().min(1).optional(),
   EMAIL_FROM_ADDRESS: z.string().email().optional(),
   EMAIL_REPLY_TO: z.string().email().optional(),
+  DATAFAST_ENTITY_ID: z.string().min(1).optional(),
+  DATAFAST_BEARER_TOKEN: z.string().min(1).optional(),
+  DATAFAST_BASE_URL: z
+    .url("DATAFAST_BASE_URL must be a valid URL")
+    .default("https://test.oppwa.com"),
+  DATAFAST_MID: z.string().min(1).default("1000000406"),
+  DATAFAST_TID: z.string().min(1).default("PD100406"),
+  DATAFAST_ECI: z.string().min(1).default("0103910"),
+  DATAFAST_PSERV: z.string().min(1).default("17913101"),
+  DATAFAST_TEST_MODE: z.string().default("EXTERNAL"),
+  DATAFAST_RISK_USER_DATA2: z.string().optional(),
 });
 
 const parsedServerEnv = serverEnvSchema.safeParse({
@@ -49,6 +60,15 @@ const parsedServerEnv = serverEnvSchema.safeParse({
   EMAIL_FROM_NAME: process.env.EMAIL_FROM_NAME,
   EMAIL_FROM_ADDRESS: process.env.EMAIL_FROM_ADDRESS,
   EMAIL_REPLY_TO: process.env.EMAIL_REPLY_TO,
+  DATAFAST_ENTITY_ID: process.env.DATAFAST_ENTITY_ID,
+  DATAFAST_BEARER_TOKEN: process.env.DATAFAST_BEARER_TOKEN,
+  DATAFAST_BASE_URL: process.env.DATAFAST_BASE_URL,
+  DATAFAST_MID: process.env.DATAFAST_MID,
+  DATAFAST_TID: process.env.DATAFAST_TID,
+  DATAFAST_ECI: process.env.DATAFAST_ECI,
+  DATAFAST_PSERV: process.env.DATAFAST_PSERV,
+  DATAFAST_TEST_MODE: process.env.DATAFAST_TEST_MODE,
+  DATAFAST_RISK_USER_DATA2: process.env.DATAFAST_RISK_USER_DATA2,
 });
 
 if (!parsedServerEnv.success) {

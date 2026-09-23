@@ -776,6 +776,40 @@ export function OrderDetailModal(props: OrderDetailModalProps) {
                   <p className="text-body-sm text-text-secondary">
                     Metodo: <span className="font-medium text-text-primary">{localOrder.paymentMethodName}</span>
                   </p>
+                  {localOrder.paymentProvider && (
+                    <div className="mt-2 space-y-1 text-caption text-text-secondary">
+                      <p>
+                        Pasarela: <span className="font-medium text-text-primary">{localOrder.paymentProvider}</span>
+                      </p>
+                      {localOrder.paymentTransactionId && (
+                        <p>
+                          Transaccion:{" "}
+                          <span className="font-medium text-text-primary">{localOrder.paymentTransactionId}</span>
+                        </p>
+                      )}
+                      {localOrder.paymentResultCode && (
+                        <p>
+                          Codigo: <span className="font-medium text-text-primary">{localOrder.paymentResultCode}</span>
+                          {localOrder.paymentResultDescription ? ` - ${localOrder.paymentResultDescription}` : ""}
+                        </p>
+                      )}
+                      {localOrder.paymentAuthCode && (
+                        <p>
+                          Autorizacion:{" "}
+                          <span className="font-medium text-text-primary">{localOrder.paymentAuthCode}</span>
+                        </p>
+                      )}
+                      {localOrder.paymentCardLast4 && (
+                        <p>
+                          Tarjeta:{" "}
+                          <span className="font-medium text-text-primary">
+                            {localOrder.paymentCardBrand ?? "****"} ****{localOrder.paymentCardLast4}
+                          </span>
+                        </p>
+                      )}
+                      {localOrder.paymentPaidAt && <p>Pagado: {formatDate(localOrder.paymentPaidAt)}</p>}
+                    </div>
+                  )}
                 </div>
               </section>
 

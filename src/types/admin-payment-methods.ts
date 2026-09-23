@@ -5,6 +5,13 @@ export interface PaymentMethodItem {
   type: string;
   instructions: string | null;
   initialOrderStatus: string | null;
+  qrImageUrl: string | null;
+  bankName: string | null;
+  bankAccountType: string | null;
+  bankAccountNumber: string | null;
+  bankAccountHolder: string | null;
+  bankAccountDocument: string | null;
+  bankAccountEmail: string | null;
   isActive: boolean;
   sortOrder: number;
   createdAt: string;
@@ -17,6 +24,13 @@ export interface PaymentMethodFormData {
   type: string;
   instructions: string;
   initialOrderStatus: string | null;
+  qrImageUrl: string;
+  bankName: string;
+  bankAccountType: string;
+  bankAccountNumber: string;
+  bankAccountHolder: string;
+  bankAccountDocument: string;
+  bankAccountEmail: string;
   isActive: boolean;
   sortOrder: number;
 }
@@ -42,6 +56,13 @@ export interface PublicPaymentMethod {
   description: string | null;
   instructions: string | null;
   initialOrderStatus: string | null;
+  qrImageUrl: string | null;
+  bankName: string | null;
+  bankAccountType: string | null;
+  bankAccountNumber: string | null;
+  bankAccountHolder: string | null;
+  bankAccountDocument: string | null;
+  bankAccountEmail: string | null;
 }
 
 export interface PublicPaymentMethodListRouteResponse {

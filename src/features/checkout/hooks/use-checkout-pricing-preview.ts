@@ -4,13 +4,21 @@ import { useEffect, useRef, useState } from "react";
 
 import type { CheckoutShippingMethod } from "@/config/checkout";
 import type { CartItem } from "@/features/cart/types";
-import { getCheckoutPricePreview } from "@/services/checkout/get-checkout-price-preview";
+import {
+  CheckoutPricePreviewError,
+  getCheckoutPricePreview,
+} from "@/services/checkout/get-checkout-price-preview";
 import type { CheckoutPricingPreview } from "@/types/checkout-pricing";
 
 interface UseCheckoutPricingPreviewOptions {
   items: CartItem[];
   shippingMethod: CheckoutShippingMethod;
   enabled?: boolean;
+  /**
+   * Se invoca cuando el catalogo ya no tiene alguno de los productos del
+   * carrito (por ejemplo, tras reimportar el catalogo con ids nuevos).
+   */
+  onMissingProducts?: (missingProductIds: string[]) => void;
 }
 
 interface UseCheckoutPricingPreviewResult {
@@ -33,6 +41,11 @@ export function useCheckoutPricingPreview(
   const [draftCouponCode, setDraftCouponCode] = useState("");
   const [appliedCouponCode, setAppliedCouponCode] = useState<string | null>(null);
   const requestSequenceRef = useRef(0);
+  const onMissingProductsRef = useRef(options.onMissingProducts);
+
+  useEffect(() => {
+    onMissingProductsRef.current = options.onMissingProducts;
+  }, [options.onMissingProducts]);
 
   useEffect(() => {
     if (options.items.length === 0) {
@@ -69,6 +82,18 @@ export function useCheckoutPricingPreview(
       })
       .catch((error) => {
         if (requestSequenceRef.current !== requestSequence) {
+          return;
+        }
+
+        if (
+          error instanceof CheckoutPricePreviewError &&
+          error.code === "PRODUCT_NOT_FOUND" &&
+          error.missingProductIds.length > 0
+        ) {
+          onMissingProductsRef.current?.(error.missingProductIds);
+          setErrorMessage(
+            "Quitamos de tu carrito productos que ya no están disponibles. Revisá el resumen antes de continuar.",
+          );
           return;
         }
 

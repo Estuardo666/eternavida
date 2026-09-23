@@ -32,6 +32,7 @@ import { motionTokens } from "@/motion/tokens";
 import { useCart } from "@/features/cart/context/cart-context";
 import { useCheckoutPricingPreview } from "@/features/checkout/hooks/use-checkout-pricing-preview";
 import { useCheckoutMethods } from "@/features/checkout/hooks/use-checkout-methods";
+import type { PublicPaymentMethod } from "@/types/admin-payment-methods";
 import { cx } from "@/lib/utils";
 import { CheckoutOrderSummary } from "./checkout-order-summary";
 
@@ -50,7 +51,67 @@ function requiresPaymentConfirmation(initialOrderStatus?: string | null): boolea
   return initialOrderStatus !== "confirmed";
 }
 
+/** Metodos que se cobran en linea y requieren una pasarela antes de confirmar. */
+function isGatewayPaymentMethod(type?: string | null): boolean {
+  return type === "datafast";
+}
+
+/** Datos bancarios y QR configurados por el admin para el metodo seleccionado. */
+function PaymentMethodDetails({ method }: { method: PublicPaymentMethod }) {
+  const bankRows = (
+    [
+      ["Banco", method.bankName ?? ""],
+      ["Tipo de cuenta", method.bankAccountType ?? ""],
+      ["Número de cuenta", method.bankAccountNumber ?? ""],
+      ["Titular", method.bankAccountHolder ?? ""],
+      ["Cédula / RUC", method.bankAccountDocument ?? ""],
+      ["Correo para comprobantes", method.bankAccountEmail ?? ""],
+    ] as Array<[string, string]>
+  ).filter(([, value]) => value.trim().length > 0);
+
+  if (bankRows.length === 0 && !method.qrImageUrl && !method.instructions) return null;
+
+  return (
+    <div className="mt-3 space-y-3">
+      {bankRows.length > 0 && (
+        <dl className="divide-y divide-border-soft overflow-hidden rounded-lg bg-surface-soft">
+          {bankRows.map(([label, value]) => (
+            <div key={label} className="flex items-baseline justify-between gap-3 px-3 py-2">
+              <dt className="text-caption text-text-muted">{label}</dt>
+              <dd className="text-caption font-medium text-text-primary">{value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+
+      {method.qrImageUrl && (
+        <div className="flex flex-col items-center gap-2 rounded-lg bg-surface-soft px-3 py-3">
+          <div className="relative h-40 w-40 overflow-hidden rounded-md bg-white">
+            <Image
+              src={method.qrImageUrl}
+              alt={`Código QR de ${method.name}`}
+              fill
+              loading="eager"
+              sizes="160px"
+              className="object-contain p-1"
+              unoptimized
+            />
+          </div>
+          <p className="text-caption text-text-muted">Escaneá el código desde tu app bancaria.</p>
+        </div>
+      )}
+
+      {method.instructions && (
+        <pre className="whitespace-pre-wrap rounded-lg bg-surface-soft px-3 py-2.5 text-caption text-text-secondary">
+          {method.instructions}
+        </pre>
+      )}
+    </div>
+  );
+}
+
 import { ecuadorProvinces } from "@/config/ecuador-provinces";
+import { splitIvaIncluded } from "@/config/tax";
 
 // ─── Price formatter ──────────────────────────────────────────────────────────
 
@@ -385,25 +446,25 @@ function CheckoutIdentityGate({ onUserReady }: { onUserReady: (data: UserReadyDa
             exit={{ opacity: 0, transition: { duration: 0.15, ease: [0.55, 0, 1, 0.45] } }}
             className="overflow-hidden border-t border-border-soft/60"
           >
-            <div className="flex items-center gap-2 px-4 py-3">
+            <div className="flex flex-wrap items-center gap-2 px-4 py-3">
               <button
                 type="button"
                 onClick={() => setPanel("sign-in")}
-                className="inline-flex h-9 items-center rounded-lg border border-border bg-white px-4 text-body-sm font-medium text-text-primary transition hover:border-border-brand hover:bg-brand-soft/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+                className="inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-lg border border-border bg-white px-4 text-body-sm font-medium text-text-primary transition hover:border-border-brand hover:bg-brand-soft/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
               >
                 Iniciar sesión
               </button>
               <button
                 type="button"
                 onClick={() => setPanel("sign-up")}
-                className="inline-flex h-9 items-center rounded-lg border border-border bg-white px-4 text-body-sm font-medium text-text-primary transition hover:border-border-brand hover:bg-brand-soft/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+                className="inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-lg border border-border bg-white px-4 text-body-sm font-medium text-text-primary transition hover:border-border-brand hover:bg-brand-soft/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
               >
                 Crear cuenta
               </button>
               <button
                 type="button"
                 onClick={() => setPanel("guest")}
-                className="ml-auto text-body-sm text-text-muted transition hover:text-text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+                className="ml-auto whitespace-nowrap text-body-sm text-text-muted transition hover:text-text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
               >
                 Continuar como invitado
               </button>
@@ -442,7 +503,7 @@ function CheckoutIdentityGate({ onUserReady }: { onUserReady: (data: UserReadyDa
 // ─── CheckoutPageClient ───────────────────────────────────────────────────────
 
 export function CheckoutPageClient() {
-  const { items, subtotal, itemCount, clearCart } = useCart();
+  const { items, subtotal, itemCount, clearCart, removeItem } = useCart();
   const reduceMotion = useReducedMotion() ?? false;
   const router = useRouter();
   const { user, isSignedIn } = useUser();
@@ -497,9 +558,22 @@ export function CheckoutPageClient() {
   } = useCheckoutPricingPreview({
     items,
     shippingMethod,
+    onMissingProducts: handleMissingProducts,
   });
   const summaryDisplayTotal = pricingPreview?.totals.total
     ?? subtotal + resolveCheckoutShippingBaseCost(shippingMethod);
+
+  /**
+   * Los ids del carrito pueden traer sufijo de variante (`productId__variantId`),
+   * mientras que el servidor reporta solo el id base del producto.
+   */
+  function handleMissingProducts(missingProductIds: string[]) {
+    const missing = new Set(missingProductIds);
+    for (const item of items) {
+      const baseId = item.id.split("__")[0] ?? item.id;
+      if (missing.has(baseId)) removeItem(item.id);
+    }
+  }
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -610,7 +684,7 @@ export function CheckoutPageClient() {
           subtotal: totals?.merchandiseSubtotal ?? subtotal,
           shippingCost: totals?.shippingTotal ?? resolveCheckoutShippingBaseCost(shippingMethod),
           discountAmount,
-          taxAmount: 0,
+          taxAmount: splitIvaIncluded(totals?.total ?? summaryDisplayTotal).iva,
           total: totals?.total ?? summaryDisplayTotal,
           ...(billingDifferent ? {
             billingFirstName,
@@ -659,7 +733,9 @@ export function CheckoutPageClient() {
         isGuest: !isSignedIn,
         shippingMethod,
         paymentMethodName: selectedPaymentMethod?.name ?? "Pago por confirmar",
-        requiresPaymentConfirmation: selectedPaymentRequiresConfirmation,
+        requiresPaymentConfirmation: isGatewayPaymentMethod(selectedPaymentMethod?.type)
+          ? false
+          : selectedPaymentRequiresConfirmation,
         products,
       };
 
@@ -667,6 +743,12 @@ export function CheckoutPageClient() {
         sessionStorage.setItem("eterna_vida_last_order", JSON.stringify(confirmationData));
       } catch {
         // sessionStorage unavailable
+      }
+
+      if (isGatewayPaymentMethod(selectedPaymentMethod?.type)) {
+        // El carrito se limpia recien en /confirmation, tras aprobarse el pago.
+        router.push(`/checkout/pago?order=${encodeURIComponent(payload.data.orderNumber)}`);
+        return;
       }
 
       router.push(`/confirmation?order=${payload.data.orderNumber}`);
@@ -774,7 +856,7 @@ export function CheckoutPageClient() {
       </div>
 
       {/* ── Main layout ────────────────────────────────────────────────────── */}
-      <div className="lg:mx-auto lg:w-[55vw] lg:min-w-[760px] lg:max-w-[980px]">
+      <div className="lg:mx-auto lg:w-[94vw] lg:max-w-[1100px]">
         <div className="lg:grid lg:min-h-screen lg:grid-cols-[minmax(0,1fr)_380px]">
         {/* ── LEFT — form ──────────────────────────────────────────────── */}
         <motion.div
@@ -1238,10 +1320,8 @@ export function CheckoutPageClient() {
                         {method.description && (
                           <p className="mt-0.5 text-caption text-text-muted">{method.description}</p>
                         )}
-                        {selectedPaymentMethod?.id === method.id && method.instructions && (
-                          <pre className="mt-3 whitespace-pre-wrap rounded-lg bg-surface-soft px-3 py-2.5 text-caption text-text-secondary">
-                            {method.instructions}
-                          </pre>
+                        {selectedPaymentMethod?.id === method.id && (
+                          <PaymentMethodDetails method={method} />
                         )}
                       </div>
                     </button>

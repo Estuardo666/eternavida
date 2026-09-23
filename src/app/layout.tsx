@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { esMX } from "@clerk/localizations";
-import { Geist } from "next/font/google";
 import dynamic from "next/dynamic";
 
 import { CartProvider } from "@/features/cart/context/cart-context";
@@ -10,12 +9,6 @@ import "./globals.css";
 const WhatsAppFloatDeferred = dynamic(
   () => import("@/components/layout/whatsapp-float").then((mod) => mod.WhatsAppFloat),
 );
-
-const geistSans = Geist({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: {
@@ -34,7 +27,7 @@ type RootLayoutProps = Readonly<{
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="es" className={geistSans.variable} suppressHydrationWarning>
+    <html lang="es" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://pub-cc734373dc1544418e5ba00681e8514f.r2.dev" />
         <link rel="preconnect" href="https://img.clerk.com" />
